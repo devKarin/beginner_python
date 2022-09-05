@@ -1,6 +1,8 @@
-"""'Hello world!' printer
+"""
+This is a simple 'Hello world!' printer.
 
-This module prints 'Hello world!' immediately.
+This module prints 'Hello world!' immediately
+and does nothing else.
 """
 
 
