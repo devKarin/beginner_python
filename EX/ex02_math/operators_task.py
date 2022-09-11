@@ -1,6 +1,6 @@
-"""EX02 Math operators."""
-
 """
+EX02 Math operators.
+
 1. Operators task.
 This program defines following functions:
 add(x: int, y: int)
@@ -45,8 +45,8 @@ def multiply(x: int, y: int) -> int:
 
 
 def div(x: int, y: int) -> float:
-    """Divide x by y."""
-    return round(x / y)
+    """Divide x by y. Round the result to 2 decimal places."""
+    return round((x / y), 2)
 
 
 def modulus(x: int, y: int) -> int:
@@ -143,7 +143,8 @@ def clock(days: int, hours: int, minutes: int, seconds: int) -> float:
     add them up, round the answer to the 0 decimal places and returns it.
     """
     minutes = minutes + 24 * 60 * days + 60 * hours + (1 / 60) * seconds
-    return round(minutes, 2)
+    return round(minutes)
+
 
 def calculate(operation: int, first_operand: int, second_operand: int) -> float:
     """
@@ -158,7 +159,6 @@ def calculate(operation: int, first_operand: int, second_operand: int) -> float:
 
     Round the results to the 2 decimal places.
     """
-
     if operation == 0:
         return round((first_operand + second_operand), 2)
     elif operation == 1:
@@ -187,8 +187,8 @@ if __name__ == '__main__':
     print(x_is_not_y(1, 2))  # True
     print(if_else(1, 3, 5, 99))  # 3
     print(if_else(2, 1, 10, 5))  # 0
-    print(surface(1, 2)) # 2
-    print(volume(5, 5, 5)) # 125
+    print(surface(1, 2))  # 2
+    print(volume(5, 5, 5))  # 125
     print(clock(0, 0, 1, 15))  # 1.25
     print(clock(0, 1, 5, 0))  # 65
     # Try "calculate" here
@@ -199,3 +199,4 @@ if __name__ == '__main__':
     print(calculate(3, 0, 5))  # 0
     print(calculate(3, 25, 5))  # 5
     print(calculate(3, 10, 3))  # 3.34
+    print(div(1, 3))  # 0.34
