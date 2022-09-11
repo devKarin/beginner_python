@@ -199,4 +199,3 @@ if __name__ == '__main__':
     print(calculate(3, 0, 5))  # 0
     print(calculate(3, 25, 5))  # 5
     print(calculate(3, 10, 3))  # 3.34
-
