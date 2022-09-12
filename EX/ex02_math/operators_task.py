@@ -15,10 +15,10 @@ second_less_or_equal(x: int, y: int)
 x_is_y(x: int, y: int)
 x_is_not_y(x: int, y: int)
 if_else(a: int, b: int, c: int, d: int)
-surface()
-volume()
-clock()
-calculate()
+surface(rectangle_width: int, rectangle_height: int)
+volume(cuboid_width: int, cuboid_height: int, cuboid_depth: int)
+clock(days: int, hours: int, minutes: int, seconds: int)
+calculate(operation: int, first_operand: int, second_operand: int)
 
 """
 
@@ -141,10 +141,10 @@ def clock(days: int, hours: int, minutes: int, seconds: int) -> float:
     Convert the time into minutes and return it.
 
     Convert the inserted days, hours, minutes and seconds into minutes,
-    add them up, round the answer to the 0 decimal places and returns it.
+    add them up and return them.
     """
     minutes = float(int(minutes) + 24 * 60 * int(days) + 60 * int(hours) + int(seconds) / 60)
-    return round(minutes)
+    return minutes
 
 
 def calculate(operation: int, first_operand: int, second_operand: int) -> float:
@@ -196,7 +196,8 @@ if __name__ == '__main__':
     print(volume(5, 5, 5))  # 125
     print(clock(0, 0, 1, 15))  # 1.25
     print(clock(0, 1, 5, 0))  # 65
-    print(clock(0, 2, 0, 20))
+    print(clock(0, 2, 0, 20))  # 120.33333
+    print(clock(0, 0, 0, 30))  # 0.5
     # Try "calculate" here
     print(calculate(1, 5, 2))  # 3
     print(calculate(0, 0, 5))  # 5
