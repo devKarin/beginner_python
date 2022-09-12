@@ -17,11 +17,8 @@ x_is_not_y(x: int, y: int)
 if_else(a: int, b: int, c: int, d: int)
 surface()
 volume()
-
-Example output:
-
-Enter a sum: 63
-Amount of coins needed: 5
+clock()
+calculate()
 
 """
 
@@ -31,37 +28,37 @@ import math
 
 def add(x: int, y: int) -> int:
     """Add x to y."""
-    return x + y
+    return int(x) + int(y)
 
 
 def sub(x: int, y: int) -> int:
     """Subtract y from x."""
-    return x - y
+    return int(x) - int(y)
 
 
 def multiply(x: int, y: int) -> int:
     """Multiply x by y."""
-    return x * y
+    return int(x) * int(y)
 
 
 def div(x: int, y: int) -> float:
     """Divide x by y. Round the result to 2 decimal places."""
-    return round((x / y), 2)
+    return round((int(x) / int(y)), 2)
 
 
 def modulus(x: int, y: int) -> int:
     """Divide x by y and return remainder. Use an arithmetic operator."""
-    return x % y
+    return int(x) % int(y)
 
 
 def floor_div(x: int, y: int) -> int:
     """Divide x by y and floor the value. Use an arithmetic operator."""
-    return math.floor(x / y)
+    return math.floor(int(x) / int(y))
 
 
 def exponent(x: int, y: int) -> int:
     """Calculate x raised to the power of y."""
-    return round(math.pow(x, y))
+    return round(math.pow(int(x), int(y)))
 
 
 def first_greater_or_equal(x: int, y: int) -> bool:
@@ -105,6 +102,10 @@ def if_else(a: int, b: int, c: int, d: int) -> float:
     Next check and return the greater value.
     If both values are the same then return 0 (number zero).
     """
+    a = int(a)
+    b = int(b)
+    c = int(c)
+    d = int(d)
     if (a * b) > (c / d):
         return a * b
     elif (a * b) < (c / d):
@@ -122,7 +123,7 @@ def surface(rectangle_width: int, rectangle_height: int) -> int:
     Add the missing parameters to calculate the surface of a rectangle.
     Calculate and return the value of the surface.
     """
-    return rectangle_width * rectangle_height
+    return int(rectangle_width) * int(rectangle_height)
 
 
 def volume(cuboid_width: int, cuboid_height: int, cuboid_depth: int) -> int:
@@ -132,7 +133,7 @@ def volume(cuboid_width: int, cuboid_height: int, cuboid_depth: int) -> int:
     Add the missing parameters to calculate the volume of a cuboid.
     Calculate and return the value of the volume.
     """
-    return cuboid_width * cuboid_height * cuboid_depth
+    return int(cuboid_width) * int(cuboid_height) * int(cuboid_depth)
 
 
 def clock(days: int, hours: int, minutes: int, seconds: int) -> float:
@@ -142,8 +143,8 @@ def clock(days: int, hours: int, minutes: int, seconds: int) -> float:
     Convert the inserted days, hours, minutes and seconds into minutes,
     add them up, round the answer to the 0 decimal places and returns it.
     """
-    minutes = minutes + 24 * 60 * days + 60 * hours + (1 / 60) * seconds
-    return round(minutes)
+    minutes = int(minutes) + 24 * 60 * int(days) + 60 * int(hours) + (1 / 60) * int(seconds)
+    return round(minutes, 2)
 
 
 def calculate(operation: int, first_operand: int, second_operand: int) -> float:
@@ -159,6 +160,9 @@ def calculate(operation: int, first_operand: int, second_operand: int) -> float:
 
     Round the results to the 2 decimal places.
     """
+    operation = int(operation)
+    first_operand = int(first_operand)
+    second_operand = int(second_operand)
     if operation == 0:
         return round((first_operand + second_operand), 2)
     elif operation == 1:
