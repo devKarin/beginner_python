@@ -42,8 +42,8 @@ def multiply(x: int, y: int) -> int:
 
 
 def div(x: int, y: int) -> float:
-    """Divide x by y. Round the result to 2 decimal places."""
-    return round((int(x) / int(y)), 2)
+    """Divide x by y."""
+    return int(x) / int(y)
 
 
 def modulus(x: int, y: int) -> int:
@@ -143,8 +143,8 @@ def clock(days: int, hours: int, minutes: int, seconds: int) -> float:
     Convert the inserted days, hours, minutes and seconds into minutes,
     add them up, round the answer to the 0 decimal places and returns it.
     """
-    minutes = int(minutes) + 24 * 60 * int(days) + 60 * int(hours) + (1 / 60) * int(seconds)
-    return round(minutes, 2)
+    minutes = float(int(minutes) + 24 * 60 * int(days) + 60 * int(hours) + int(seconds) / 60)
+    return round(minutes)
 
 
 def calculate(operation: int, first_operand: int, second_operand: int) -> float:
@@ -182,6 +182,7 @@ if __name__ == '__main__':
     print(sub(5, 5))  # 0
     print(multiply(5, 5))  # 25
     print(div(15, 5))  # 3
+    print(div(1, 3))  # 0.33
     print(modulus(9, 3))  # 0
     print(floor_div(3, 2))  # 1
     print(exponent(5, 5))  # 3125
@@ -195,6 +196,7 @@ if __name__ == '__main__':
     print(volume(5, 5, 5))  # 125
     print(clock(0, 0, 1, 15))  # 1.25
     print(clock(0, 1, 5, 0))  # 65
+    print(clock(0, 2, 0, 20))
     # Try "calculate" here
     print(calculate(1, 5, 2))  # 3
     print(calculate(0, 0, 5))  # 5
