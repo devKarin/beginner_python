@@ -43,12 +43,12 @@ def school_pressure(ects: int, weeks: int) -> float:
     # Hours of work required to earn entered ects
     total_hours_needed = ects * 26
     if weeks <= 0:
-        return -1
+        return float(-1)
     else:
         # Weekly hours of work required to earn the ects within entered timeframe
-        hours_in_week_needed = round((total_hours_needed / weeks), 2)
+        hours_in_week_needed = total_hours_needed / weeks
         if hours_in_week_needed > 168:
-            return -1
+            return float(-1)
         else:
             return hours_in_week_needed
 
@@ -89,6 +89,9 @@ if __name__ == '__main__':
     print(school_pressure(30, 12))  # 65
     print(school_pressure(1, 1))  # 26
     print(school_pressure(1, 0))  # -1
+    print(school_pressure(0, 0))  # 0
+    print(school_pressure(0, 2))  # 0
+    print(school_pressure(1, 2))  # 13
     print(add_fractions(1, 3, 1, 3))  # 1/3 + 1/3 => "2/3", "6/9"
     print(add_fractions(2, 5, 1, 5))  # 2/5 + 1/5 => "3/5", "15/25"
     print(add_fractions(1, 2, 1, 2))  # 1/2 + 1/2 => "1/1", "4/4", "2/2"
