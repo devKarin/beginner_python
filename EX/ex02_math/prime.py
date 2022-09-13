@@ -22,12 +22,15 @@ def is_prime_number(number: int) -> bool:
     """
     # Convert argument into integer just in case.
     number = int(number)
-    integer_list = []
+    # Numbers equal to or smaller than 1 are not prime numbers.
+    # In order to avoid ZeroDivision error, this is handled before the loop.
+    if number <= 1:
+        return False
     # Loop through all integers smaller than the argument
     for integer in range(2, number):
         """
         Check for the prime number conditions.
-        
+
         Check whether the argument (possible prime number) divides by some number
         smaller than itself. If so, the number can't be a prime number.
         """
@@ -46,3 +49,6 @@ if __name__ == '__main__':
     print(is_prime_number(7))  # -> True
     print(is_prime_number(88))  # -> False
     print(is_prime_number(47))  # -> True
+    print(is_prime_number(0))  # -> False
+    print(is_prime_number(1))  # -> False
+

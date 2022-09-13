@@ -86,12 +86,12 @@ if __name__ == '__main__':
     print(average(0, 0, 0, 4))  # 4
     print(average(1, 2, 3, 4))  # 7.5
     print(average(5, 0, 5, 1))  # 6
-    print(school_pressure(30, 12))  # 65
-    print(school_pressure(1, 1))  # 26
-    print(school_pressure(1, 0))  # -1
-    print(school_pressure(0, 0))  # 0
-    print(school_pressure(0, 2))  # 0
-    print(school_pressure(1, 2))  # 13
+    print(school_pressure(30, 12))  # 65.0
+    print(school_pressure(1, 1))  # 26.0
+    print(school_pressure(1, 0))  # -1.0
+    print(school_pressure(0, 0))  # -1.0
+    print(school_pressure(0, 2))  # 0.0
+    print(school_pressure(1, 2))  # 13.0
     print(add_fractions(1, 3, 1, 3))  # 1/3 + 1/3 => "2/3", "6/9"
     print(add_fractions(2, 5, 1, 5))  # 2/5 + 1/5 => "3/5", "15/25"
     print(add_fractions(1, 2, 1, 2))  # 1/2 + 1/2 => "1/1", "4/4", "2/2"
