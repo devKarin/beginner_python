@@ -32,10 +32,10 @@ def encode(message: str, shift: int) -> str:
     """
     # Just in case convert the message in arguments into lowercase.
     lowercase_message = message.lower()
-    # Initiate a translation dictionary for later use in translation
+    # Instantiate a translation dictionary for later use in translation.
     translation_dictionary = {}
     # Exclude shifting more than the alphabet length.
-    # Modulo shows the "pure" shift
+    # Modulo shows the "pure" shift.
     shift = shift % 26
     """
     English (latin) alphabet lowercase letters numeric value
@@ -46,7 +46,7 @@ def encode(message: str, shift: int) -> str:
         """
         Calculate new letter value.
         If the new letter value exceeds alphabets last letter numeric value,
-        start from the beginning of the alphabet i.e .
+        start from the beginning of the alphabet i.e 97.
         """
         if (letter + shift) > 122:
             """
@@ -59,7 +59,7 @@ def encode(message: str, shift: int) -> str:
             new_letter_index = (letter + shift) % 122 + 97 - 1
         else:
             new_letter_index = letter + shift
-        # Update the dictionary with new key-value pais.
+        # Update the dictionary with new key-value pairs.
         translation_dictionary.update({letter: new_letter_index})
     # Translate the message using dictionary.
     translation = lowercase_message.translate(translation_dictionary)
@@ -74,4 +74,4 @@ if __name__ == '__main__':
     print(encode("example", 1))  # -> fybnqmf
     print(encode("don't change", 0))  # -> don't change
     print(encode('the quick brown fox jumps over the lazy dog.', 7))  # -> aol xbpjr iyvdu mve qbtwz vcly aol shgf kvn.
-    print(encode('aaa zzz ... ``.', -1))  # -> aaa zzz ... ``.
+    print(encode('aaa zzz ... ``.', -1))  # -> zzz yyy ... ``.
