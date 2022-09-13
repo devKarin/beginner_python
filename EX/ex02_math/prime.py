@@ -51,4 +51,3 @@ if __name__ == '__main__':
     print(is_prime_number(47))  # -> True
     print(is_prime_number(0))  # -> False
     print(is_prime_number(1))  # -> False
-
