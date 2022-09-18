@@ -110,12 +110,13 @@ def is_valid_gender_number(year_number: int) -> bool:
 
 
 def get_gender(year_number: int) -> str:
+    """Define persons ender by ID's gender number."""
     # Define valid gender numbers for males and females.
     gender_numbers = {"male": [1, 3, 5], "female": [2, 4, 6]}
     if year_number in gender_numbers["male"]:
-        return "Male"
+        return "male"
     elif year_number in gender_numbers["female"]:
-        return "Female"
+        return "female"
 
 
 def is_valid_year_number(year_number: int) -> bool:
@@ -137,10 +138,10 @@ def is_valid_birth_number(birth_number: int) -> bool:
 
 
 def is_leap_year(year_number: int) -> bool:
+    """Check whether the given year is a leap year."""
     # Leap year divides by 400 or by 4 and at the same time
     # not by 100.
-    return year_number % 400 == 0 \
-           or (year_number % 4 == 0 and year_number % 100 != 0)
+    return year_number % 400 == 0 or (year_number % 4 == 0 and (True if year_number < 100 else year_number % 100 != 0))
 
 
 def get_full_year(gender_number: int, year_number: int) -> int:
@@ -241,6 +242,7 @@ if __name__ == '__main__':
     print(is_valid_birth_number(850))  # -> True
 
     print("\nLeap year:")
+    print(is_leap_year(4))  # -> True
     print(is_leap_year(1804))  # -> True
     print(is_leap_year(1800))  # -> False
 
