@@ -23,12 +23,17 @@ def find_id_code(text: str) -> str:
     :param text: string
     :return: string
     """
+    # Remove redundant spaces from both ends of the string.
     text = text.strip()
+    # Initiate variable for id code.
     id_code = ""
+    # Loop through letters in text which was given as an argument
+    # in order to extract only numbers.
     for letter in text:
         if letter.isdigit():
             id_code += letter
 
+    # Validate the length of the id code
     if len(id_code) > 11:
         return "Too many numbers!"
     elif len(id_code) < 11:
@@ -58,25 +63,123 @@ def the_first_control_number_algorithm(text: str) -> str:
     :param text: string
     :return: string
     """
+    # Call the find_id_code function with the argument provided and save the result
+    # into a variable.
     id_code = find_id_code(text)
+    # Actually the length check was conducted in previous function too.
     if len(id_code) < 11 or len(id_code) > 11:
         return "Incorrect ID code!"
     else:
+        # Initiate the control number.
         control_number = 0
+        # Loop through all numbers from 0 to 9.
         for element in range(10):
+            # If the number is 9, then add to the control number
+            # the number which index in id code is 9.
             if element == 9:
                 control_number += int(id_code[element])
+            # If the number i.e element is other than 9
+            # take the number, which's index the element is
+            # and multiply it through with the number which is
+            # greater than the element by 1
+            # (because indexes start at 0).
             else:
                 control_number += int(id_code[element]) * (element + 1)
 
+        # After all the numbers are multiplied with the weight and
+        # summarised, find the modulo by dividing the sum with 11
+        # and reassign the modulo to the control number.
         control_number = control_number % 11
 
+        # If the control number doesn't match the control
+        # number provided by id code (at index 10)
+        # consider the id code incorrect.
         if control_number < 10 and control_number != int(id_code[10]):
             return "Incorrect ID code!"
         elif control_number >= 10:
             return "Needs the second algorithm!"
         else:
             return id_code
+
+
+def is_valid_gender_number(year_number: int) -> bool:
+    """Check if given value is correct for gender number in ID code."""
+    valid_year_numbers = [1, 2, 3, 4, 5, 6]
+    # If the year number is in valid_year_numbers array, it's valid.
+    return year_number in valid_year_numbers
+
+
+def get_gender(year_number: int) -> str:
+    # Define valid gender numbers for males and females.
+    gender_numbers = {"male": [1, 3, 5], "female": [2, 4, 6]}
+    if year_number in gender_numbers["male"]:
+        return "Male"
+    elif year_number in gender_numbers["female"]:
+        return "Female"
+
+
+def is_valid_year_number(year_number: int) -> bool:
+    """Check if given value is correct for year number in ID code."""
+    # If the year number contains 2 numbers, it's valid anyway.
+    return len(str(year_number)) == 2
+
+
+def is_valid_month_number(month_number: int) -> bool:
+    """Check if given value is correct for month number in ID code."""
+    # Month number is considered valid if it's between 1 and 12 (included).
+    return month_number in range(1, 13)
+
+
+def is_valid_birth_number(birth_number: int) -> bool:
+    """Check if given value is correct for birth number in ID code."""
+    # Birth number is valid if it's between 1 and 999 (included).
+    return birth_number in range(1, 1000)
+
+
+def is_leap_year(year_number: int) -> bool:
+    # Leap year divides by 400 or by 4 and at the same time
+    # not by 100.
+    return year_number % 400 == 0 \
+           or (year_number % 4 == 0 and year_number % 100 != 0)
+
+
+def get_full_year(gender_number: int, year_number: int) -> int:
+    """Define the 4-digit year when given person was born."""
+    # Define gender number and year prefix relationship.
+    year_number_prefix = {"18": [1, 2], "19": [3, 4], "20": [5, 6]}
+    # Convert year number into string.
+    year_number = str(year_number)
+    # Add leading zero if year number has one digit
+    if len(year_number) == 1:
+        year_number = "0" + year_number
+
+    for key, value in year_number_prefix.items():
+        if gender_number in value:
+            return int(str(key) + year_number)
+
+
+def get_birth_place(birth_number: int) -> str:
+    """Find the place where the person was born."""
+    # Define birth places
+    valid_birth_places = {
+        "Kuressaare": list(range(1, 11)),
+        "Tartu": list(range(11, 21)) + list(range(271, 371)),
+        "Tallinn": list(range(21, 221)) + list(range(471, 711)),
+        "Kohtla-Järve": list(range(221, 271)),
+        "Narva": list(range(371, 420)),
+        "Pärnu": list(range(421, 471)),
+        "undefined": list(range(711, 1000))
+    }
+
+    # Check whether the input is valid.
+    if is_valid_birth_number(birth_number):
+        # Loop through key-value pairs of valid_birth_places.
+        for key, value in valid_birth_places.items():
+            # If the birth number is present, return birth place.
+            if birth_number in value:
+                return key
+    else:
+        return "Wrong input!"
 
 
 if __name__ == '__main__':
@@ -107,3 +210,47 @@ if __name__ == '__main__':
     print(the_first_control_number_algorithm(
         "50207094560"
     ))  # -> Incorrect ID code!
+
+    print("\nGender number:")
+    for i in range(9):
+        print(f"{i} {is_valid_gender_number(i)}")
+        # 0 -> False
+        # 1...6 -> True
+        # 7...8 -> False
+
+    print("\nGet gender:")
+    print(get_gender(2))  # -> "female"
+    print(get_gender(5))  # -> "male"
+
+    print("\nYear number:")
+    print(is_valid_year_number(100))  # -> False
+    print(is_valid_year_number(50))  # -> True
+    print(is_valid_year_number(0))  # -> False
+
+    print("\nMonth number:")
+    print(is_valid_month_number(0))  # -> False
+    print(is_valid_month_number(2))  # -> True
+    print(is_valid_month_number(13))  # -> False
+    print(is_valid_month_number(15))  # -> False
+    print(is_valid_month_number(99))  # -> False
+    print(is_valid_month_number(100))  # -> False
+
+    print("\nBorn order number:")
+    print(is_valid_birth_number(0))  # -> False
+    print(is_valid_birth_number(1))  # -> True
+    print(is_valid_birth_number(850))  # -> True
+
+    print("\nLeap year:")
+    print(is_leap_year(1804))  # -> True
+    print(is_leap_year(1800))  # -> False
+
+    print("\nGet full year:")
+    print(get_full_year(1, 28))  # -> 1828
+    print(get_full_year(4, 85))  # -> 1985
+    print(get_full_year(5, 1))  # -> 2001
+
+    print("\nChecking where the person was born")
+    print(get_birth_place(0))  # -> "Wrong input!"
+    print(get_birth_place(1))  # -> "Kuressaare"
+    print(get_birth_place(273))  # -> "Tartu"
+    print(get_birth_place(220))  # -> "Tallinn"
