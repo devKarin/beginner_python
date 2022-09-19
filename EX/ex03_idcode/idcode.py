@@ -167,7 +167,7 @@ def get_birth_place(birth_number: int) -> str:
         "Tartu": list(range(11, 21)) + list(range(271, 371)),
         "Tallinn": list(range(21, 221)) + list(range(471, 711)),
         "Kohtla-Järve": list(range(221, 271)),
-        "Narva": list(range(371, 420)),
+        "Narva": list(range(371, 421)),
         "Pärnu": list(range(421, 471)),
         "undefined": list(range(711, 1000))
     }
@@ -181,6 +181,50 @@ def get_birth_place(birth_number: int) -> str:
                 return key
     else:
         return "Wrong input!"
+
+
+def is_valid_control_number(id_code: str) -> bool:
+    """Check if given value is correct for control number in ID code."""
+    # Decide by the outcome of the_first_control_number_algorithm
+    # whether the control number is valid.
+    match the_first_control_number_algorithm(id_code):
+        case "Incorrect ID code!":
+            return False
+        case "Needs the second algorithm!":
+            # Initiate the control number.
+            control_number = 0
+            # Loop through all weight numbers.
+            for element in [3, 4, 5, 6, 7, 8, 9, 1, 2, 3]:
+                control_number += int(id_code[element]) * (element + 1)
+
+            # After all the numbers are multiplied with the weight and
+            # summarised, find the modulo by dividing the sum with 11
+            # and reassign the modulo to the control number.
+            control_number = control_number % 11
+
+            # If the control number doesn't match the control
+            # number provided by id code (at index 10)
+            # consider the id code incorrect.
+            return control_number == int(id_code[10]) or (control_number == 10 and int(id_code[10]) == 0)
+        case _:
+            return True
+
+
+def is_valid_day_number(gender_number: int, year_number: int, month_number: int, day_number: int) -> bool:
+    """Check if given value is correct for day number in ID code."""
+    # Write your code here
+    pass
+
+
+def is_id_valid(id_code: str) -> bool:
+    """Check if given ID code is valid and return the result (True or False)."""
+    # Write your code here
+    pass
+
+
+def get_data_from_id(id_code: str) -> str:
+    """Get possible information about the person."""
+    # Write your code here
 
 
 if __name__ == '__main__':
@@ -256,3 +300,32 @@ if __name__ == '__main__':
     print(get_birth_place(1))  # -> "Kuressaare"
     print(get_birth_place(273))  # -> "Tartu"
     print(get_birth_place(220))  # -> "Tallinn"
+
+    print("\nControl number:")
+    print(is_valid_control_number("49808270244"))  # -> True
+    print(is_valid_control_number("60109200187"))  # -> False, it must be 6
+
+    print("\nDay number:")
+    print(is_valid_day_number(4, 5, 12, 25))  # -> True
+    print(is_valid_day_number(3, 10, 8, 32))  # -> False
+    print("\nFebruary check:")
+    print(
+        is_valid_day_number(4, 96, 2, 30))  # -> False (February cannot contain more than 29 days in any circumstances)
+    print(is_valid_day_number(4, 99, 2, 29))  # -> False (February contains 29 days only during leap year)
+    print(is_valid_day_number(4, 8, 2, 29))  # -> True
+    print("\nMonth contains 30 or 31 days check:")
+    print(is_valid_day_number(4, 22, 4, 31))  # -> False (April contains max 30 days)
+    print(is_valid_day_number(4, 18, 10, 31))  # -> True
+    print(is_valid_day_number(4, 15, 9, 31))  # -> False (September contains max 30 days)
+
+    print("\nOverall ID check::")
+    print(is_id_valid("49808270244"))  # -> True
+    print(is_id_valid("12345678901"))  # -> False
+
+    print("\nFull message:")
+    print(get_data_from_id("49808270244"))  # -> "This is a female born on 27.08.1998 in Tallinn."
+    print(get_data_from_id("60109200187"))  # -> "Given invalid ID code!"
+
+    # print("\nTest now your own ID code:")
+    # personal_id = input()  # type your own id in command prompt
+    # print(is_id_valid(personal_id))  # -> True
