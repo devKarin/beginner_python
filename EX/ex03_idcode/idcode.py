@@ -241,7 +241,7 @@ def is_valid_day_number(gender_number: int, year_number: int, month_number: int,
     """Check if given value is correct for day number in ID code."""
     # Comment out following code since the tester doesn't count invalid gender numbers.
     # Do not proceed if the gender number is wrong.
-    # if not is_valid_gender_number(year_number):
+    # if not is_valid_gender_number(gender_number):
     #    return False
 
     # If the year number is valid, get full year, else do not proceed.
@@ -273,9 +273,15 @@ def is_id_valid(id_code: str) -> bool:
     """Check if given ID code is valid and return the result (True or False)."""
     # Clean the input string.
     id_code = find_id_code(id_code)
-    # Check whether the control number is valid.
-    # This function also runs the_first_control_number_algorithm check on ID code.
-    return is_valid_control_number(id_code)
+    # Check whether the control number and birthday is valid.
+    # This function also runs the_first_control_number_algorithm check on ID code and
+    # is_valid_gender_number, is_valid_year_number, is_valid_month number checks behind the scenes.
+    return is_valid_control_number(id_code) and is_valid_day_number(
+        int(id_code[0]),
+        int(id_code[1:3]),
+        int(id_code[3:5]),
+        int(id_code[5:7])
+    )
 
 
 def get_data_from_id(id_code: str) -> str:
