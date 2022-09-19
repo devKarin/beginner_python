@@ -282,14 +282,12 @@ def get_data_from_id(id_code: str) -> str:
     """Get possible information about the person."""
     # Clean the input string.
     id_code = find_id_code(id_code)
+
     if is_id_valid(id_code):
         gender = get_gender(int(id_code[0]))
         birthday = id_code[5:7]
         birth_month = id_code[3:5]
-        if id_code[1] == "0":
-            year_number = int(id_code[2])
-        else:
-            year_number = int(id_code[1:3])
+        year_number = int(id_code[1:3])
 
         birth_year = get_full_year(int(id_code[0]), year_number)
         birth_location = get_birth_place(int(id_code[7:10]))
@@ -398,6 +396,7 @@ if __name__ == '__main__':
 
     print("\nFull message:")
     print(get_data_from_id("49808270244"))  # -> "This is a female born on 27.08.1998 in Tallinn."
+    print(get_data_from_id("50308226018"))  # -> "This is a male born on 22.08.2003 in Tallinn."
     print(get_data_from_id("60109200187"))  # -> "Given invalid ID code!"
 
     # print("\nTest now your own ID code:")
