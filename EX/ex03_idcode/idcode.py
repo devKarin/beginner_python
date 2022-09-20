@@ -267,6 +267,8 @@ def is_valid_day_number(gender_number: int, year_number: int, month_number: int,
             return True
         else:
             return False
+    else:
+        return False
 
 
 def is_id_valid(id_code: str) -> bool:
@@ -400,6 +402,9 @@ if __name__ == '__main__':
     print(is_id_valid("49808270244"))  # -> True
     print(is_id_valid("12345678901"))  # -> False
     print(is_id_valid("60109200187"))  # -> False
+    print(is_id_valid("60114200187"))  # -> False
+    print(is_id_valid("49804310244"))  # -> False
+    print(is_id_valid("49804370244"))  # -> False
 
     print("\nFull message:")
     print(get_data_from_id("49808270244"))  # -> "This is a female born on 27.08.1998 in Tallinn."
