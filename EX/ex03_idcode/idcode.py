@@ -276,12 +276,10 @@ def is_id_valid(id_code: str) -> bool:
     # Check whether the control number and birthday is valid.
     # This function also runs the_first_control_number_algorithm check on ID code and
     # is_valid_gender_number, is_valid_year_number, is_valid_month number checks behind the scenes.
-    return is_valid_control_number(id_code) and is_valid_day_number(
-        int(id_code[0]),
-        int(id_code[1:3]),
-        int(id_code[3:5]),
-        int(id_code[5:7])
-    )
+    # Define variables for readability.
+    is_control_number_check_passed = is_valid_control_number(id_code)
+    is_valid_day = is_valid_day_number(int(id_code[0]), int(id_code[1:3]), int(id_code[3:5]), int(id_code[5:7]))
+    return is_control_number_check_passed and is_valid_day
 
 
 def get_data_from_id(id_code: str) -> str:
@@ -297,7 +295,10 @@ def get_data_from_id(id_code: str) -> str:
 
         birth_year = get_full_year(int(id_code[0]), year_number)
         birth_location = get_birth_place(int(id_code[7:10]))
-        return f"This is a {gender} born on {birthday}.{birth_month}.{birth_year} in {birth_location}."
+        if birth_location == "undefined":
+            return "Given invalid ID code!"
+        else:
+            return f"This is a {gender} born on {birthday}.{birth_month}.{birth_year} in {birth_location}."
     else:
         return "Given invalid ID code!"
 
