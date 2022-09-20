@@ -26,9 +26,9 @@ def encode(message: str, shift: int) -> str:
     2. encode('example', 1) == 'fybnqmf'
     3. encode('the quick brown fox jumps over the lazy dog.', 7) == 'aol xbpjr iyvdu mve qbtwz vcly aol shgf kvn.'
 
-    :param message: message to be encoded
-    :param shift: shift for encoding
-    :return: encoded message
+    :param message: string, message to be encoded
+    :param shift: integer, shift for encoding
+    :return: string, encoded message
     """
     # Just in case convert the message in arguments into lowercase.
     lowercase_message = message.lower()
@@ -37,25 +37,19 @@ def encode(message: str, shift: int) -> str:
     # Exclude shifting more than the alphabet length.
     # Modulo shows the "pure" shift.
     shift = shift % 26
-    """
-    English (latin) alphabet lowercase letters numeric value
-    starts with 97 (a) and ends with the letter 122 (z).
-    Loop it through.
-    """
+    # English (latin) alphabet lowercase letters numeric value
+    # starts with 97 (a) and ends with the letter 122 (z).
+    # Loop it through.
     for letter in range(97, 123):
-        """
-        Calculate new letter value.
-        If the new letter value exceeds alphabets last letter numeric value,
-        start from the beginning of the alphabet i.e 97.
-        """
+        # Calculate new letter value.
+        # If the new letter value exceeds alphabets last letter numeric value,
+        # start from the beginning of the alphabet i.e. 97.
         if (letter + shift) > 122:
-            """
-            This can be achieved at least two ways.
-            Alternative:
-            new_letter_index = letter + shift - 122 + 96
-            - 1 is for compensation -> because due to the if-block
-            the modulo is always greater than 0.
-            """
+            # This can be achieved at least two ways.
+            # Alternative:
+            # new_letter_index = letter + shift - 122 + 96
+            # - 1 is for compensation -> because due to the if-block
+            # the modulo is always greater than 0.
             new_letter_index = (letter + shift) % 122 + 97 - 1
         else:
             new_letter_index = letter + shift

@@ -12,13 +12,13 @@ Great! Now enter a second random number: 4
 """
 
 
-# ask for a name
+# Ask for a name.
 name = input("What is your name? ")
-# Print the entered name and ask for first random number
+# Print the entered name and ask for first random number.
 number_1 = int(input(f"Hello, {name}! Enter a random number: "))
-# ask for second random number
+# Ask for second random number.
 number_2 = int(input("Great! Now enter a second random number: "))
-# calculate sum
+# Calculate sum.
 sum_of_entered_numbers = number_1 + number_2
-# print out sum
+# Print out sum.
 print(f"{number_1} + {number_2} is {sum_of_entered_numbers}")

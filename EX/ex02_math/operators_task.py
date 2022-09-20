@@ -28,69 +28,57 @@ import math
 
 def add(x: int, y: int) -> int:
     """Add x to y."""
-    return int(x) + int(y)
+    return x + y
 
 
 def sub(x: int, y: int) -> int:
     """Subtract y from x."""
-    return int(x) - int(y)
+    return x - y
 
 
 def multiply(x: int, y: int) -> int:
     """Multiply x by y."""
-    return int(x) * int(y)
+    return x * y
 
 
 def div(x: int, y: int) -> float:
     """Divide x by y."""
-    return int(x) / int(y)
+    return x / y
 
 
 def modulus(x: int, y: int) -> int:
     """Divide x by y and return remainder. Use an arithmetic operator."""
-    return int(x) % int(y)
+    return x % y
 
 
 def floor_div(x: int, y: int) -> int:
     """Divide x by y and floor the value. Use an arithmetic operator."""
-    return math.floor(int(x) / int(y))
+    return x // y
 
 
 def exponent(x: int, y: int) -> int:
     """Calculate x raised to the power of y."""
-    return round(math.pow(int(x), int(y)))
+    return round(math.pow(x, y))
 
 
 def first_greater_or_equal(x: int, y: int) -> bool:
     """If x is greater or equal than y then return True. Else return False."""
-    if x >= y:
-        return True
-    else:
-        return False
+    return x >= y
 
 
 def second_less_or_equal(x: int, y: int) -> bool:
     """If y is less or equal than x then return True. Else return False."""
-    if y <= x:
-        return True
-    else:
-        return False
+    return y <= x
 
 
 def x_is_y(x: int, y: int) -> bool:
     """If x value is the same as y value then return True. Else return False."""
-    if x is y:
-        return True
-    else:
-        return False
+    return x is y
 
 
 def x_is_not_y(x: int, y: int) -> bool:
     """If x value is not the same as y value then return True. Else return False."""
-    if x != y:
-        return True
-    else:
-        return False
+    return x != y
 
 
 def if_else(a: int, b: int, c: int, d: int) -> float:
@@ -102,18 +90,12 @@ def if_else(a: int, b: int, c: int, d: int) -> float:
     Next check and return the greater value.
     If both values are the same then return 0 (number zero).
     """
-    a = int(a)
-    b = int(b)
-    c = int(c)
-    d = int(d)
     if (a * b) > (c / d):
         return a * b
     elif (a * b) < (c / d):
         return c / d
     elif a * b == c / d:
         return 0
-    else:
-        return
 
 
 def surface(rectangle_width: int, rectangle_height: int) -> int:
@@ -123,7 +105,7 @@ def surface(rectangle_width: int, rectangle_height: int) -> int:
     Add the missing parameters to calculate the surface of a rectangle.
     Calculate and return the value of the surface.
     """
-    return int(rectangle_width) * int(rectangle_height)
+    return rectangle_width * rectangle_height
 
 
 def volume(cuboid_width: int, cuboid_height: int, cuboid_depth: int) -> int:
@@ -133,7 +115,7 @@ def volume(cuboid_width: int, cuboid_height: int, cuboid_depth: int) -> int:
     Add the missing parameters to calculate the volume of a cuboid.
     Calculate and return the value of the volume.
     """
-    return int(cuboid_width) * int(cuboid_height) * int(cuboid_depth)
+    return cuboid_width * cuboid_height * cuboid_depth
 
 
 def clock(days: int, hours: int, minutes: int, seconds: int) -> float:
@@ -143,8 +125,7 @@ def clock(days: int, hours: int, minutes: int, seconds: int) -> float:
     Convert the inserted days, hours, minutes and seconds into minutes,
     add them up and return them.
     """
-    minutes = float(int(minutes) + 24 * 60 * int(days) + 60 * int(hours) + int(seconds) / 60)
-    return minutes
+    return minutes + 24 * 60 * days + 60 * hours + seconds / 60
 
 
 def calculate(operation: int, first_operand: int, second_operand: int) -> float:
@@ -160,9 +141,6 @@ def calculate(operation: int, first_operand: int, second_operand: int) -> float:
 
     Round the results to the 2 decimal places.
     """
-    operation = int(operation)
-    first_operand = int(first_operand)
-    second_operand = int(second_operand)
     if operation == 0:
         return round((first_operand + second_operand), 2)
     elif operation == 1:
@@ -171,10 +149,8 @@ def calculate(operation: int, first_operand: int, second_operand: int) -> float:
         return round((first_operand * second_operand), 2)
     elif operation == 3:
         if second_operand == 0:
-            return
+            pass
         return round((first_operand / second_operand), 2)
-    else:
-        return
 
 
 if __name__ == '__main__':

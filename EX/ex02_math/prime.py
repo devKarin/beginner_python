@@ -17,26 +17,20 @@ def is_prime_number(number: int) -> bool:
     1. If number is a prime number then return boolean True
     2. If number is not a prime number then return boolean False
 
-    :param number: the number to check.
-    :return: boolean True if number is a prime number or False if number is not a prime number.
+    :param number: integer, The number to check.
+    :return: boolean, True if number is a prime number or False if number is not a prime number.
     """
-    # Convert argument into integer just in case.
-    number = int(number)
     # Numbers equal to or smaller than 1 are not prime numbers.
     # In order to avoid ZeroDivision error, this is handled before the loop.
     if number <= 1:
         return False
     # Loop through all integers smaller than the argument
+    # Check for the prime number conditions.
+    # Check whether the argument (possible prime number) divides by some number
+    # smaller than itself. If so, the number can't be a prime number.
     for integer in range(2, number):
-        """
-        Check for the prime number conditions.
-
-        Check whether the argument (possible prime number) divides by some number
-        smaller than itself. If so, the number can't be a prime number.
-        """
-        if (number % integer) == 0:
+        if number % integer == 0:
             return False
-            break
     else:
         return True
 

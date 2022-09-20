@@ -22,11 +22,7 @@ def average(a: int, b: int, c: int, d: int) -> float:
     average(1, 2, 3, 4) == 7.5
     average(5, 0, 5, 1) == 6
     """
-    input_arguments = [a, b, c, d]
-    # Convert all given arguments into integers just in case
-    for input_argument in input_arguments:
-        input_argument = int(input_argument)
-    return (a * 1 + b * 2 + c * 3 + d * 4) / 4
+    return (a + b * 2 + c * 3 + d * 4) / 4
 
 
 def school_pressure(ects: int, weeks: int) -> float:
@@ -74,7 +70,7 @@ def add_fractions(a: int, b: int, c: int, d: int) -> str:
     for input_argument in input_arguments:
         input_argument = int(input_argument)
         if input_argument == 0:
-            return
+            pass
     # Find common denominator
     common_denominator = b * d
     # Find the numerator
