@@ -281,7 +281,10 @@ def is_id_valid(id_code: str) -> bool:
     # is_valid_month number checks behind the scenes.
     # Define variables for readability.
     is_control_number_check_passed = is_valid_control_number(id_code)
-    is_valid_day = is_valid_day_number(int(id_code[0]), int(id_code[1:3]), int(id_code[3:5]), int(id_code[5:7]))
+    if is_control_number_check_passed:
+        is_valid_day = is_valid_day_number(int(id_code[0]), int(id_code[1:3]), int(id_code[3:5]), int(id_code[5:7]))
+    else:
+        return False
     return is_control_number_check_passed and is_valid_day and is_valid_birth_number(int(id_code[7:10]))
 
 
@@ -406,11 +409,17 @@ if __name__ == '__main__':
     print(is_id_valid("60114200187"))  # -> False
     print(is_id_valid("49804310244"))  # -> False
     print(is_id_valid("49804370244"))  # -> False
+    print(is_id_valid("09804370244"))  # -> False
+    print(is_id_valid("49808270244"))  # -> True
+    print(is_id_valid("0980437244"))  # -> False
+    print(is_id_valid("49808270244"))  # -> True
+    print(is_id_valid("49l08270244"))  # -> False
 
     print("\nFull message:")
     print(get_data_from_id("49808270244"))  # -> "This is a female born on 27.08.1998 in Tallinn."
     print(get_data_from_id("50308226018"))  # -> "This is a male born on 22.08.2003 in Tallinn."
     print(get_data_from_id("60109200187"))  # -> "Given invalid ID code!"
+    print(get_data_from_id("09804370244"))  # -> "Given invalid ID code!"
 
     # print("\nTest now your own ID code:")
     # personal_id = input()  # type your own id in command prompt
