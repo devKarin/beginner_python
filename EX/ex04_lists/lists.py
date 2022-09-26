@@ -83,7 +83,7 @@ def car_models(all_cars: str) -> list:
 
 def create_car_dictionary(all_cars: str) -> dict:
     """
-    Return the list of car makes and models as dictionary.
+    Return a list of car makes and models as dictionary.
 
     Returns the dictionary of car makes and models based on comma-separated string as an argument.
     This is a helper function for search_by_make and search_by_model functions.
@@ -120,7 +120,7 @@ def create_car_dictionary(all_cars: str) -> dict:
 
 def search_by_make(all_cars: str, search_parameter: str) -> list:
     """
-    Returns a list of cars based on the comma-separated cars string and a search-string to search for a car make.
+    Return a list of cars based on the comma-separated cars string and a search-string to search for a car make.
 
     The function searches for cars where the make is the same as the search string, the search is case-insensitive.
 
@@ -142,7 +142,7 @@ def search_by_make(all_cars: str, search_parameter: str) -> list:
 
 def search_by_model(all_cars: str, search_parameter: str) -> list:
     """
-    Returns a list of cars based on the comma-separated cars string and a search-string to search for a car model.
+    Return a list of cars based on the comma-separated cars string and a search-string to search for a car model.
 
     The function searches for cars where the search string is one of the car models, the search is case-insensitive.
 
@@ -187,10 +187,19 @@ if __name__ == '__main__':
     print(search_by_make("Audi A4", "A4"))  # []
     print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "Audi"))  # ['Audi A4', 'audi A5', 'AUDI a6 A7']
     print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "AUDI"))  # ['Audi A4', 'audi A5', 'AUDI a6 A7']
+    print(search_by_make("Audi A4,Skoda Superb,Seat Leon,Audi A4,Seat Leon,Audi A4,Audi A6,Audi A4 2022", "Audi"))
+    # ['Audi A4', 'Audi A4', 'Audi A4', 'Audi A6', 'Audi A4 2022']
     print("*****")
 
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A4"))  # ["Audi A4", "Audi a4 2021"]
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4"))  # ["Audi A4", "Audi a4 2021"]
+    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "sept"))
+    # ['Audi A4 2022 sept']
+
+    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "sep"))  # []
+    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "2021"))
+    # ['Audi A4 2021']
+
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A40"))  # ['Audi A40']
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "202"))  # []
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4 2021"))  # []
