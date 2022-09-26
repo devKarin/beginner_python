@@ -81,16 +81,120 @@ def car_models(all_cars: str) -> list:
     return models_list
 
 
+def create_car_dictionary(all_cars: str) -> dict:
+    """
+    Return the list of car makes and models as dictionary.
+
+    Returns the dictionary of car makes and models based on comma-separated string as an argument.
+    This is a helper function for search_by_make and search_by_model functions.
+
+    :param all_cars: string
+    :return: dictionary
+    """
+    # Clean the input.
+    all_cars = all_cars.strip()
+    # Create cars list.
+    car_list_with_models_and_makes = list_of_cars(all_cars)
+    # Initiate cars dictionary.
+    cars = {}
+    # Loop through the cars list and make a dictionary of it.
+    for item in car_list_with_models_and_makes:
+        # Create a key for the dictionary out of one-element car_makes list.
+        make = str(car_makes(item)[0])
+        # Create a value for the dictionary out of one-element car_models list.
+        model = car_models(item)
+        # If the key already exists, check, whether the value is also present.
+        if make in cars.keys():
+            if model[0] in cars[make]:
+                # If the model already exists at car make key in the dictionary, head to the next iteration.
+                continue
+            # If there is no such model yet, append the content of the one-element model list to the
+            # models list at dictionary's key.
+            else:
+                cars[make].append(model[0])
+        # If there is no such key-value pairs as make and model, add it to the dictionary.
+        else:
+            cars.update({make: model})
+    return cars
+
+
+def search_by_make(all_cars: str, search_parameter: str) -> list:
+    """
+    Returns a list of cars based on the comma-separated cars string and a search-string to search for a car make.
+
+    The function searches for cars where the make is the same as the search string, the search is case-insensitive.
+
+    :param all_cars: string
+    :param search_parameter: string
+    :return: list
+    """
+    # Use the helper function.
+    cars = create_car_dictionary(all_cars)
+    # Initiate search result list.
+    search_results = []
+    # Loop through the cars list and match the search parameter.
+    for car_make, car_model in cars.items():
+        if search_parameter.casefold() == car_make.casefold():
+            for element in car_model:
+                search_results.append(f"{car_make} {element}")
+    return search_results
+
+
+def search_by_model(all_cars: str, search_parameter: str) -> list:
+    """
+    Returns a list of cars based on the comma-separated cars string and a search-string to search for a car model.
+
+    The function searches for cars where the search string is one of the car models, the search is case-insensitive.
+
+    :param all_cars: string
+    :param search_parameter: string
+    :return: list
+    """
+    # Use the helper function.
+    cars = create_car_dictionary(all_cars)
+    # Initiate search result list.
+    search_results = []
+    # Loop through the cars list and match the search parameter.
+    for make, model in cars.items():
+        for element in model:
+            model_partitions = list(element.split(" "))
+            for part in model_partitions:
+                if search_parameter.casefold() == part.casefold():
+                    search_results.append(f"{make} {element}")
+    return search_results
+
+
 if __name__ == '__main__':
     print(list_of_cars("Audi A4,Skoda Superb,Audi A4"))  # ["Audi A4", "Skoda Superb", "Audi A4"]
     print(list_of_cars("Audi A4 Skoda Superb Audi A4"))  # ["Audi A4 Skoda Superb Audi A4"]
     print(list_of_cars(""))  # []
+    print("*****")
 
     print(car_makes("Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon,Skoda Superb,Skoda Superb,BMW x5"))
     # ['Audi', 'Skoda', 'BMW', 'Seat']
 
     print(car_makes("Mazda 6,Mazda 6,Mazda 6,Mazda 6"))  # ['Mazda']
     print(car_makes(""))  # []
+    print("*****")
 
     print(car_models("Audi A4,Skoda Superb,Audi A4,Audi A6"))  # ["A4", "Superb", "A6"]
     print(car_models(""))  # []
+    print("*****")
+
+    print(search_by_make("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "Audi"))
+    # ['Audi A4 2021', 'Audi A4 2022 sept']
+
+    print(search_by_make("Audi A4", "A4"))  # []
+    print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "Audi"))  # ['Audi A4', 'audi A5', 'AUDI a6 A7']
+    print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "AUDI"))  # ['Audi A4', 'audi A5', 'AUDI a6 A7']
+    print("*****")
+
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A4"))  # ["Audi A4", "Audi a4 2021"]
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4"))  # ["Audi A4", "Audi a4 2021"]
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A40"))  # ['Audi A40']
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "202"))  # []
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4 2021"))  # []
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a"))  # []
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "Audi"))  # []
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40,Audi A4", "a4"))  # ["Audi A4", "Audi a4 2021"]
+    print("*****")
