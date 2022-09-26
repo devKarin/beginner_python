@@ -16,10 +16,11 @@ def list_of_cars(all_cars: str) -> list:
 
     "Audi A4,Skoda Superb,Audi A4" => ["Audi A4", "Skoda Superb", "Audi A4"]
     """
+    # If the empty string is entered, return empty list.
+    if not all_cars:
+        return []
     # Split the string at comma and turn it into a list.
     cars_list = all_cars.split(",")
-    if not cars_list:
-        return []
     return cars_list
 
 
@@ -38,7 +39,7 @@ def car_makes(all_cars: str) -> list:
     # It the list is empty, return the empty list.
     # The empty list in Python is considered False.
     if not list_with_models:
-        return []
+        return list_with_models
     # Initiate a list for car makes.
     list_of_makes = []
     # Loop through the car list and find the indices of spaces within its items.
@@ -66,7 +67,7 @@ def car_models(all_cars: str) -> list:
     all_cars = all_cars.strip()
     list_with_models = list_of_cars(all_cars)
     if not list_with_models:
-        return []
+        return list_with_models
     # Initiate models list.
     models_list = []
     for model in list_with_models:
@@ -82,6 +83,8 @@ def car_models(all_cars: str) -> list:
 
 if __name__ == '__main__':
     print(list_of_cars("Audi A4,Skoda Superb,Audi A4"))  # ["Audi A4", "Skoda Superb", "Audi A4"]
+    print(list_of_cars("Audi A4 Skoda Superb Audi A4"))  # ["Audi A4 Skoda Superb Audi A4"]
+    print(list_of_cars(""))  # []
 
     print(car_makes("Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon,Skoda Superb,Skoda Superb,BMW x5"))
     # ['Audi', 'Skoda', 'BMW', 'Seat']
