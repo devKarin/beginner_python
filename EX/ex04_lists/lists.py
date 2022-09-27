@@ -109,7 +109,7 @@ def create_car_dictionary(all_cars: str) -> dict:
         if make in cars.keys():
             """
             Comment out the removal of duplicated values, because the test doesn't like it.
-            
+ 
             if model[0] in cars[make]:
                 # If the model already exists at car make key in the dictionary, head to the next iteration.
                 continue
@@ -160,14 +160,68 @@ def search_by_model(all_cars: str, search_parameter: str) -> list:
     cars = create_car_dictionary(all_cars)
     # Initiate search result list.
     search_results = []
-    # Loop through the cars list and match the search parameter.
+    # Loop through the cars list and match the search parameter. model is a list of models here.
     for make, model in cars.items():
+        # Loop through models. element represents one model in models list for one make.
         for element in model:
             model_partitions = list(element.split(" "))
+            # Loop through the strings in model name. part represents one string in the model name.
             for part in model_partitions:
                 if search_parameter.casefold() == part.casefold():
                     search_results.append(f"{make} {element}")
     return search_results
+
+
+def car_make_and_models(all_cars: str) -> list:
+    """
+    Create a list of structured information about makes and models.
+    For each different car make in the input string an element is created in the output list.
+    The element itself is a list, where the first position is the name of the make (string),
+    the second element is a list of models for the given make (list of strings).
+
+    No duplicate makes or models should be in the output.
+
+    The order of the makes and models should be the same os in the input list (first appearance).
+
+    "Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon Lux,Skoda Superb,Skoda Superb,BMW x5" =>
+    [['Audi', ['A4']], ['Skoda', ['Super', 'Octavia', 'Superb']], ['BMW', ['530', 'x5']], ['Seat', ['Leon Lux']]]
+    """
+    car_dictionary = create_car_dictionary(all_cars)
+    car_list_with_make_and_models = []
+    for make, models in car_dictionary.items():
+        make_list_with_models_sublist = []
+        models_list = []
+        for model in models:
+            if model in models_list:
+                continue
+            else:
+                models_list.append(model)
+        make_list_with_models_sublist.append(make)
+        make_list_with_models_sublist.append(models_list)
+        car_list_with_make_and_models.append(make_list_with_models_sublist)
+    return car_list_with_make_and_models
+
+
+def add_cars(car_list: list, all_cars: str) -> list:
+    """
+    Add cars from the list into the existing car list.
+
+    The first parameter is in the same format as the output of the previous function.
+    The second parameter is a string of comma separated cars (as in all the previous functions).
+    The task is to add cars from the string into the list.
+
+    Hint: This and car_make_and_models are very similar functions. Try to use one inside another.
+
+    [['Audi', ['A4']], ['Skoda', ['Superb']]]
+    and
+    "Audi A6,BMW A B C,Audi A4"
+
+    =>
+
+    [['Audi', ['A4', 'A6']], ['Skoda', ['Superb']], ['BMW', ['A B C']]]
+    """
+    car_list.append(car_make_and_models(all_cars))
+    return car_list
 
 
 if __name__ == '__main__':
@@ -212,4 +266,16 @@ if __name__ == '__main__':
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a"))  # []
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "Audi"))  # []
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40,Audi A4", "a4"))  # ['Audi A4', 'Audi a4 2021', 'Audi A4']
+    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "suPerB"))
+    # ['Skoda Superb', 'Skoda Superb']
+
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "x l a u 2"))  # []
+    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "SUPERB"))
+    # ['Skoda Superb', 'Skoda Superb']
+
+    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "Skoda"))
+    # []
+
     print("*****")
+
+    print(car_make_and_models("Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon,Skoda Superb,Skoda Superb,BMW x5"))
