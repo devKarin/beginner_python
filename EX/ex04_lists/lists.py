@@ -109,7 +109,7 @@ def create_car_dictionary(all_cars: str) -> dict:
         if make in cars.keys():
             """
             Comment out the removal of duplicated values, because the test doesn't like it.
- 
+
             if model[0] in cars[make]:
                 # If the model already exists at car make key in the dictionary, head to the next iteration.
                 continue
@@ -175,6 +175,7 @@ def search_by_model(all_cars: str, search_parameter: str) -> list:
 def car_make_and_models(all_cars: str) -> list:
     """
     Create a list of structured information about makes and models.
+
     For each different car make in the input string an element is created in the output list.
     The element itself is a list, where the first position is the name of the make (string),
     the second element is a list of models for the given make (list of strings).
@@ -249,6 +250,7 @@ if __name__ == '__main__':
     print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "AUDI"))  # ['Audi A4', 'audi A5', 'AUDI a6 A7']
     print(search_by_make("Audi A4,Skoda Superb,Seat Leon,Audi A4,Seat Leon,Audi A4,Audi A6,Audi A4 2022", "Audi"))
     # ['Audi A4', 'Audi A4', 'Audi A4', 'Audi A6', 'Audi A4 2022']
+
     print("*****")
 
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A4"))  # ["Audi A4", "Audi a4 2021"]
