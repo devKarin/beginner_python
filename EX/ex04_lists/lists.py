@@ -75,6 +75,8 @@ def car_models(all_cars: str) -> list:
         # Slice the model-make list item at the space and use the part after the space (car model).
         # In order to start slicing right after the space, 1 needs to be added to the space index,
         # because the letter at the index, which marks the start of the slice will be included.
+        # find() is used instead of split because model can consist of multiple spaces and find()
+        # finds only the first one.
         model = model[space_index + 1:]
         if model not in models_list:
             models_list.append(model)
@@ -105,13 +107,17 @@ def create_car_dictionary(all_cars: str) -> dict:
         model = car_models(item)
         # If the key already exists, check, whether the value is also present.
         if make in cars.keys():
+            """
+            Comment out the removal of duplicated values, because the test doesn't like it.
+            
             if model[0] in cars[make]:
                 # If the model already exists at car make key in the dictionary, head to the next iteration.
                 continue
             # If there is no such model yet, append the content of the one-element model list to the
             # models list at dictionary's key.
             else:
-                cars[make].append(model[0])
+            """
+            cars[make].append(model[0])
         # If there is no such key-value pairs as make and model, add it to the dictionary.
         else:
             cars.update({make: model})
@@ -205,5 +211,5 @@ if __name__ == '__main__':
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4 2021"))  # []
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a"))  # []
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "Audi"))  # []
-    print(search_by_model("Audi A4,Audi a4 2021,Audi A40,Audi A4", "a4"))  # ["Audi A4", "Audi a4 2021"]
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40,Audi A4", "a4"))  # ['Audi A4', 'Audi a4 2021', 'Audi A4']
     print("*****")
