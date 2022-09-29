@@ -91,7 +91,7 @@ def non_decreasing_list(nums: list) -> bool:
     :return:
     """
     decreasing_list = sorted(nums, reverse=True)
-    return nums != decreasing_list or nums[0] == nums[-1]
+    return nums != decreasing_list or str(nums) == str(decreasing_list)
 
 
 def max_duplicate(nums: list) -> int | None:
@@ -109,9 +109,12 @@ def max_duplicate(nums: list) -> int | None:
     """
     # Find the largest element.
     max_element = max(nums)
+    count = 0
     # Count how many max_elements are in the list and if there are at least two, return the element.
-    # Otherwise return nothing.
-    if nums.count(max_element) >= 2:
+    for num in nums:
+        if num == max_element:
+            count += 1
+    if count >= 2:
         return max_element
 
 
@@ -136,3 +139,4 @@ if __name__ == '__main__':
     print(max_duplicate([1, 2, 3]))  # = > None
     print(max_duplicate([1, 2, 2]))  # = > 2
     print(max_duplicate([1, 2, 2, 1, 1]))  # = > 2
+    print(max_duplicate([1, 99, 4, 8, 1]))  # = > None
