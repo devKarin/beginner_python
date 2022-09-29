@@ -90,7 +90,7 @@ def non_decreasing_list(nums: list) -> bool:
     :param nums:
     :return:
     """
-    decreasing_list = sorted(nums, reverse = True)
+    decreasing_list = sorted(nums, reverse=True)
 
     return nums != decreasing_list
 
@@ -114,6 +114,7 @@ def max_duplicate(nums: list) -> int | None:
     # Otherwise return nothing.
     if nums.count(max_element) >= 2:
         return max_element
+
 
 if __name__ == '__main__':
     print(middle_value(6, 2, 4))  # = > 4
