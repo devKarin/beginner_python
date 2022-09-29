@@ -56,7 +56,7 @@ def lucky_guess(n: int) -> bool:
     :param n: given number
     :return: boolean - points or no points
     """
-    return (n in [1, 3, 7]) or (n >= 6 and n <= 121 and n % 13 == 0) or (n <= 0 and n not in [5, 6])
+    return (n in [1, 3, 7]) or (n >= -6 and n <= 121 and n % 13 == 0) or (n <= 0 and n not in [5, 6])
 
 
 def without_end(s: str) -> str:
