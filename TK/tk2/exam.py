@@ -91,8 +91,7 @@ def non_decreasing_list(nums: list) -> bool:
     :return:
     """
     decreasing_list = sorted(nums, reverse=True)
-
-    return nums != decreasing_list
+    return nums != decreasing_list or nums[0] == nums[-1]
 
 
 def max_duplicate(nums: list) -> int | None:
@@ -132,7 +131,7 @@ if __name__ == '__main__':
 
     print(non_decreasing_list([0, 1, 2, 3, 98]))  # = > True
     print(non_decreasing_list([50, 49]))  # = > False
-    print(non_decreasing_list([12, 12]))  # = > True This should be false?
+    print(non_decreasing_list([12, 12]))  # = > True
 
     print(max_duplicate([1, 2, 3]))  # = > None
     print(max_duplicate([1, 2, 2]))  # = > 2
