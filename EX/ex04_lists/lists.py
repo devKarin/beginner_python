@@ -98,30 +98,33 @@ def create_car_dictionary(all_cars: str) -> dict:
     # Create cars list.
     car_list_with_models_and_makes = list_of_cars(all_cars)
     # Initiate cars dictionary.
-    cars = {}
-    # Loop through the cars list and make a dictionary of it.
+    cars_dictionary = {}
+    # Initiate helper list cars_list.
+    cars_list = []
+    # Loop through the cars list with makes and models and create helper list.
     for item in car_list_with_models_and_makes:
-        # Create a key for the dictionary out of one-element car_makes list.
-        make = str(car_makes(item)[0])
-        # Create a value for the dictionary out of one-element car_models list.
+        # Separate car makes into one-element list.
+        make = car_makes(item)
+        # Separate model into one-element list.
         model = car_models(item)
-        # If the key already exists, check, whether the value is also present.
-        if make in cars.keys():
-            """
-            Comment out the removal of duplicated values, because the test doesn't like it.
-
-            if model[0] in cars[make]:
-                # If the model already exists at car make key in the dictionary, head to the next iteration.
-                continue
-            # If there is no such model yet, append the content of the one-element model list to the
-            # models list at dictionary's key.
-            else:
-            """
-            cars[make].append(model[0])
-        # If there is no such key-value pairs as make and model, add it to the dictionary.
+        # Create a two-dimensional list from car make and model.
+        make.append(model)
+        # Collect makes and models into one parent list.
+        cars_list.append(make)
+    # Loop through the helper list.
+    for item in range(len(cars_list)):
+        # If the car make (in case fold) is not present in the car's dictionary, add it there.
+        if cars_list[item][0].casefold() not in str(cars_dictionary.keys()).casefold():
+            cars_dictionary.update({cars_list[item][0]: cars_list[item][1]})
+        # If the car make as a key is present in the dictionary, update only the models list.
         else:
-            cars.update({make: model})
-    return cars
+            # Find the right model where the key is case fold equal with the model to be checked.
+            for key, value in cars_dictionary.items():
+                if cars_list[item][0].casefold() == key.casefold():
+                    # Add the model into the models list and update the dictionary.
+                    cars_dictionary.update({key: value + cars_list[item][1]})
+    # Return the finished dictionary.
+    return cars_dictionary
 
 
 def search_by_make(all_cars: str, search_parameter: str) -> list:
@@ -221,16 +224,39 @@ def add_cars(car_list: list, all_cars: str) -> list:
 
     [['Audi', ['A4', 'A6']], ['Skoda', ['Superb']], ['BMW', ['A B C']]]
     """
-    car_list.append(car_make_and_models(all_cars))
+    # Convert the string of additional cars into a list.
+    additional_cars_list = car_make_and_models(all_cars)
+    # Loop through every car make in car_list.
+    for item in range(len(car_list)):
+        # For every car in car_list loop through car makes in the additional_cars_list.
+        for element in additional_cars_list:
+            # If the car make in car_list is (case fold) equal
+            # to the car make in additional_cars_list,
+            # start checking the models.
+            if car_list[item][0].casefold() == element[0].casefold():
+                # Loop through all models for the make in question.
+                for model in element[1]:
+                    # If the model is not in the list of models for that car make in car_list, add it.
+                    if model not in car_list[item][1]:
+                        car_list[item][1].append(model)
+            # If the car makes which we compare are not (case fold) equal,
+            # convert car list into a string and check whether it's located somewhere else
+            # and will be considered in another round of that loop.
+            # If the make (case fold) can't be found in the list,
+            # add it with all it's models into the car_list.
+            elif element[0].casefold() not in str(car_list).casefold():
+                car_list.append(element)
     return car_list
 
 
 if __name__ == '__main__':
+    print('List on cars:')
     print(list_of_cars("Audi A4,Skoda Superb,Audi A4"))  # ["Audi A4", "Skoda Superb", "Audi A4"]
     print(list_of_cars("Audi A4 Skoda Superb Audi A4"))  # ["Audi A4 Skoda Superb Audi A4"]
     print(list_of_cars(""))  # []
     print("*****")
 
+    print('Car makes:')
     print(car_makes("Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon,Skoda Superb,Skoda Superb,BMW x5"))
     # ['Audi', 'Skoda', 'BMW', 'Seat']
 
@@ -238,10 +264,12 @@ if __name__ == '__main__':
     print(car_makes(""))  # []
     print("*****")
 
+    print('Car models:')
     print(car_models("Audi A4,Skoda Superb,Audi A4,Audi A6"))  # ["A4", "Superb", "A6"]
     print(car_models(""))  # []
     print("*****")
 
+    print('Search by make:')
     print(search_by_make("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "Audi"))
     # ['Audi A4 2021', 'Audi A4 2022 sept']
 
@@ -250,9 +278,12 @@ if __name__ == '__main__':
     print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "AUDI"))  # ['Audi A4', 'audi A5', 'AUDI a6 A7']
     print(search_by_make("Audi A4,Skoda Superb,Seat Leon,Audi A4,Seat Leon,Audi A4,Audi A6,Audi A4 2022", "Audi"))
     # ['Audi A4', 'Audi A4', 'Audi A4', 'Audi A6', 'Audi A4 2022']
+    print(search_by_make("Audi A4,Skoda Superb,Seat Leon,audi A4,SEAT Leon,AUDI A4,AudI A6,Audi A4 2022", "audi"))
+    # ['Audi A4', 'Audi A4', 'Audi A4', 'Audi A6', 'Audi A4 2022']
 
     print("*****")
 
+    print('Search by model:')
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A4"))  # ["Audi A4", "Audi a4 2021"]
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4"))  # ["Audi A4", "Audi a4 2021"]
     print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "sept"))
@@ -280,4 +311,14 @@ if __name__ == '__main__':
 
     print("*****")
 
-    print(car_make_and_models("Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon,Skoda Superb,Skoda Superb,BMW x5"))
+    print('Car makes and models:')
+    print(car_make_and_models(
+        "Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon Lux,Skoda Superb,Skoda Superb,BMW x5"
+    ))
+    # [['Audi', ['A4']], ['Skoda', ['Super', 'Octavia', 'Superb']], ['BMW', ['530', 'x5']], ['Seat', ['Leon Lux']]]
+
+    print("*****")
+
+    print("add cars:")
+    print(add_cars([['Audi', ['A4']], ['Skoda', ['Superb']]], "Audi A6,BMW A B C,Audi A4"))
+    # [['Audi', ['A4', 'A6']], ['Skoda', ['Superb']], ['BMW', ['A B C']]]
