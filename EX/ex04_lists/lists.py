@@ -2,7 +2,32 @@
 EX04 Lists.
 
 1. Car inventory.
-This program creates a list of cars from a given string.
+This program makes different operations with cars.
+
+Available functions:
+list_of_cars(all_cars: str) -> list; Returns a list of cars from string.
+
+car_makes(all_cars: str) -> list; Returns unique car makes from string.
+
+car_models(all_cars: str) -> list; Returns unique car models from string.
+
+create_cars_list(all_cars: str) -> list; Helper function. Returns a two-dimensional list of car makes and models.
+
+create_car_dictionary(cars_list: list) -> dict; Helper function. Returns a list of car makes and models as dictionary.
+
+search_by_make(all_cars: str, search_parameter: str) -> list; Returns a list of car makes from string
+based on a search-string.
+
+search_by_model(all_cars: str, search_parameter: str) -> list; Returns a list of cars from string
+based on a search-string to search for a car model.
+
+car_make_and_models(all_cars: str) -> list; Creates a two-dimensional list with car makes and models from a string.
+
+add_cars(car_list: list, all_cars: str) -> list; Adds cars from a list into an existing cars list.
+
+number_of_cars(all_cars: str) -> list; Creates a list of tuples with make quantities.
+
+car_list_as_string(cars: list) -> str; Creates a comma separated string from cars list with makes and models.
 
 """
 
@@ -297,6 +322,7 @@ def add_cars(car_list: list, all_cars: str) -> list:
 def number_of_cars(all_cars: str) -> list:
     """
     Create a list of tuples with make quantities.
+
     The result is a list of tuples.
     Each tuple is in the form: (make_name: str, quantity: int).
     The order of the tuples (makes) is the same as the first appearance in the list.
