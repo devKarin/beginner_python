@@ -208,16 +208,25 @@ def car_make_and_models(all_cars: str) -> list:
     car_dictionary = create_car_dictionary(cars_list)
     # Initiate a list for the final result.
     car_list_with_make_and_models = []
+    # Loop through car makes and model in dictionary.
     for make, models in car_dictionary.items():
+        # Initiate a make sublist for every make.
         make_list_with_models_sublist = []
+        # Initiate a models sublist for every car make.
         models_list = []
         for model in models:
+            # If the model already exists in models list, continue with the next iteration.
             if model in models_list:
                 continue
+            # If the model is not in the models list yet, add it.
             else:
                 models_list.append(model)
+        # Combine lists together.
+        # Add make into an empty make sublist.
         make_list_with_models_sublist.append(make)
+        # Add models list into the make list.
         make_list_with_models_sublist.append(models_list)
+        # Add the make-model list into final results list.
         car_list_with_make_and_models.append(make_list_with_models_sublist)
     return car_list_with_make_and_models
 
@@ -242,6 +251,10 @@ def add_cars(car_list: list, all_cars: str) -> list:
     """
     # Convert the string of additional cars into a list.
     additional_cars_list = car_make_and_models(all_cars)
+    # If the cars list is empty, use another function to create it from a string and return it.
+    if not car_list:
+        return car_make_and_models(all_cars)
+
     # Loop through every car make in car_list.
     for item in range(len(car_list)):
         # For every car in car_list loop through car makes in the additional_cars_list.
@@ -338,3 +351,5 @@ if __name__ == '__main__':
     print("add cars:")
     print(add_cars([['Audi', ['A4']], ['Skoda', ['Superb']]], "Audi A6,BMW A B C,Audi A4"))
     # [['Audi', ['A4', 'A6']], ['Skoda', ['Superb']], ['BMW', ['A B C']]]
+    print(add_cars([], "Audi A6,BMW A B C,Audi A4"))
+    # [['Audi', ['A6', 'A4]], ['BMW', ['A B C']]]
