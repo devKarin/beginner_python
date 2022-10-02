@@ -15,6 +15,9 @@ def list_of_cars(all_cars: str) -> list:
     Both the make and the model do not contain spaces (both are one word).
 
     "Audi A4,Skoda Superb,Audi A4" => ["Audi A4", "Skoda Superb", "Audi A4"]
+
+    :param all_cars: string
+    :return: list
     """
     # If the empty string is entered, return empty list.
     if not all_cars:
@@ -31,6 +34,9 @@ def car_makes(all_cars: str) -> list:
     The order of the elements should be the same as in the input string (first appearance).
 
     "Audi A4,Skoda Superb,Audi A4" => ["Audi", "Skoda"]
+
+    :param all_cars: string
+    :return: list
     """
     # Remove possible redundant spaces from edges of the string.
     all_cars = all_cars.strip()
@@ -62,6 +68,9 @@ def car_models(all_cars: str) -> list:
     The order of the elements should be the same as in the input string (first appearance).
 
     "Audi A4,Skoda Superb,Audi A4,Audi A6" => ["A4", "Superb", "A6"]
+
+    :param all_cars: string
+    :return: list
     """
     # The following part of the code is largely the same as in the car_makes function.
     all_cars = all_cars.strip()
@@ -88,10 +97,10 @@ def create_cars_list(all_cars: str) -> list:
     Return a two-dimensional list of car makes and models.
 
     Returns a list of car makes and models based on comma-separated string as an argument.
-    This is a helper function for search_by_make, search_by_model and  car_make_and_models functions.
+    This is a helper function for search_by_make, search_by_model and car_make_and_models functions.
 
     :param all_cars: string
-    :return: dictionary
+    :return: list
     """
     # Clean the input.
     all_cars = all_cars.strip()
@@ -202,6 +211,9 @@ def car_make_and_models(all_cars: str) -> list:
 
     "Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon Lux,Skoda Superb,Skoda Superb,BMW x5" =>
     [['Audi', ['A4']], ['Skoda', ['Super', 'Octavia', 'Superb']], ['BMW', ['530', 'x5']], ['Seat', ['Leon Lux']]]
+
+    :param all_cars: string
+    :return: list
     """
     # Use helper functions.
     cars_list = create_cars_list(all_cars)
@@ -248,6 +260,10 @@ def add_cars(car_list: list, all_cars: str) -> list:
     =>
 
     [['Audi', ['A4', 'A6']], ['Skoda', ['Superb']], ['BMW', ['A B C']]]
+
+    :param car_list: list
+    :param all_cars: string
+    :return: list
     """
     # Convert the string of additional cars into a list.
     additional_cars_list = car_make_and_models(all_cars)
@@ -276,6 +292,67 @@ def add_cars(car_list: list, all_cars: str) -> list:
             elif element[0].casefold() not in str(car_list).casefold():
                 car_list.append(element)
     return car_list
+
+
+def number_of_cars(all_cars: str) -> list:
+    """
+    Create a list of tuples with make quantities.
+    The result is a list of tuples.
+    Each tuple is in the form: (make_name: str, quantity: int).
+    The order of the tuples (makes) is the same as the first appearance in the list.
+
+    :param all_cars: string
+    :return: list
+    """
+    # If the input string is empty, return an empty list.
+    if all_cars.strip() == "":
+        return []
+
+    # Create a car list with makes (non-unique) and models.
+    car_list = create_cars_list(all_cars)
+    # Create a case fold copy of the input-string.
+    makes = all_cars.casefold()
+    # Initiate an empty dictionary
+    makes_dictionary = {}
+    # Initiate an empty list for the number of cars.
+    number_of_makes = []
+
+    # Loop through all makes and count them case fold.
+    for car_make in car_list:
+        count = makes.count(car_make[0].casefold())
+        # No need to check, whether the key already exists - just rewrite the count:
+        # for example replace 4 with 4.
+        makes_dictionary.update({car_make[0]: count})
+
+    for key, value in makes_dictionary.items():
+        number_of_makes.append((key, value))
+    return number_of_makes
+
+
+def car_list_as_string(cars: list) -> str:
+    """
+    Create a list of cars.
+
+    The input list is in the same format as the result of car_make_and_models function.
+    The order of the elements in the string is the same as in the list.
+    [['Audi', ['A4']], ['Skoda', ['Superb']]] =>
+    "Audi A4,Skoda Superb"
+
+    :param cars: list
+    :return: string
+    """
+    # Initiate an empty string.
+    cars_as_string = ""
+
+    # Loop through all car makes in list.
+    for make in cars:
+        # Loop through models sublist for a car make.
+        for model in make[1]:
+            # For every model, append a make and model as a string to the cars_as_string.
+            cars_as_string += f"{make[0]} {model},"
+    # Finally, remove the redundant comma from the right end of the string.
+    cars_as_string = cars_as_string.rstrip(",")
+    return cars_as_string
 
 
 if __name__ == '__main__':
@@ -353,3 +430,16 @@ if __name__ == '__main__':
     # [['Audi', ['A4', 'A6']], ['Skoda', ['Superb']], ['BMW', ['A B C']]]
     print(add_cars([], "Audi A6,BMW A B C,Audi A4"))
     # [['Audi', ['A6', 'A4]], ['BMW', ['A B C']]]
+
+    print("*****")
+
+    print("Number of cars:")
+    print(number_of_cars("Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon Lux,Skoda Superb,Skoda Superb,BMW x5"))
+
+    print("*****")
+
+    print("Car list as a string:")
+    print(car_list_as_string(
+        [['Audi', ['A4']], ['Skoda', ['Super', 'Octavia', 'Superb']], ['BMW', ['530', 'x5']], ['Seat', ['Leon Lux']]]
+    ))
+    # "Audi A4,Skoda Super,Skoda Octavia,Skoda Superb,BMW 530,BMW x5,Seat Leon Lux"
