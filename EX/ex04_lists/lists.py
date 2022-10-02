@@ -83,12 +83,12 @@ def car_models(all_cars: str) -> list:
     return models_list
 
 
-def create_car_dictionary(all_cars: str) -> dict:
+def create_cars_list(all_cars: str) -> list:
     """
-    Return a list of car makes and models as dictionary.
+    Return a two-dimensional list of car makes and models.
 
-    Returns the dictionary of car makes and models based on comma-separated string as an argument.
-    This is a helper function for search_by_make and search_by_model functions.
+    Returns a list of car makes and models based on comma-separated string as an argument.
+    This is a helper function for search_by_make, search_by_model and  car_make_and_models functions.
 
     :param all_cars: string
     :return: dictionary
@@ -97,11 +97,9 @@ def create_car_dictionary(all_cars: str) -> dict:
     all_cars = all_cars.strip()
     # Create cars list.
     car_list_with_models_and_makes = list_of_cars(all_cars)
-    # Initiate cars dictionary.
-    cars_dictionary = {}
-    # Initiate helper list cars_list.
+    # Initiate cars_list.
     cars_list = []
-    # Loop through the cars list with makes and models and create helper list.
+    # Loop through the cars list with makes and models and create a list.
     for item in car_list_with_models_and_makes:
         # Separate car makes into one-element list.
         make = car_makes(item)
@@ -111,6 +109,21 @@ def create_car_dictionary(all_cars: str) -> dict:
         make.append(model)
         # Collect makes and models into one parent list.
         cars_list.append(make)
+    return cars_list
+
+
+def create_car_dictionary(cars_list: list) -> dict:
+    """
+    Return a list of car makes and models as dictionary.
+
+    Returns the dictionary of car makes and models based on a two-dimensional cars_list as an argument.
+    This is a helper function for search_by_model and car_make_and_models functions.
+
+    :param cars_list: list
+    :return: dictionary
+    """
+    # Initiate cars dictionary.
+    cars_dictionary = {}
     # Loop through the helper list.
     for item in range(len(cars_list)):
         # If the car make (in case fold) is not present in the car's dictionary, add it there.
@@ -137,15 +150,14 @@ def search_by_make(all_cars: str, search_parameter: str) -> list:
     :param search_parameter: string
     :return: list
     """
-    # Use the helper function.
-    cars = create_car_dictionary(all_cars)
+    cars = create_cars_list(all_cars)
     # Initiate search result list.
     search_results = []
     # Loop through the cars list and match the search parameter.
-    for car_make, car_model in cars.items():
-        if search_parameter.casefold() == car_make.casefold():
-            for element in car_model:
-                search_results.append(f"{car_make} {element}")
+    for car in cars:
+        if search_parameter.casefold() == car[0].casefold():
+            for element in car[1]:
+                search_results.append(f"{car[0]} {element}")
     return search_results
 
 
@@ -159,8 +171,9 @@ def search_by_model(all_cars: str, search_parameter: str) -> list:
     :param search_parameter: string
     :return: list
     """
-    # Use the helper function.
-    cars = create_car_dictionary(all_cars)
+    # Use helper functions.
+    cars_list = create_cars_list(all_cars)
+    cars = create_car_dictionary(cars_list)
     # Initiate search result list.
     search_results = []
     # Loop through the cars list and match the search parameter. model is a list of models here.
@@ -190,7 +203,10 @@ def car_make_and_models(all_cars: str) -> list:
     "Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon Lux,Skoda Superb,Skoda Superb,BMW x5" =>
     [['Audi', ['A4']], ['Skoda', ['Super', 'Octavia', 'Superb']], ['BMW', ['530', 'x5']], ['Seat', ['Leon Lux']]]
     """
-    car_dictionary = create_car_dictionary(all_cars)
+    # Use helper functions.
+    cars_list = create_cars_list(all_cars)
+    car_dictionary = create_car_dictionary(cars_list)
+    # Initiate a list for the final result.
     car_list_with_make_and_models = []
     for make, models in car_dictionary.items():
         make_list_with_models_sublist = []
@@ -279,7 +295,7 @@ if __name__ == '__main__':
     print(search_by_make("Audi A4,Skoda Superb,Seat Leon,Audi A4,Seat Leon,Audi A4,Audi A6,Audi A4 2022", "Audi"))
     # ['Audi A4', 'Audi A4', 'Audi A4', 'Audi A6', 'Audi A4 2022']
     print(search_by_make("Audi A4,Skoda Superb,Seat Leon,audi A4,SEAT Leon,AUDI A4,AudI A6,Audi A4 2022", "audi"))
-    # ['Audi A4', 'Audi A4', 'Audi A4', 'Audi A6', 'Audi A4 2022']
+    # ['Audi A4', 'audi A4', 'AUDI A4', 'AudI A6', 'Audi A4 2022']
 
     print("*****")
 
