@@ -206,7 +206,7 @@ def find_people_with_hobbies(data: str, hobbies: list) -> set:
     return set(people_with_matching_hobbies)
 
 
-def find_two_people_with_most_common_hobbies(data: str) -> tuple:
+def find_two_people_with_most_common_hobbies(data: str) -> dict:
     """
     Find a pair of people who have the highest ratio of common to different hobbies.
 
@@ -269,14 +269,40 @@ def find_two_people_with_most_common_hobbies(data: str) -> tuple:
     then this is better than any pair with at least 1 different hobby.
     Out of the pairs with 0 different hobbies, the one with the highest number
     of common hobbies is the best.
-    If there are multiple pairs with the highes number of common hobbies,
+    If there are multiple pairs with the highest number of common hobbies,
     any pair (and in any order) is accepted.
 
     If there are less than 2 people in the input, return None.
     """
     # Create a dictionary with people and their hobbies.
     people_and_hobbies = create_dictionary(data)
-    return ()
+    # Initiate a list to collect tuples of names and ratios
+    dict_of_ratios = {}
+    # Loop through people and their hobbies.
+    for name_1, hobby_1 in people_and_hobbies.items():
+        # Run the second loop in order to get combinations.
+        for name_2, hobby_2 in people_and_hobbies.items():
+            # Don't compare a name with itself, but continue to the next iteration.
+            if name_1 is name_2:
+                continue
+            # Convert two peoples hobbies into sets and find the length of the intersection set.
+            common_hobbies = len(set(hobby_1).intersection(set(hobby_2)))
+            # # Convert two peoples hobbies into sets and find the length of the symmetric difference set.
+            different_hobbies = len(set(hobby_1).symmetric_difference(set(hobby_2)))
+            # Collect the result into a dictionary, where the key is a tuple of names.
+            dict_of_ratios.update({(name_1, name_2): [common_hobbies, different_hobbies]})
+    # Sort the dictionary first by common interests descending and then by different interests ascending.
+    # Comment out some code - sorting only by common interests.
+    # sorted_dict_by_common = sorted(dict_of_ratios.items(), key=lambda element: element[1][0], reverse=True)
+    sorted_dict_by_common = sorted(
+        dict_of_ratios.items(), key=lambda element: (
+            sorted(
+                dict_of_ratios.items(), key=lambda item: item[1][0], reverse=True
+            ), element[1][1]
+        )
+    )
+    # Return the pair with most common hobbies.
+    return sorted_dict_by_common[0][0]
 
 
 if __name__ == '__main__':
