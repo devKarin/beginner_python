@@ -297,7 +297,12 @@ def find_two_people_with_most_common_hobbies(data: str) -> tuple:
             different_hobbies = len(set(hobby_1).symmetric_difference(set(hobby_2)))
             # Calculate the ratio of common and different hobbies.
             if different_hobbies == 0:
-                ratio = common_hobbies
+                # In order to avoid division by 0, choose divide by 0.01.
+                ratio = common_hobbies / 0.01
+            elif common_hobbies == 0:
+                # In order to differentiate between more and less different hobbies,
+                # instead on 0 divide 0.01 by the number of different hobbies.
+                ratio = 0.01 / different_hobbies
             else:
                 ratio = common_hobbies / different_hobbies
             # Collect the result into a dictionary, where the key is a tuple of names.
