@@ -309,21 +309,6 @@ def find_two_people_with_most_common_hobbies(data: str) -> tuple:
             dict_of_ratios.update({(name_1, name_2): [common_hobbies, different_hobbies, ratio]})
     # Sort by the greatest ratio of common and different hobbies. Returns a list of tuples.
     sorted_by_ratio = sorted(dict_of_ratios.items(), key=lambda element: element[1][2], reverse=True)
-    """
-    Comment out some useless code.
-    
-    # Initiate a list of final names of the highest ratio of common and different hobbies.
-    final_list = []
-    for item in sorted_by_ratio:
-        # If there are several results with the same ratio, add them into final list.
-        if item[1][2] == max(sorted_by_ratio, key=lambda element: element[1][2])[1][2]:
-            final_list.append(item[0])
-    # If there is only one result with the maximum ratio, return only one tuple, else return tuple of tuples.
-    if len(final_list) == 1:
-        return final_list[0]
-    else:
-        return tuple(final_list)
-    """
     return sorted_by_ratio[0][0]
 
 
