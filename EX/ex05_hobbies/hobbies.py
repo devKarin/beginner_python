@@ -206,7 +206,7 @@ def find_people_with_hobbies(data: str, hobbies: list) -> set:
     return set(people_with_matching_hobbies)
 
 
-def find_two_people_with_most_common_hobbies(data: str) -> dict:
+def find_two_people_with_most_common_hobbies(data: str) -> tuple:
     """
     Find a pair of people who have the highest ratio of common to different hobbies.
 
