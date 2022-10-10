@@ -276,6 +276,9 @@ def find_two_people_with_most_common_hobbies(data: str) -> tuple:
     """
     # Create a dictionary with people and their hobbies.
     people_and_hobbies = create_dictionary(data)
+    # If only one person is in the dictionary, return None.
+    if len(people_and_hobbies.items()) == 1:
+        return ()
     # Initiate a list to collect tuples of names and ratios
     dict_of_ratios = {}
     # Loop through people and their hobbies.
@@ -287,22 +290,19 @@ def find_two_people_with_most_common_hobbies(data: str) -> tuple:
                 continue
             # Convert two peoples hobbies into sets and find the length of the intersection set.
             common_hobbies = len(set(hobby_1).intersection(set(hobby_2)))
-            # # Convert two peoples hobbies into sets and find the length of the symmetric difference set.
+            # Convert two peoples hobbies into sets and find the length of the symmetric difference set.
             different_hobbies = len(set(hobby_1).symmetric_difference(set(hobby_2)))
+            # Calculate the ratio of common and different hobbies.
+            if different_hobbies == 0:
+                ratio = common_hobbies
+            else:
+                ratio = common_hobbies / different_hobbies
             # Collect the result into a dictionary, where the key is a tuple of names.
-            dict_of_ratios.update({(name_1, name_2): [common_hobbies, different_hobbies]})
-    # Sort the dictionary first by common interests descending and then by different interests ascending.
-    # Comment out some code - sorting only by common interests.
-    # sorted_dict_by_common = sorted(dict_of_ratios.items(), key=lambda element: element[1][0], reverse=True)
-    sorted_dict_by_common = sorted(
-        dict_of_ratios.items(), key=lambda element: (
-            sorted(
-                dict_of_ratios.items(), key=lambda item: item[1][0], reverse=True
-            ), element[1][1]
-        )
-    )
-    # Return the pair with most common hobbies.
-    return sorted_dict_by_common[0][0]
+            dict_of_ratios.update({(name_1, name_2): [common_hobbies, different_hobbies, ratio]})
+    # Sort by the greatest ratio of common and different hobbies. Returns a list of tuples.
+    sorted_by_ratio = sorted(dict_of_ratios.items(), key=lambda element: element[1][2], reverse=True)
+    # Return the tuple of names of the greatest ratio of common and different hobbies.
+    return sorted_by_ratio[0][0]
 
 
 if __name__ == '__main__':
