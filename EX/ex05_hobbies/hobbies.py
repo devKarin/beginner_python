@@ -278,7 +278,7 @@ def find_two_people_with_most_common_hobbies(data: str) -> tuple:
     people_and_hobbies = create_dictionary(data)
     # If only one person is in the dictionary, return None.
     if len(people_and_hobbies.items()) == 1:
-        return ()
+        return None
     # Initiate a list to collect tuples of names and ratios
     dict_of_ratios = {}
     # Loop through people and their hobbies.
