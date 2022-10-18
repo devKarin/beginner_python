@@ -69,14 +69,9 @@ def find_sentences(text: str) -> list:
     :param text: given string to find sentences from
     :return: list of sentences found in given string
     """
-    # pattern = r"(^[A-Z,Õ,Ä,Ö,Ü][a-z,õ,ä,ö,ü]+)(\s\w+)*|(\s\-\s\w+)(\.|\?|\!)(\s)?"
-    pattern = r"(([A-Z,Õ,Ä,Ö,Ü][a-z,õ,ä,ö,ü]+)+(\s\W?\s?\w+)+(\.|\?|\!\s)?)"
-    # pattern = r"((\w*\s)*(\w*\s\W?\s?\w*)?[\.,\!,\?])"
+    pattern = r"((?:[A-ZÕÄÖÜ]+[a-zõäöü]*\s)+(?:\w*(?:\s\W?)*\s?\w*)*[\.\!\?]{1,3} ?)"
     match = re.findall(pattern, text)
-    final_list = []
-    for item in match:
-        final_list.append(item[0])
-    return final_list
+    return match
 
 
 def find_words_from_sentence(sentence: str) -> list:
@@ -171,4 +166,4 @@ if __name__ == '__main__':
     print(find_years("1998sef672387fh3f87fh83777f777f7777f73wfj893w8938434343"))
     # [1998, 7777]
 
-    print(find_phone_numbers("+372 56887364  +37256887364  +33359835647  56887364 +11 1234567 +327 1 1111
+    # print(find_phone_numbers("+372 56887364  +37256887364  +33359835647  56887364 +11 1234567 +327 1 1111
