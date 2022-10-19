@@ -69,7 +69,7 @@ def find_sentences(text: str) -> list:
     :param text: given string to find sentences from
     :return: list of sentences found in given string
     """
-    pattern = r"((?:[A-ZÕÄÖÜ]+\w*\s?)(?:\w*\d*,?\-?:?;?\s?)*(?:\w+[\.\!\?]{1,}))(?:\s?)"
+    pattern = r"((?:[A-ZÕÄÖÜ]+\w*\s?)(?:\w*\d*,?\-?\:?\;?\s?)*(?:\w+[\.\!\?]{1,}))(?:\s?)"
     match = re.findall(pattern, text)
     return match
 
@@ -89,9 +89,10 @@ def find_words_from_sentence(sentence: str) -> list:
     :return: list of words found in given sentence
     """
     final_list = []
-    final_list.extend(re.split(r"\W+", sentence))
-    # Remove the empty string from list, which was added as the reminder of the initial string.
-    final_list.remove("")
+    for item in find_sentences(sentence):
+        final_list.extend(re.split(r"\W+", item))
+        # Remove the empty string from list, which was added as the reminder of the initial string.
+        final_list.remove("")
     return final_list
 
 
