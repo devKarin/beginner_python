@@ -124,7 +124,10 @@ def find_years(text: str) -> list:
     :param text: given string to find years from
     :return: list of years (integers) found in given string
     """
-    return re.findall(r"(?<!\d)\d{4}(?!\d)", text)
+    final_list = []
+    for number in re.finditer(r"(?<!\d)\d{4}(?!\d)", text):
+        final_list.append(int(number.group()))
+    return final_list
 
 
 def find_phone_numbers(text: str) -> dict:
@@ -145,7 +148,14 @@ def find_phone_numbers(text: str) -> dict:
     :param text: given string to find phone numbers from
     :return: dict containing the numbers
     """
-    pass
+    phone_book = {}
+    for phone_number in re.finditer(r"((\+\d{3})? *(\d{7,8}))", text):
+        key = phone_number.group(2) or ""
+        if key in phone_book:
+            phone_book[key].append(phone_number.group(3))
+        else:
+            phone_book.update({key: [phone_number.group(3)]})
+    return phone_book
 
 
 if __name__ == '__main__':
@@ -171,4 +181,5 @@ if __name__ == '__main__':
     print(find_years("1998sef672387fh3f87fh83777f777f7777f73wfj893w8938434343"))
     # [1998, 7777]
 
-    # print(find_phone_numbers("+372 56887364  +37256887364  +33359835647  56887364 +11 1234567 +327 1 1111
+    print(find_phone_numbers("+372 56887364  +37256887364  +33359835647  56887364 +11 1234567 +327 1 11111111"))
+    # {'+372': ['56887364', '56887364'], '+333': ['59835647'], '': ['56887364', '1234567', '11111111']}
