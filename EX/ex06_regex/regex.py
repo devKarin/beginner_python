@@ -89,10 +89,9 @@ def find_words_from_sentence(sentence: str) -> list:
     :return: list of words found in given sentence
     """
     final_list = []
-    for item in find_sentences(sentence):
-        final_list.extend(re.split(r"\W+", item))
-        # Remove the empty string from list, which was added as the reminder of the initial string.
-        final_list.remove("")
+    final_list.extend(re.split(r"\W+", sentence))
+    # Remove the empty string from list, which was added as the reminder of the initial string.
+    final_list.remove("")
     return final_list
 
 
