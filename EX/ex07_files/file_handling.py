@@ -10,7 +10,9 @@ read_csv_file(filename: str) -> list; Reads CSV file into list of rows.
 write_contents_to_file(filename: str, contents: str) -> None; Writes contents to file.
 write_lines_to_file(filename: str, lines: list) -> None; Writes lines to file.
 write_csv_file(filename: str, data: list) -> None; Writes data into CSV file.
-merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv_output_filename: str) -> None; Merge information from two files into one CSV file.
+merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv_output_filename: str) -> None;
+Merge information from two files into one CSV file.
+
 """
 
 import csv
