@@ -62,7 +62,17 @@ def pentabonacci(n: int) -> int:
     :param n: The last term to take into account.
     :return: Total number of odd values.
     """
-    pass
+    # Initiate the counter
+    counter = 0
+    element = 0
+    # Since there is no need to save all the elements, do not use recursion
+
+    for i in range(n):
+        element += n - i
+        print(element)
+        if element % 2 != 0:
+            counter += 1
+    return counter
 
 
 def swap_dict_keys_and_value_lists(d: dict) -> dict:
@@ -137,3 +147,7 @@ if __name__ == '__main__':
     print(swap_dict_keys_and_value_lists({1: [2, 3], 4: [2, 5]}))  # = > {2: [1, 4], 3: [1], 5: [4]}
     print(swap_dict_keys_and_value_lists({}))  # = > {}
     print(swap_dict_keys_and_value_lists({1: [2]}))  # = > {2: [1]}
+
+    print(pentabonacci(5))  # -> 1
+    print(pentabonacci(10))  # -> 3
+    print(pentabonacci(15))  # -> 5
