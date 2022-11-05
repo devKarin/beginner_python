@@ -1,4 +1,4 @@
-"""KT3."""
+"""KT3 - 05.11.2022 14:00"""
 
 
 def last_to_first(s: str) -> str:
@@ -66,13 +66,18 @@ def pentabonacci(n: int) -> int:
     counter = 0
     element = 0
     # Since there is no need to save all the elements, do not use recursion
-
-    for i in range(n):
-        element += n - i
-        print(element)
+    for i in range(n + 1):
+        if i == 0:
+            element = 0
+        elif i == 1:
+            element = 1
+        elif i == 2:
+            element = 2
+        else:
+            element += (n - i)
         if element % 2 != 0:
             counter += 1
-    return counter
+    return counter - 2
 
 
 def swap_dict_keys_and_value_lists(d: dict) -> dict:
@@ -109,7 +114,6 @@ def swap_dict_keys_and_value_lists(d: dict) -> dict:
     return reversed_dictionary
 
 
-"""
 if __name__ == '__main__':
     assert last_to_first("ab") == "ba"
     assert last_to_first("") == ""
@@ -126,13 +130,12 @@ if __name__ == '__main__':
     assert pentabonacci(15) == 5
 
     assert swap_dict_keys_and_value_lists({"a": ["b", "c"]}) == {"b": ["a"], "c": ["a"]}
-    assert swap_dict_keys_and_value_lists({1: [2, 3], 4: [2, 5]}) == {2: [1, 4], 3: [1], 5: [4]}  # or {2: [4, 1], 3: [1], 5: [4]}
+    assert swap_dict_keys_and_value_lists({1: [2, 3], 4: [2, 5]}) == {2: [1, 4], 3: [1], 5: [4]}
+    # or {2: [4, 1], 3: [1], 5: [4]}
+
     assert swap_dict_keys_and_value_lists({}) == {}
     assert swap_dict_keys_and_value_lists({1: [2]}) == {2: [1]}
-"""
 
-
-if __name__ == '__main__':
     print(last_to_first("ab"))  # => "ba"
     print(last_to_first(""))  # => ""
     print(last_to_first("hello"))  # => "ohell"
