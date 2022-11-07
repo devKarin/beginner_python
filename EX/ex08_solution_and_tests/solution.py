@@ -74,8 +74,9 @@ def fruit_order(small_baskets: int, big_baskets: int, ordered_amount: int) -> in
         return ordered_amount
     # If there are big and small baskets, but the amount left doesn't fit into small baskets,
     # the order can not be fulfilled.
-    elif ordered_amount % (big_baskets * 5) > small_baskets:
+    elif ordered_amount - big_baskets * 5 > small_baskets:
         return -1
     # If there are enough big and small baskets, return how many small baskets are needed and thereby used.
     else:
-        return ordered_amount % (big_baskets * 5)
+        return ordered_amount - big_baskets * 5
+
