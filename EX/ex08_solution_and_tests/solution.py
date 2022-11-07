@@ -63,7 +63,7 @@ def fruit_order(small_baskets: int, big_baskets: int, ordered_amount: int) -> in
     (3, 1, 10) -> -1
     """
     # If there's no amount, the order can not be placed.
-    if ordered_amount == 0:
+    if ordered_amount <= 0 or small_baskets < 0 or big_baskets < 0:
         return -1
     # If big baskets' amount and small baskets amount do not add up to the ordered amount, the order can not be placed.
     if big_baskets * 5 + small_baskets != ordered_amount:
