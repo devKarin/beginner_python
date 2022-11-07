@@ -85,7 +85,7 @@ def test__students_study__evening_edge_case_no_coffee_needed():
     assert students_study(24, False) is True
 
 
-# def test__students_study__morning_coffee_true():
+def test__students_study__morning_coffee_true():
     """
     In the morning it's crucial to have coffee in order students can study.
 
@@ -96,11 +96,24 @@ def test__students_study__evening_edge_case_no_coffee_needed():
     Expected: True
     :return:
     """
-    # assert students_study(8, True) is True
-    # assert students_study(12, True) is True
-    # assert students_study(15, True) is True
-    # assert students_study(5, True) is True
-    # assert students_study(17, True) is True
+    assert students_study(8, True) is True
+    assert students_study(12, True) is True
+    assert students_study(15, True) is True
+
+
+def test__students_study__morning_edge_case_coffee_true():
+    """
+    In the morning it's crucial to have coffee in order students can study.
+
+    Test case:
+    time 5 or 17 (morning)
+    coffee is True
+
+    Expected: True
+    :return:
+    """
+    assert students_study(5, True) is True
+    assert students_study(17, True) is True
 
 
 # def test__students_study__morning_coffee_false():
