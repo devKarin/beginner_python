@@ -357,7 +357,7 @@ def test__lottery__c_equal_to_a_b_different():
     assert lottery(89, 52, 89) == 0
 
 
-def test__fruit_order__amount_zero():
+# def test__fruit_order__amount_zero():
     """
     Fruit amount ordered is 0 and order can not be placed.
 
