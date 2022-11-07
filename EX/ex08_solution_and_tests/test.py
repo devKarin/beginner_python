@@ -6,12 +6,20 @@ This program consists tests for the module solution.py.
 Available tests:
 test__students_study__evening_no_coffee_needed()
     -> Tests evening time 18-24 regardless the coffee.
+test__students_study__evening_edge_case_no_coffee_needed():
+    -> Tests evening time 18 or 24 regardless the coffee
 test__students_study__morning_coffee_true()
     -> Tests morning time 5-17 with coffee.
+test__students_study__morning_edge_case_coffee_true()
+    -> Tests morning time 5 or 17 with coffee.
 test__students_study__morning_coffee_false()
     -> Tests morning time 5-17 without coffee.
-test__students_study__night_no_study()
-    -> Tests night time 1-4 regardless the coffee.
+test__students_study__morning_edge_case_coffee_false()
+    -> Tests morning time 5 or 17 without coffee.
+test__students_study__night_no_coffee_needed()
+    -> Tests nighttime 1-4 regardless the coffee.
+test__students_study__night_edge_case_no_coffee_needed()
+    -> Tests nighttime 1 or 4 regardless the coffee.
 test_students_study__invalid_time_0()
     -> Tests out of range time 0 regardless the coffee.
 test_students_study__invalid_time_28()
@@ -169,7 +177,7 @@ def test__students_study__night_edge_case_no_coffee_needed():
     In the night it doesn't matter whether students receive coffee or not - they sleep.
 
     Test case:
-    time 1-4 (night)
+    time 1 or 4 (night)
     coffee is True or False (coffee not needed).
 
     Expected: False
@@ -239,7 +247,7 @@ def test__lottery__all_winning_numbers():
     assert lottery(5, 5, 5) == 10
 
 
-# def test__lottery__all_equal_numbers():
+def test__lottery__all_equal_positive_numbers():
     """
     All numbers are equal numbers, but not winning numbers.
 
@@ -249,14 +257,39 @@ def test__lottery__all_winning_numbers():
     Expected: 5
     :return:
     """
-    # assert lottery(3, 3, 3) == 5
-    # assert lottery(0, 0, 0) == 5
-    # assert lottery(10, 10, 10) == 5
-    # assert lottery(10203, 10203, 10203) == 5
-    # assert lottery(-102, -102, -102) == 5
+    assert lottery(3, 3, 3) == 5
+    assert lottery(10, 10, 10) == 5
+    assert lottery(10203, 10203, 10203) == 5
 
 
-# def test__lottery__b_and_c_equal_but_not_a():
+def test__lottery__all_equal_zero():
+    """
+    All numbers are equal numbers, but not winning numbers.
+
+    Test case:
+    a == b == c == 0
+
+    Expected: 5
+    :return:
+    """
+    assert lottery(0, 0, 0) == 5
+
+
+def test__lottery__all_equal_negative_numbers():
+    """
+    All numbers are equal numbers, but not winning numbers.
+
+    Test case:
+    a == b == c == -any
+
+    Expected: 5
+    :return:
+    """
+
+    assert lottery(-102, -102, -102) == 5
+
+
+def test__lottery__b_and_c_equal_but_not_a():
     """
     Numbers b and c are equal with each other but not equal with a.
 
@@ -266,10 +299,10 @@ def test__lottery__all_winning_numbers():
     Expected: 1
     :return:
     """
-    # assert lottery(5, 3, 3) == 1
-    # assert lottery(0, 12, 12) == 1
-    # assert lottery(3, 10000000000, 10000000000) == 1
-    # assert lottery(17, -1, -1) == 1
+    assert lottery(5, 3, 3) == 1
+    assert lottery(0, 12, 12) == 1
+    assert lottery(3, 10000000000, 10000000000) == 1
+    assert lottery(17, -1, -1) == 1
 
 
 # def test__lottery__all_numbers_different():
