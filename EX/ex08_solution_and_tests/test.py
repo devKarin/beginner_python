@@ -66,8 +66,8 @@ def test__students_study__evening_no_coffee_needed():
     assert students_study(20, False) is True
     # assert students_study(22, True) is True
     # assert students_study(22, False) is True
-    # assert students_study(18, True) is True
-    # assert students_study(18, False) is True
+    assert students_study(18, True) is True
+    assert students_study(18, False) is True
     # assert students_study(24, True) is True
     # assert students_study(24, False) is True
 
