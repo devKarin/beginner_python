@@ -63,16 +63,16 @@ def test__students_study__evening_no_coffee_needed():
     :return:
     """
     assert students_study(20, True) is True
-    assert students_study(20, False) is True
-    assert students_study(22, True) is True
-    assert students_study(22, False) is True
-    assert students_study(18, True) is True
-    assert students_study(18, False) is True
-    assert students_study(24, True) is True
-    assert students_study(24, False) is True
+    # assert students_study(20, False) is True
+    # assert students_study(22, True) is True
+    # assert students_study(22, False) is True
+    # assert students_study(18, True) is True
+    # assert students_study(18, False) is True
+    # assert students_study(24, True) is True
+    # assert students_study(24, False) is True
 
 
-def test__students_study__morning_coffee_true():
+# def test__students_study__morning_coffee_true():
     """
     In the morning it's crucial to have coffee in order students can study.
 
@@ -83,14 +83,14 @@ def test__students_study__morning_coffee_true():
     Expected: True
     :return:
     """
-    assert students_study(8, True) is True
-    assert students_study(12, True) is True
-    assert students_study(15, True) is True
-    assert students_study(5, True) is True
-    assert students_study(17, True) is True
+    # assert students_study(8, True) is True
+    # assert students_study(12, True) is True
+    # assert students_study(15, True) is True
+    # assert students_study(5, True) is True
+    # assert students_study(17, True) is True
 
 
-def test__students_study__morning_coffee_false():
+# def test__students_study__morning_coffee_false():
     """
     In the morning it's crucial to have coffee in order students can study.
 
@@ -101,14 +101,14 @@ def test__students_study__morning_coffee_false():
     Expected: False
     :return:
     """
-    assert students_study(9, False) is False
-    assert students_study(12, False) is False
-    assert students_study(13, False) is False
-    assert students_study(5, False) is False
-    assert students_study(17, False) is False
+    # assert students_study(9, False) is False
+    # assert students_study(12, False) is False
+    # assert students_study(13, False) is False
+    # assert students_study(5, False) is False
+    # assert students_study(17, False) is False
 
 
-def test__students_study__night_no_study():
+# def test__students_study__night_no_study():
     """
     In the night it doesn't matter whether students receive coffee or not - they sleep.
 
@@ -119,17 +119,17 @@ def test__students_study__night_no_study():
     Expected: False
     :return:
     """
-    assert students_study(2, True) is False
-    assert students_study(2, False) is False
-    assert students_study(3, True) is False
-    assert students_study(3, False) is False
-    assert students_study(1, True) is False
-    assert students_study(1, False) is False
-    assert students_study(4, True) is False
-    assert students_study(4, False) is False
+    # assert students_study(2, True) is False
+    # assert students_study(2, False) is False
+    # assert students_study(3, True) is False
+    # assert students_study(3, False) is False
+    # assert students_study(1, True) is False
+    # assert students_study(1, False) is False
+    # assert students_study(4, True) is False
+    # assert students_study(4, False) is False
 
 
-def test_students_study__invalid_time_0():
+# def test_students_study__invalid_time_0():
     """
     If the time falls out of range, students do not study.
 
@@ -140,11 +140,11 @@ def test_students_study__invalid_time_0():
     Expected: False
     :return:
     """
-    assert students_study(0, False) is False
-    assert students_study(0, True) is False
+    # assert students_study(0, False) is False
+    # assert students_study(0, True) is False
 
 
-def test_students_study__invalid_time_28():
+# def test_students_study__invalid_time_28():
     """
     If the time falls out of range, students do not study.
 
@@ -155,11 +155,11 @@ def test_students_study__invalid_time_28():
     Expected: False
     :return:
     """
-    assert students_study(28, False) is False
-    assert students_study(28, True) is False
+    # assert students_study(28, False) is False
+    # assert students_study(28, True) is False
 
 
-def test__students_study__invalid_time_negative():
+# def test__students_study__invalid_time_negative():
     """
     If the time falls out of range, students do not study.
 
@@ -170,11 +170,11 @@ def test__students_study__invalid_time_negative():
     Expected: False
     :return:
     """
-    assert students_study(-2, False) is False
-    assert students_study(-2, True) is False
+    # assert students_study(-2, False) is False
+    # assert students_study(-2, True) is False
 
 
-def test__lottery__all_winning_numbers():
+# def test__lottery__all_winning_numbers():
     """
     All numbers are winning numbers.
 
@@ -184,10 +184,10 @@ def test__lottery__all_winning_numbers():
     Expected: 10
     :return:
     """
-    assert lottery(5, 5, 5) == 10
+    # assert lottery(5, 5, 5) == 10
 
 
-def test__lottery__all_equal_numbers():
+# def test__lottery__all_equal_numbers():
     """
     All numbers are equal numbers, but not winning numbers.
 
@@ -197,14 +197,14 @@ def test__lottery__all_equal_numbers():
     Expected: 5
     :return:
     """
-    assert lottery(3, 3, 3) == 5
-    assert lottery(0, 0, 0) == 5
-    assert lottery(10, 10, 10) == 5
-    assert lottery(10203, 10203, 10203) == 5
-    assert lottery(-102, -102, -102) == 5
+    # assert lottery(3, 3, 3) == 5
+    # assert lottery(0, 0, 0) == 5
+    # assert lottery(10, 10, 10) == 5
+    # assert lottery(10203, 10203, 10203) == 5
+    # assert lottery(-102, -102, -102) == 5
 
 
-def test__lottery__b_and_c_equal_but_not_a():
+# def test__lottery__b_and_c_equal_but_not_a():
     """
     Numbers b and c are equal with each other but not equal with a.
 
@@ -214,13 +214,13 @@ def test__lottery__b_and_c_equal_but_not_a():
     Expected: 1
     :return:
     """
-    assert lottery(5, 3, 3) == 1
-    assert lottery(0, 12, 12) == 1
-    assert lottery(3, 10000000000, 10000000000) == 1
-    assert lottery(17, -1, -1) == 1
+    # assert lottery(5, 3, 3) == 1
+    # assert lottery(0, 12, 12) == 1
+    # assert lottery(3, 10000000000, 10000000000) == 1
+    # assert lottery(17, -1, -1) == 1
 
 
-def test__lottery__all_numbers_different():
+# def test__lottery__all_numbers_different():
     """
     All numbers are different.
 
@@ -230,19 +230,19 @@ def test__lottery__all_numbers_different():
     Expected: 1
     :return:
     """
-    assert lottery(5, 4, 3) == 1
-    assert lottery(0, 5, 1) == 1
-    assert lottery(50, 5000, 5) == 1
-    assert lottery(89, 52, 44) == 1
-    assert lottery(-9, 2, 4) == 1
-    assert lottery(9, -20, 40) == 1
-    assert lottery(7, -30, 30) == 1
-    assert lottery(8, 60, -60) == 1
-    assert lottery(-2, 68, 2) == 1
-    assert lottery(-4, 4, 2) == 1
+    # assert lottery(5, 4, 3) == 1
+    # assert lottery(0, 5, 1) == 1
+    # assert lottery(50, 5000, 5) == 1
+    # assert lottery(89, 52, 44) == 1
+    # assert lottery(-9, 2, 4) == 1
+    # assert lottery(9, -20, 40) == 1
+    # assert lottery(7, -30, 30) == 1
+    # assert lottery(8, 60, -60) == 1
+    # assert lottery(-2, 68, 2) == 1
+    # assert lottery(-4, 4, 2) == 1
 
 
-def test__lottery__one_number_equal_to_a():
+# def test__lottery__one_number_equal_to_a():
     """
     Number b or c are equal to a.
 
@@ -252,16 +252,16 @@ def test__lottery__one_number_equal_to_a():
     Expected: 0
     :return:
     """
-    assert lottery(5, 5, 3) == 0
-    assert lottery(5, 4, 5) == 0
-    assert lottery(5000, 5000, 5) == 0
-    assert lottery(89, 52, 89) == 0
-    assert lottery(-8, -8, 8) == 0
-    assert lottery(-7, -8, -7) == 0
-    assert lottery(-66, 66, -66) == 0
+    # assert lottery(5, 5, 3) == 0
+    # assert lottery(5, 4, 5) == 0
+    # assert lottery(5000, 5000, 5) == 0
+    # assert lottery(89, 52, 89) == 0
+    # assert lottery(-8, -8, 8) == 0
+    # assert lottery(-7, -8, -7) == 0
+    # assert lottery(-66, 66, -66) == 0
 
 
-def test__fruit_order__no_amount():
+# def test__fruit_order__no_amount():
     """
     Fruit amount ordered is 0 and order can not be placed.
 
@@ -273,12 +273,12 @@ def test__fruit_order__no_amount():
     Expected: -1
     :return:
     """
-    assert fruit_order(5, 5, 0) == -1
-    assert fruit_order(0, 0, 0) == -1
-    assert fruit_order(23, 1, 0) == -1
+    # assert fruit_order(5, 5, 0) == -1
+    # assert fruit_order(0, 0, 0) == -1
+    # assert fruit_order(23, 1, 0) == -1
 
 
-def test__fruit_order__no_big_baskets():
+# def test__fruit_order__no_big_baskets():
     """
     No big baskets are ordered.
 
@@ -290,12 +290,12 @@ def test__fruit_order__no_big_baskets():
     Expected: small_baskets
     :return:
     """
-    assert fruit_order(12, 0, 12) == 12
-    assert fruit_order(9, 0, 9) == 9
-    assert fruit_order(230, 0, 230) == 230
+    # assert fruit_order(12, 0, 12) == 12
+    # assert fruit_order(9, 0, 9) == 9
+    # assert fruit_order(230, 0, 230) == 230
 
 
-def test__fruit_order__no_small_baskets():
+# def test__fruit_order__no_small_baskets():
     """
     No big small baskets are ordered.
 
@@ -307,12 +307,12 @@ def test__fruit_order__no_small_baskets():
     Expected: 0
     :return:
     """
-    assert fruit_order(0, 2, 10) == 0
-    assert fruit_order(0, 5, 25) == 0
-    assert fruit_order(0, 9999, 49995) == 0
+    # assert fruit_order(0, 2, 10) == 0
+    # assert fruit_order(0, 5, 25) == 0
+    # assert fruit_order(0, 9999, 49995) == 0
 
 
-def test__fruit_order__incorrect_amount():
+# def test__fruit_order__incorrect_amount():
     """
     The amount of fruits in big and small baskets doesn't add up.
 
@@ -325,14 +325,14 @@ def test__fruit_order__incorrect_amount():
     Expected: -1
     :return:
     """
-    assert fruit_order(1, 4, 16) == -1
-    assert fruit_order(0, 5, 40) == -1
-    assert fruit_order(101, 0, 5) == -1
-    assert fruit_order(1, 3, 15) == -1
-    assert fruit_order(12, 12, 12) == -1
+    # assert fruit_order(1, 4, 16) == -1
+    # assert fruit_order(0, 5, 40) == -1
+    # assert fruit_order(101, 0, 5) == -1
+    # assert fruit_order(1, 3, 15) == -1
+    # assert fruit_order(12, 12, 12) == -1
 
 
-def test__fruit_order__correct_amount():
+# def test__fruit_order__correct_amount():
     """
     The amount of fruits in big and small baskets adds up.
 
@@ -345,14 +345,14 @@ def test__fruit_order__correct_amount():
     Expected: small_baskets
     :return:
     """
-    assert fruit_order(1, 4, 21) == 1
-    assert fruit_order(1, 3, 16) == 1
-    assert fruit_order(101, 0, 101) == 101
-    assert fruit_order(55, 3, 70) == 55
-    assert fruit_order(12, 12, 72) == 12
+    # assert fruit_order(1, 4, 21) == 1
+    # assert fruit_order(1, 3, 16) == 1
+    # assert fruit_order(101, 0, 101) == 101
+    # assert fruit_order(55, 3, 70) == 55
+    # assert fruit_order(12, 12, 72) == 12
 
 
-def test__fruit_order__negative_amount():
+# def test__fruit_order__negative_amount():
     """
     The amount of fruits is negative and the order can not be placed.
 
@@ -365,14 +365,14 @@ def test__fruit_order__negative_amount():
     Expected: -1
     :return:
     """
-    assert fruit_order(1, 4, -21) == -1
-    assert fruit_order(1, 3, -16) == -1
-    assert fruit_order(101, 0, -101) == -1
-    assert fruit_order(55, 3, -70) == -1
-    assert fruit_order(12, 12, -0) == -1
+    # assert fruit_order(1, 4, -21) == -1
+    # assert fruit_order(1, 3, -16) == -1
+    # assert fruit_order(101, 0, -101) == -1
+    # assert fruit_order(55, 3, -70) == -1
+    # assert fruit_order(12, 12, -0) == -1
 
 
-def test__fruit_order__negative_baskets():
+# def test__fruit_order__negative_baskets():
     """
     The amount of fruits is negative and the order can not be placed.
 
@@ -385,9 +385,9 @@ def test__fruit_order__negative_baskets():
     Expected: -1
     :return:
     """
-    assert fruit_order(1, -4, 21) == -1
-    assert fruit_order(-1, 3, 16) == -1
-    assert fruit_order(-101, 0, -101) == -1
-    assert fruit_order(-55, -3, 70) == -1
-    assert fruit_order(55, -3, -70) == -1
-    assert fruit_order(12, -12, -0) == -1
+    # assert fruit_order(1, -4, 21) == -1
+    # assert fruit_order(-1, 3, 16) == -1
+    # assert fruit_order(-101, 0, -101) == -1
+    # assert fruit_order(-55, -3, 70) == -1
+    # assert fruit_order(55, -3, -70) == -1
+    # assert fruit_order(12, -12, -0) == -1
