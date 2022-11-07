@@ -46,7 +46,6 @@ test__fruit_order__negative_baskets()
 """
 
 
-import pytest
 from solution import students_study
 from solution import lottery
 from solution import fruit_order
@@ -63,7 +62,6 @@ def test__students_study__evening_no_coffee_needed():
     Expected: True
     :return:
     """
-
     assert students_study(20, True) is True
     assert students_study(20, False) is True
     assert students_study(22, True) is True
@@ -85,7 +83,6 @@ def test__students_study__morning_coffee_true():
     Expected: True
     :return:
     """
-
     assert students_study(8, True) is True
     assert students_study(12, True) is True
     assert students_study(15, True) is True
@@ -104,7 +101,6 @@ def test__students_study__morning_coffee_false():
     Expected: False
     :return:
     """
-
     assert students_study(9, False) is False
     assert students_study(12, False) is False
     assert students_study(13, False) is False
