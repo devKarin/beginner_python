@@ -285,7 +285,6 @@ def test__lottery__all_equal_negative_numbers():
     Expected: 5
     :return:
     """
-
     assert lottery(-102, -102, -102) == 5
 
 
@@ -305,7 +304,7 @@ def test__lottery__b_and_c_equal_but_not_a():
     assert lottery(17, -1, -1) == 1
 
 
-# def test__lottery__all_numbers_different():
+def test__lottery__all_numbers_different():
     """
     All numbers are different.
 
@@ -315,38 +314,50 @@ def test__lottery__b_and_c_equal_but_not_a():
     Expected: 1
     :return:
     """
-    # assert lottery(5, 4, 3) == 1
-    # assert lottery(0, 5, 1) == 1
-    # assert lottery(50, 5000, 5) == 1
-    # assert lottery(89, 52, 44) == 1
-    # assert lottery(-9, 2, 4) == 1
-    # assert lottery(9, -20, 40) == 1
-    # assert lottery(7, -30, 30) == 1
-    # assert lottery(8, 60, -60) == 1
-    # assert lottery(-2, 68, 2) == 1
-    # assert lottery(-4, 4, 2) == 1
+    assert lottery(5, 4, 3) == 1
+    assert lottery(0, 5, 1) == 1
+    assert lottery(50, 5000, 5) == 1
+    assert lottery(89, 52, 44) == 1
+    assert lottery(-9, 2, 4) == 1
+    assert lottery(9, -20, 40) == 1
+    assert lottery(7, -30, 30) == 1
+    assert lottery(8, 60, -60) == 1
+    assert lottery(-2, 68, 2) == 1
+    assert lottery(-4, 4, 2) == 1
 
 
-# def test__lottery__one_number_equal_to_a():
+def test__lottery__b_equal_to_a_c_different():
     """
-    Number b or c are equal to a.
+    Number b is equal to a.
 
     Test case:
-    a == b or a== c
+    a == b or a != c
 
     Expected: 0
     :return:
     """
-    # assert lottery(5, 5, 3) == 0
-    # assert lottery(5, 4, 5) == 0
-    # assert lottery(5000, 5000, 5) == 0
-    # assert lottery(89, 52, 89) == 0
-    # assert lottery(-8, -8, 8) == 0
-    # assert lottery(-7, -8, -7) == 0
-    # assert lottery(-66, 66, -66) == 0
+    assert lottery(5, 5, 3) == 0
+    assert lottery(5000, 5000, 5) == 0
+    assert lottery(-8, -8, 8) == 0
 
 
-# def test__fruit_order__no_amount():
+def test__lottery__c_equal_to_a_b_different():
+    """
+    Number c is equal to a.
+
+    Test case:
+    a == c or b != c
+
+    Expected: 0
+    :return:
+    """
+    assert lottery(-7, -8, -7) == 0
+    assert lottery(-66, 66, -66) == 0
+    assert lottery(5, 4, 5) == 0
+    assert lottery(89, 52, 89) == 0
+
+
+def test__fruit_order__amount_zero():
     """
     Fruit amount ordered is 0 and order can not be placed.
 
@@ -358,9 +369,9 @@ def test__lottery__b_and_c_equal_but_not_a():
     Expected: -1
     :return:
     """
-    # assert fruit_order(5, 5, 0) == -1
-    # assert fruit_order(0, 0, 0) == -1
-    # assert fruit_order(23, 1, 0) == -1
+    assert fruit_order(5, 5, 0) == -1
+    assert fruit_order(0, 0, 0) == -1
+    assert fruit_order(23, 1, 0) == -1
 
 
 # def test__fruit_order__no_big_baskets():
