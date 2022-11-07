@@ -369,9 +369,9 @@ def test__lottery__c_equal_to_a_b_different():
     Expected: -1
     :return:
     """
-    assert fruit_order(5, 5, 0) == -1
-    assert fruit_order(0, 0, 0) == -1
-    assert fruit_order(23, 1, 0) == -1
+    # assert fruit_order(5, 5, 0) == -1
+    # assert fruit_order(0, 0, 0) == -1
+    # assert fruit_order(23, 1, 0) == -1
 
 
 # def test__fruit_order__no_big_baskets():
