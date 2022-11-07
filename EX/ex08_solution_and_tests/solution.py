@@ -62,20 +62,24 @@ def fruit_order(small_baskets: int, big_baskets: int, ordered_amount: int) -> in
     (4, 1, 9) -> 4
     (3, 1, 10) -> -1
     """
-    # If there's no amount, zero small baskets are needed.
+    # If there is no amount, zero small baskets are needed.
     if ordered_amount == 0:
         return 0
-    # If big baskets are zero, don't divide by zero
-    # and if there's not enough small baskets, the order can't be fulfilled.
+    # If there are no big baskets and not enough small baskets, the order can't be placed.
     elif big_baskets == 0 and small_baskets < ordered_amount:
         return -1
-    # If there are no big baskets, but enough small baskets, small baskets' count is equal to ordered amount.
+    # If there are no big baskets, but enough small baskets, the amount of small baskets needed
+    # is equal to ordered amount.
     elif big_baskets == 0:
         return ordered_amount
-    # If there are big and small baskets, but the amount left doesn't fit into small baskets,
-    # the order can not be fulfilled.
+    # If there are big and small baskets, but the amount left from big_baskets
+    # doesn't fit into small baskets, the order can not be fulfilled.
     elif ordered_amount - big_baskets * 5 > small_baskets:
         return -1
-    # If there are enough big and small baskets, return how many small baskets are needed and thereby used.
+    # If there is enough both size of baskets, return how many small baskets are needed and thereby used.
     else:
-        return ordered_amount - big_baskets * 5
+        max_big_baskets_used = ordered_amount // 5
+        if big_baskets > max_big_baskets_used:
+            return ordered_amount - max_big_baskets_used * 5
+        else:
+            return ordered_amount - big_baskets * 5
