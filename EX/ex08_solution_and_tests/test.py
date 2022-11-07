@@ -116,7 +116,7 @@ def test__students_study__morning_edge_case_coffee_true():
     assert students_study(17, True) is True
 
 
-# def test__students_study__morning_coffee_false():
+def test__students_study__morning_coffee_false():
     """
     In the morning it's crucial to have coffee in order students can study.
 
@@ -127,14 +127,27 @@ def test__students_study__morning_edge_case_coffee_true():
     Expected: False
     :return:
     """
-    # assert students_study(9, False) is False
-    # assert students_study(12, False) is False
-    # assert students_study(13, False) is False
-    # assert students_study(5, False) is False
-    # assert students_study(17, False) is False
+    assert students_study(9, False) is False
+    assert students_study(12, False) is False
+    assert students_study(13, False) is False
 
 
-# def test__students_study__night_no_study():
+def test__students_study__morning_edge_case_coffee_false():
+    """
+    In the morning it's crucial to have coffee in order students can study.
+
+    Test case:
+    time 5 or 17 (morning)
+    coffee is False
+
+    Expected: False
+    :return:
+    """
+    assert students_study(5, False) is False
+    assert students_study(17, False) is False
+
+
+def test__students_study__night_no_coffee_needed():
     """
     In the night it doesn't matter whether students receive coffee or not - they sleep.
 
@@ -145,14 +158,27 @@ def test__students_study__morning_edge_case_coffee_true():
     Expected: False
     :return:
     """
-    # assert students_study(2, True) is False
-    # assert students_study(2, False) is False
-    # assert students_study(3, True) is False
-    # assert students_study(3, False) is False
-    # assert students_study(1, True) is False
-    # assert students_study(1, False) is False
-    # assert students_study(4, True) is False
-    # assert students_study(4, False) is False
+    assert students_study(2, True) is False
+    assert students_study(2, False) is False
+    assert students_study(3, True) is False
+    assert students_study(3, False) is False
+
+
+def test__students_study__night_edge_case_no_coffee_needed():
+    """
+    In the night it doesn't matter whether students receive coffee or not - they sleep.
+
+    Test case:
+    time 1-4 (night)
+    coffee is True or False (coffee not needed).
+
+    Expected: False
+    :return:
+    """
+    assert students_study(1, True) is False
+    assert students_study(1, False) is False
+    assert students_study(4, True) is False
+    assert students_study(4, False) is False
 
 
 # def test_students_study__invalid_time_0():
@@ -200,7 +226,7 @@ def test__students_study__morning_edge_case_coffee_true():
     # assert students_study(-2, True) is False
 
 
-# def test__lottery__all_winning_numbers():
+def test__lottery__all_winning_numbers():
     """
     All numbers are winning numbers.
 
@@ -210,7 +236,7 @@ def test__students_study__morning_edge_case_coffee_true():
     Expected: 10
     :return:
     """
-    # assert lottery(5, 5, 5) == 10
+    assert lottery(5, 5, 5) == 10
 
 
 # def test__lottery__all_equal_numbers():
