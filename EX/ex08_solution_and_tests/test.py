@@ -20,22 +20,31 @@ test__students_study__night_no_coffee_needed()
     -> Tests nighttime 1-4 regardless the coffee.
 test__students_study__night_edge_case_no_coffee_needed()
     -> Tests nighttime 1 or 4 regardless the coffee.
+
 test_students_study__invalid_time_0()
     -> Tests out of range time 0 regardless the coffee.
 test_students_study__invalid_time_28()
     -> Tests out of range time 28 regardless the coffee.
 test__students_study__invalid_time_negative()
     -> Tests out of range time -2 regardless the coffee.
+
 test__lottery__all_winning_numbers()
     -> Tests all winning numbers.
-test__lottery__all_equal_numbers()
-    -> Tests all equal numbers but not winning numbers.
+test__lottery__all_equal_positive_numbers()
+    -> Tests all equal positive numbers but not winning numbers.
+test__lottery__all_equal_zero()
+    -> Tests all zeros.
+test__lottery__all_equal_negative_numbers()
+    -> Tests all equal negative numbers.
 test__lottery__b_and_c_equal_but_not_a()
     -> Tests numbers b and c are equal with each other but not equal with a.
 test__lottery__all_numbers_different()
     -> Tests all different numbers.
-test__lottery__one_number_equal_to_a()
-    -> Tests number b or c are equal to a.
+test__lottery__b_equal_to_a_c_different()
+    -> Tests number b and a are equal with each other but not equal to c.
+test__lottery__c_equal_to_a_b_different()
+    -> Tests number c and a are equal with each other but not equal to b.
+
 test__fruit_order__no_amount()
     -> Tests fruit amount 0 - the order can not be placed.
 test__fruit_order__no_big_baskets()
@@ -249,7 +258,7 @@ def test__lottery__all_winning_numbers():
 
 def test__lottery__all_equal_positive_numbers():
     """
-    All numbers are equal numbers, but not winning numbers.
+    All numbers are equal positive numbers, but not winning numbers.
 
     Test case:
     a == b == c != 5
@@ -264,7 +273,7 @@ def test__lottery__all_equal_positive_numbers():
 
 def test__lottery__all_equal_zero():
     """
-    All numbers are equal numbers, but not winning numbers.
+    All numbers are zero.
 
     Test case:
     a == b == c == 0
@@ -277,7 +286,7 @@ def test__lottery__all_equal_zero():
 
 def test__lottery__all_equal_negative_numbers():
     """
-    All numbers are equal numbers, but not winning numbers.
+    All numbers are equal negative numbers.
 
     Test case:
     a == b == c == -any
@@ -331,7 +340,7 @@ def test__lottery__b_equal_to_a_c_different():
     Number b is equal to a.
 
     Test case:
-    a == b or a != c
+    a == b != c
 
     Expected: 0
     :return:
@@ -343,10 +352,10 @@ def test__lottery__b_equal_to_a_c_different():
 
 def test__lottery__c_equal_to_a_b_different():
     """
-    Number c is equal to a.
+    Number c is equal to a, but not equal to b.
 
     Test case:
-    a == c or b != c
+    a == c != b
 
     Expected: 0
     :return:
@@ -357,7 +366,7 @@ def test__lottery__c_equal_to_a_b_different():
     assert lottery(89, 52, 89) == 0
 
 
-# def test__fruit_order__amount_zero():
+def test__fruit_order__amount_zero():
     """
     Fruit amount ordered is 0 and order can not be placed.
 
@@ -366,26 +375,49 @@ def test__lottery__c_equal_to_a_b_different():
     big_baskets == any
     ordered_amount == 0
 
-    Expected: -1
+    Expected: 0
     :return:
     """
-    # assert fruit_order(5, 5, 0) == -1
-    # assert fruit_order(0, 0, 0) == -1
-    # assert fruit_order(23, 1, 0) == -1
+    assert fruit_order(5, 5, 0) == 0
+    assert fruit_order(0, 0, 0) == 0
+    assert fruit_order(23, 1, 0) == 0
+    assert fruit_order(0, 4, 0) == 0
+    assert fruit_order(200, 0, 0) == 0
 
 
-# def test__fruit_order__no_big_baskets():
+def test__fruit_order__no_big_baskets_not_enough_small_baskets():
     """
-    No big baskets are ordered.
+    There are no big baskets and not enough small baskets.
 
     Test case:
-    small_baskets == any
+    small_baskets < ordered_amount
     big_baskets == 0
     ordered_amount == any
 
-    Expected: small_baskets
+    Expected: -1
     :return:
     """
+    assert fruit_order(8, 0, 12) == -1
+    assert fruit_order(10, 0, 99999) == -1
+    assert fruit_order(1, 0, 2) == -1
+
+
+def test__fruit_order__no_big_baskets_enough_small_baskets():
+    """
+    There are no big baskets but enough small baskets.
+
+    Test case:
+    small_baskets >= ordered_amount
+    big_baskets == 0
+    ordered_amount == any
+
+    Expected: ordered_amount
+    :return:
+    """
+    assert fruit_order(1, 0, 1) == 1
+    assert fruit_order(9, 0, 4) == 4
+    assert fruit_order(23302, 0, 10203) == 10203
+
     # assert fruit_order(12, 0, 12) == 12
     # assert fruit_order(9, 0, 9) == 9
     # assert fruit_order(230, 0, 230) == 230
