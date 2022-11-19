@@ -72,7 +72,8 @@ def find_sentences(text: str) -> list:
     :param text: given string to find sentences from
     :return: list of sentences found in given string
     """
-    # In first non-capturing group find pattern which begins with one or more capital letters
+    # In first non-capturing group find pattern which begins with one or more
+    # quotation marks or one or more capital letters
     # followed by zero or more letters, numbers or dashes and zero or one whitespace character.
     # In the second non-capturing group find zero or many times pattern where there is
     # zero or more letters, zero or one comma, dash, colon, semicolon or whitespace.
@@ -80,7 +81,8 @@ def find_sentences(text: str) -> list:
     # and one or more dots, exclamation marks or question marks.
     # In the fourth non-capturing group find zero or more whitespace characters.
     # Bind those non-capturing groups into one capturing group which represents a sentence.
-    pattern = r"((?:[\"\']*[A-ZÕÄÖÜ]+[\wõäöü]*[\"\']*\s?)(?:[\"\']*[\wÕÄÖÜõäöü]*[\"\']*[\,\-\:\;]?[\"\']*\s?)*" \
+    pattern = r"((?:[\"\']*[A-Z0-9ÕÄÖÜ]+[\wõäöü]*[\,\-\:\;]?[\"\']*[\,\-\:\;]?\s?)" \
+              r"(?:[\"\']*[\wÕÄÖÜõäöü]*[\"\']*[\,\-\:\;]?[\"\']*\s?)*" \
               r"(?:[\"\']*[\wÕÄÖÜõäöü]+[\"\']*[\.\!\?]+))[\"\']*(?:\s?)"
     # Return a list for all non-overlapping matches found.
     match = re.findall(pattern, text)
@@ -203,7 +205,7 @@ if __name__ == '__main__':
     print(find_words_from_sentence("Täpitähed on: Ä, Ö, Ü, Õ."))
     # ['Täpitähed', 'on', 'Ä', 'Ö', 'Ü', 'Õ']
 
-    print(find_words_from_sentence("Täpitähed on - Ä, Ö, Ü, Õ, ä ö, ü, õ?!"))
+    print(find_words_from_sentence("Täpitähed: Ä, Ö, Ü, Õ, ä ö, ü, õ?!"))
     # ['Täpitähed', 'on', 'Ä', 'Ö', 'Ü', 'Õ', 'ä', 'ö', 'ü', 'õ']
 
     print(find_words_from_sentences_only(
