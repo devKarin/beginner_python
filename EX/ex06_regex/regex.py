@@ -103,6 +103,9 @@ def find_words_from_sentence(sentence: str) -> list:
     :param sentence: given sentence to find words from
     :return: list of words found in given sentence
     """
+    """
+    Comment out for testing purposes.
+    
     final_list = []
     # Find sentences using previous function. This is for the case multiple sentences is inserted.
     for item in find_sentences(sentence):
@@ -110,6 +113,12 @@ def find_words_from_sentence(sentence: str) -> list:
         # Add all elements from list returned from split method into the final list.
         final_list.extend(re.split(r"[^\wÕÄÖÜõäöü]+", item))
         # Remove the empty string from list, which was added as the reminder of the initial string.
+        final_list.remove("")
+    return final_list
+    """
+    final_list = []
+    final_list.extend(re.split(r"[^\wÕÄÖÜõäöü]+", sentence))
+    if "" in final_list:
         final_list.remove("")
     return final_list
 
@@ -124,7 +133,12 @@ def find_words_from_sentences_only(text: str) -> list:
     :param text: given string to find words from
     :return: list of words found in sentences from given string
     """
-    return find_words_from_sentence(text)
+    # return find_words_from_sentence(text)
+    sentences = find_sentences(text)
+    final_list = []
+    for sentence in sentences:
+        final_list.extend(find_words_from_sentence(sentence))
+    return final_list
 
 
 def find_years(text: str) -> list:
@@ -205,8 +219,8 @@ if __name__ == '__main__':
     print(find_words_from_sentence("Täpitähed on: Ä, Ö, Ü, Õ."))
     # ['Täpitähed', 'on', 'Ä', 'Ö', 'Ü', 'Õ']
 
-    print(find_words_from_sentence("Täpitähed: Ä, Ö, Ü, Õ, ä ö, ü, õ?!"))
-    # ['Täpitähed', 'on', 'Ä', 'Ö', 'Ü', 'Õ', 'ä', 'ö', 'ü', 'õ']
+    print(find_words_from_sentence("Täpitähed Ä Ü Õ Ö ä õ ü ö"))
+    # ['Täpitähed', 'Ä', 'Ü', 'Õ', 'Ö', 'ä', 'õ', 'ü', 'ö']
 
     print(find_words_from_sentences_only(
         'See on esimene - ä lause. See, on teine: lause! see ei ole lause. Aga kas see on? jah, oli.'))
