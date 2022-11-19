@@ -80,8 +80,8 @@ def find_sentences(text: str) -> list:
     # and one or more dots, exclamation marks or question marks.
     # In the fourth non-capturing group find zero or more whitespace characters.
     # Bind those non-capturing groups into one capturing group which represents a sentence.
-    pattern = r"((?:[A-ZÕÄÖÜ]+[\wõäöü]*\s?)(?:\"?\'?[\wÕÄÖÜõäöü]*\"?\'?\,?\-?\:?\;?\s?)*" \
-              r"(?:[\wÕÄÖÜõäöü]+[\.\!\?]+))(?:\s?)"
+    pattern = r"((?:[\"\']*[A-ZÕÄÖÜ]+[\wõäöü]*[\"\']*\s?)(?:[\"\']*[\wÕÄÖÜõäöü]*[\"\']*[\,\-\:\;]?[\"\']*\s?)*" \
+              r"(?:[\"\']*[\wÕÄÖÜõäöü]+[\"\']*[\.\!\?]+))[\"\']*(?:\s?)"
     # Return a list for all non-overlapping matches found.
     match = re.findall(pattern, text)
     return match
@@ -102,7 +102,7 @@ def find_words_from_sentence(sentence: str) -> list:
     :return: list of words found in given sentence
     """
     final_list = []
-    # Find sentences using previous function.
+    # Find sentences using previous function. This is for the case multiple sentences is inserted.
     for item in find_sentences(sentence):
         # Split the sentence at any non-word character.
         # Add all elements from list returned from split method into the final list.
@@ -203,7 +203,7 @@ if __name__ == '__main__':
     print(find_words_from_sentence("Täpitähed on: Ä, Ö, Ü, Õ."))
     # ['Täpitähed', 'on', 'Ä', 'Ö', 'Ü', 'Õ']
 
-    print(find_words_from_sentence("'Täpitähed' on: 'Ä', 'Ö', 'Ü', Õ, ä, ö, ü, õ."))
+    print(find_words_from_sentence("Täpitähed on - Ä, Ö, Ü, Õ, ä ö, ü, õ?!"))
     # ['Täpitähed', 'on', 'Ä', 'Ö', 'Ü', 'Õ', 'ä', 'ö', 'ü', 'õ']
 
     print(find_words_from_sentences_only(
