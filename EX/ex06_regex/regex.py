@@ -29,11 +29,12 @@ def find_words(text: str) -> list:
 
     Words must be found using regex.
 
-    :param text: given string
-     find words from
+    :param text: given string to find words from
     :return: list of words found in given string
     """
+    # Find pattern which starts with single capital letter followed by one or more lowercase letters.
     pattern = r"([A-Z,Õ,Ä,Ö,Ü][a-z,ü,ä,ö,ü]+)"
+    # Return a list for all non-overlapping matches found.
     match = re.findall(pattern, text)
     return match
 
@@ -51,7 +52,9 @@ def find_words_with_vowels(text: str) -> list:
     :param text: given string to find words from
     :return: list of words that start with a vowel found in given string
     """
-    pattern = r"([A,E,I,O,U,Õ,Ä,Ö,Ü][a-z,ü,ä,ö,ü]+)"
+    # Find pattern which starts with a single capital vowel followed by one or more lowercase letters.
+    pattern = r"([AEIOUÕÄÖÜ][a-züäöü]+)"
+    # Return a list for all non-overlapping matches found.
     match = re.findall(pattern, text)
     return match
 
@@ -69,9 +72,17 @@ def find_sentences(text: str) -> list:
     :param text: given string to find sentences from
     :return: list of sentences found in given string
     """
-    pattern = \
-        r"((?:[A-Z,Õ,Ä,Ö,Ü]+[a-z,õ,ä,ö,ü,A-Z,Õ,Ä,Ü,Ö,0-9]*\s?)" \
-        r"(?:[a-z,õ,ä,ö,ü,A-Z,Õ,Ä,Ü,Ö,0-9]*,?\-?\:?\;?\s?)*(?:[a-z,õ,ä,ö,ü,A-Z,Õ,Ä,Ü,Ö,0-9]+[\.\!\?]{1,}))(?:\s?)"
+    # In first non-capturing group find pattern which begins with one or more capital letters
+    # followed by zero or more letters, numbers or dashes and zero or one whitespace character.
+    # In the second non-capturing group find zero or many times pattern where there is
+    # zero or more letters, zero or one comma, dash, colon, semicolon or whitespace.
+    # In the third non-capturing group find pattern where there is one or more letters
+    # and one or more dots, exclamation marks or question marks.
+    # In the fourth non-capturing group find zero or more whitespace characters.
+    # Bind those non-capturing groups into one capturing group which represents a sentence.
+    pattern = r"((?:[A-ZÕÄÖÜ]+[a-zõäöü0-9_]*\s?)(?:[a-zõäöü0-9_]*\,?\-?\:?\;?\s?)*" \
+              r"(?:[a-zõäöü0-9_]+[\.\!\?]+))(?:\s?)"
+    # Return a list for all non-overlapping matches found.
     match = re.findall(pattern, text)
     return match
 
@@ -91,7 +102,10 @@ def find_words_from_sentence(sentence: str) -> list:
     :return: list of words found in given sentence
     """
     final_list = []
+    # Find sentences using previous function.
     for item in find_sentences(sentence):
+        # Split the sentence at any non-word character.
+        # Add all elements from list returned from split method into the final list.
         final_list.extend(re.split(r"\W+", item))
         # Remove the empty string from list, which was added as the reminder of the initial string.
         final_list.remove("")
@@ -127,7 +141,10 @@ def find_years(text: str) -> list:
     :return: list of years (integers) found in given string
     """
     final_list = []
+    # Find the pattern where four-digit number is not leaded nor followed by a digit.
+    # Iterate over iterator of Match object matching to the pattern.
     for number in re.finditer(r"(?<!\d)\d{4}(?!\d)", text):
+        # Append the whole match converted into integer to the final list.
         final_list.append(int(number.group()))
     return final_list
 
@@ -151,6 +168,10 @@ def find_phone_numbers(text: str) -> dict:
     :return: dict containing the numbers
     """
     phone_book = {}
+    # Find a pattern where the first group can exist one or zero times and consists of
+    # plus-sign followed by three numbers and the second group consists 7-8 digits and
+    # there is zero to multiple space characters between those two groups.
+    # Iterate over iterator of Match object matching to the pattern.
     for phone_number in re.finditer(r"((\+\d{3})? *(\d{7,8}))", text):
         key = phone_number.group(2) or ""
         if key in phone_book:
@@ -175,6 +196,9 @@ if __name__ == '__main__':
 
     print(find_words_from_sentence("Super lause ää, sorry."))
     # ['Super', 'lause', 'ää', 'sorry']
+
+    print(find_words_from_sentence("Täpitähed on: ä, ö, ü, õ."))
+    # ['Täpitähed', 'on', 'ä', 'ö', 'ü', 'õ']
 
     print(find_words_from_sentences_only(
         'See on esimene - ä lause. See, on teine: lause! see ei ole lause. Aga kas see on? jah, oli.'))
