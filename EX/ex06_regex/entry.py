@@ -83,7 +83,8 @@ def parse(row: str) -> Entry:
               r"((?:\d{2})-(?:\d{2})-(?:\d{4}))?" \
               r"(.*)?"
     match = re.search(pattern, row)
-    return Entry(match.group(1), match.group(2), match.group(3), match.group(4), match.group(5), match.group(6))
+    return Entry(match.group(1) or None, match.group(2) or None, match.group(3), match.group(4) or None,
+                 match.group(5) or None, match.group(6) or None)
 
 
 if __name__ == '__main__':
