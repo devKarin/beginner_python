@@ -103,19 +103,6 @@ def find_words_from_sentence(sentence: str) -> list:
     :param sentence: given sentence to find words from
     :return: list of words found in given sentence
     """
-    """
-    Comment out for testing purposes.
-    
-    final_list = []
-    # Find sentences using previous function. This is for the case multiple sentences is inserted.
-    for item in find_sentences(sentence):
-        # Split the sentence at any non-word character.
-        # Add all elements from list returned from split method into the final list.
-        final_list.extend(re.split(r"[^\wÕÄÖÜõäöü]+", item))
-        # Remove the empty string from list, which was added as the reminder of the initial string.
-        final_list.remove("")
-    return final_list
-    """
     final_list = []
     final_list.extend(re.split(r"[^\wÕÄÖÜõäöü]+", sentence))
     if "" in final_list:
