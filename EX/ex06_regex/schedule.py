@@ -151,17 +151,25 @@ def create_schedule_string(input_string: str) -> str:
     :return: schedule data string
     """
     final_string = ""
+    if input_string == "":
+        return (
+            "--------------------\n"
+            "| time | entries   |\n"
+            "--------------------\n"
+            "| No entries found |\n"
+            "--------------------"
+        )
     # Find times and activities using regex.
     matches = find_matches_from_text(input_string)
     # Create a dictionary for schedule.
     schedule_dictionary = create_schedule_dictionary(matches)
     # Create the schedule string from dictionary.
     for time, activities in schedule_dictionary.items():
-        # If the time value has one-digit hour, add space before. Separate time and activities with a dash.
+        # If the time value has one-digit hour, add space before. Separate time and activities with a space.
         if len(time) == 7:
-            final_string += f" {time}-"
+            final_string += f" {time} "
         else:
-            final_string += f"{time}-"
+            final_string += f"{time} "
         for activity in activities:
             final_string += f"{activity}, "
         # Remove the last comma and space.
@@ -246,3 +254,4 @@ if __name__ == '__main__':
     print(create_schedule_string("wat 11:00 teine tekst 11:0 jah ei 10:00 pikktekst "))
     print(create_schedule_string("wat 11:00 t tekst 11:0 j ei 10:00 p "))
     create_schedule_file("schedule_input.txt", "schedule_output.txt")
+    print(create_schedule_string(""))
