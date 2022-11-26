@@ -8,6 +8,9 @@ Available functions:
 create_schedule_file(input_filename: str, output_filename: str) -> None;
 Creates a textfile with schedule string displayed as table from the given input file.
 
+create_schedule_string(input_string: str) -> str;
+Creates schedule string from the given input string. Alternative tot the create_schedule_file function.
+
 find_matches_from_text(input_string: str) -> collections;
 Finds times and activities from the given input string according to the pattern.
 
@@ -18,7 +21,7 @@ unique activities for the given time. Uses function format_time.
 format_time(schedule: dict) -> dict;
 Converts schedule dictionary time string keys from 24-hour format into 12-hour format.
 
-create_schedule_string(input_string: str) -> str;
+create_schedule(input_string: str) -> str;
 Creates a schedule string using find_matches_from_text function and create_schedule_dictionary function.
 
 measure_table_content(schedule_string: str) -> int;
@@ -46,12 +49,27 @@ def create_schedule_file(input_filename: str, output_filename: str) -> None:
     with open(input_filename, "r") as some_file:
         contents = some_file.read()
     # Create schedule as a string using the text from input file.
-    final_string = create_schedule_string(contents)
+    final_string = create_schedule(contents)
     # Transform the schedule string into schedule table string.
     schedule_table = create_table(final_string)
     # Create an output file, write the schedule table there and close the file.
     with open(output_filename, "w") as some_file:
         some_file.write(schedule_table)
+
+
+def create_schedule_string(input_string: str) -> str:
+    """
+    Create schedule string from the given input string.
+
+    This is an alternative to the create_schedule_file function, but without reading input from and writing
+    output to a file.
+    Creates a schedule string using create_schedule function and create_table function.
+    :param input_string: string where from extract schedule data
+    :return: schedule table as a string
+    """
+    final_string = create_schedule(input_string)
+    schedule_table = create_table(final_string)
+    return schedule_table
 
 
 def find_matches_from_text(input_string: str) -> collections:
@@ -142,7 +160,7 @@ def format_time(schedule: dict) -> dict:
     return formatted_dictionary
 
 
-def create_schedule_string(input_string: str) -> str:
+def create_schedule(input_string: str) -> str:
     """
     Create schedule string from the given input string.
 
@@ -151,14 +169,6 @@ def create_schedule_string(input_string: str) -> str:
     :return: schedule data string
     """
     final_string = ""
-    if input_string == "":
-        return (
-            "--------------------\n"
-            "| time | entries   |\n"
-            "--------------------\n"
-            "| No entries found |\n"
-            "--------------------"
-        )
     # Find times and activities using regex.
     matches = find_matches_from_text(input_string)
     # Create a dictionary for schedule.
@@ -255,3 +265,4 @@ if __name__ == '__main__':
     print(create_schedule_string("wat 11:00 t tekst 11:0 j ei 10:00 p "))
     create_schedule_file("schedule_input.txt", "schedule_output.txt")
     print(create_schedule_string(""))
+    print(create_schedule_string("tere tere siin pole uhtegi kellaaega, aga moned numbrid on nagu 12 h."))
