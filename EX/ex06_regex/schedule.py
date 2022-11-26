@@ -225,7 +225,7 @@ def create_table(schedule_string: str) -> str:
     if content_width == 0:
         return (
             "--------------------\n"
-            "| time | entries   |\n"
+            "|  time | entries  |\n"
             "--------------------\n"
             "| No entries found |\n"
             "--------------------"
@@ -243,9 +243,9 @@ def create_table(schedule_string: str) -> str:
 
         # Create table heading.
         # The length of time is always 8, the length of word "time" is 4.
-        space_after_time = " " * (8 - 4 + 1)
+        space_before_time = " " * (8 - 4 + 1)
         table = "{:}\n".format(dashes)
-        table += "|{:}time{:}|{:}entries{:}|\n".format(" ", space_after_time, " ", spaces_for_heading)
+        table += "|{:}time{:}|{:}entries{:}|\n".format(space_before_time, " ", " ", spaces_for_heading)
         table += "{:}\n".format(dashes)
         # Create table body.
         for item in content_row:
