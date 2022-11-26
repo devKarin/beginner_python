@@ -24,8 +24,8 @@ Converts schedule dictionary time string keys from 24-hour format into 12-hour f
 create_schedule(input_string: str) -> str;
 Creates a schedule string using find_matches_from_text function and create_schedule_dictionary function.
 
-measure_table_content(schedule_string: str) -> int;
-Measures the maximum length of activities in characters in schedule string.
+measure_table_content(schedule_string: str) -> tuple;
+Measures the maximum length of time-string and activities in characters in schedule string.
 
 create_table(schedule_string: str) -> str;
 Creates a schedule table as a string from schedule data string. Uses measure_table_content function.
@@ -105,6 +105,10 @@ def create_schedule_dictionary(matches: collections) -> dict:
     """
     schedule_dictionary = {}
     # Fill missing numbers in time with zeros for easier sorting.
+    # Group 1 the whole time-string
+    # Group 2 hours
+    # Group 3 minutes
+    # Group 4 activities
     for match in matches:
         if len(match.group(2)) == 1:
             formatted_time = f"0{match.group(2)}"
@@ -175,11 +179,8 @@ def create_schedule(input_string: str) -> str:
     schedule_dictionary = create_schedule_dictionary(matches)
     # Create the schedule string from dictionary.
     for time, activities in schedule_dictionary.items():
-        # If the time value has one-digit hour, add space before. Separate time and activities with a space.
-        if len(time) == 7:
-            final_string += f" {time} "
-        else:
-            final_string += f"{time} "
+        # Separate time and activities with a dash.
+        final_string += f"{time}-"
         for activity in activities:
             final_string += f"{activity}, "
         # Remove the last comma and space.
@@ -190,23 +191,29 @@ def create_schedule(input_string: str) -> str:
     return final_string
 
 
-def measure_table_content(schedule_string: str) -> int:
+def measure_table_content(schedule_string: str) -> tuple:
     """
-    Measure the length of activities in schedule string.
+    Measure the length of time-string and activities in schedule string.
 
-    Measures the maximum length of activities in characters in schedule string.
+    Measures the maximum length of time and activities in characters in schedule string.
     :param schedule_string: string containing schedule information where different times are separated by newline
-    :return: number of characters
+    :return: tuple containing number of characters of time-string and number of characters of activities string
     """
-    table_width = 0
+    if schedule_string == "":
+        return 0, 0
+    time_width = 0
+    content_width = 0
     # Separate records.
     rows = schedule_string.split("\n")
-    for activities in rows:
-        # The length of the time string is 9 because "xx:xx xM" format + separating "-".
-        # Find the maximum length for listed activities.
-        if len(activities) - 9 > table_width:
-            table_width = len(activities) - 9
-    return table_width
+    for row in rows:
+        # Separate time-string from activities string.
+        time_and_activities = row.split("-")
+        # Find the maximum length for time and listed activities.
+        if len(time_and_activities[0]) > time_width:
+            time_width = len(time_and_activities[0])
+        if len(time_and_activities[1]) > content_width:
+            content_width = len(time_and_activities[1])
+    return time_width, content_width
 
 
 def create_table(schedule_string: str) -> str:
@@ -222,7 +229,7 @@ def create_table(schedule_string: str) -> str:
     # Split the schedule string into rows.
     content_row = schedule_string.split("\n")
     # In case no entries return empty default table.
-    if content_width == 0:
+    if content_width[1] == 0:
         return (
             "--------------------\n"
             "|  time | entries  |\n"
@@ -233,29 +240,31 @@ def create_table(schedule_string: str) -> str:
     else:
         # Dashes and spaces for table heading.
         # If content width is shorter than the word "entries".
-        if content_width <= 7:
+        if content_width[1] <= 7:
             # Pipe + space + time column + space + pipe + space + "entries" length + space + pipe.
-            dashes = "-" * (1 + 1 + 8 + 1 + 1 + 1 + 7 + 1 + 1)
+            dashes = "-" * (1 + 1 + content_width[0] + 1 + 1 + 1 + 7 + 1 + 1)
             spaces_for_heading = " "
         else:
-            dashes = "-" * (1 + 1 + 8 + 1 + 1 + 1 + content_width + 1 + 1)
-            spaces_for_heading = " " * (content_width - 7 + 1)
+            dashes = "-" * (1 + 1 + content_width[0] + 1 + 1 + 1 + content_width[1] + 1 + 1)
+            spaces_for_heading = " " * (content_width[1] - 7 + 1)
 
         # Create table heading.
-        # The length of time is always 8, the length of word "time" is 4.
-        space_before_time = " " * (8 - 4 + 1)
+        # The length of time is received from content_width, the length of word "time" is 4.
+        space_before_time = " " * (content_width[0] - 4 + 1)
         table = "{:}\n".format(dashes)
         table += "|{:}time{:}|{:}entries{:}|\n".format(space_before_time, " ", " ", spaces_for_heading)
         table += "{:}\n".format(dashes)
         # Create table body.
         for item in content_row:
+            content_row_item = item.split("-")
             # Calculate the amount of spaces needed to add to the row.
-            if content_width <= 7:
-                spaces = " " * (7 - len(item[9:]) + 1)
+            if content_width[1] <= 7:
+                spaces = " " * (7 - len(content_row_item[1]) + 1)
             else:
-                spaces = " " * (content_width - len(item[9:]) + 1)
-
-            table += "|{:}{:}{:}|{:}{:}{:}|\n".format(" ", item[:8], " ", " ", item[9:], spaces)
+                spaces = " " * (content_width[1] - len(content_row_item[1]) + 1)
+            space_before_time = " " * (content_width[0] - len(content_row_item[0]) + 1)
+            table += "|{:}{:}{:}|{:}{:}{:}|\n".format(space_before_time,
+                                                      content_row_item[0], " ", " ", content_row_item[1], spaces)
         table += "{:}\n".format(dashes)
     return table
 
@@ -265,4 +274,5 @@ if __name__ == '__main__':
     print(create_schedule_string("wat 11:00 t tekst 11:0 j ei 10:00 p "))
     create_schedule_file("schedule_input.txt", "schedule_output.txt")
     print(create_schedule_string(""))
+    print(create_schedule_string("go 15:03 correct done"))
     print(create_schedule_string("tere tere siin pole uhtegi kellaaega, aga moned numbrid on nagu 12 h."))
