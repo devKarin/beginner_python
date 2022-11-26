@@ -88,7 +88,7 @@ def find_matches_from_text(input_string: str) -> collections:
     # The time and activity are separated by one or more empty spaces.
     # Activity contains only latin letters and is at least on character long.
     # The word for activity ends when any other character is encountered.
-    pattern = r"(?:\s)(((?:[0-2])?(?:[0-9]))[^\d\s]([0-5]?[0-9])) +([A-Za-z]+)"
+    pattern = r"(?:\s)(((?:[0-2])?(?:[0-9]))[^\d]([0-5]?[0-9])) +([A-Za-z]+)"
     # Find matches.
     matches = re.finditer(pattern, input_string)
     return matches
@@ -274,5 +274,6 @@ if __name__ == '__main__':
     print(create_schedule_string("wat 11:00 t tekst 11:0 j ei 10:00 p "))
     create_schedule_file("schedule_input.txt", "schedule_output.txt")
     print(create_schedule_string(""))
+    print(create_schedule_string("s asdf  15 03 correct asfd"))
     print(create_schedule_string("go 15:03 correct done"))
     print(create_schedule_string("tere tere siin pole uhtegi kellaaega, aga moned numbrid on nagu 12 h."))
