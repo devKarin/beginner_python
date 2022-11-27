@@ -38,6 +38,7 @@ class Entry:
         If the object doesn't have date of birth given, return None.
         :return: Date of birth as an f-string.
         """
+        # Search the pattern within the date-string given in constructor and return it formatted.
         if not self.date_of_birth:
             return
         else:
@@ -77,12 +78,18 @@ def parse(row: str) -> Entry:
     :param row: String representation of the data.
     :return: Entry object with filled values.
     """
+    # Find first name and last name (separate groups),
+    # find id-code,
+    # find phone number,
+    # find date of birth,
+    # find address - all whats left.
     pattern = r"(?:([A-ZÕÄÖÜ][a-zõäöü]+)([A-ZÕÄÖÜ][a-zõäöü]+))?" \
               r"(\d{11})" \
               r"((?:\+\d{3})? *(?:\d{7,8}))?" \
               r"((?:\d{2})-(?:\d{2})-(?:\d{4}))?" \
               r"(.*)?"
     match = re.search(pattern, row)
+    # If there is a missing group, give it a value "None", except in case of id-code which is always present.
     return Entry(match.group(1) or None, match.group(2) or None, match.group(3), match.group(4) or None,
                  match.group(5) or None, match.group(6) or None)
 

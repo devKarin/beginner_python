@@ -72,7 +72,7 @@ def find_sentences(text: str) -> list:
     :param text: given string to find sentences from
     :return: list of sentences found in given string
     """
-    # In first non-capturing group find pattern which begins with one or more
+    # In first non-capturing group find pattern which begins with zero or more
     # quotation marks or one or more capital letters
     # followed by zero or more letters, numbers or dashes and zero or one whitespace character.
     # In the second non-capturing group find zero or many times pattern where there is
@@ -81,9 +81,9 @@ def find_sentences(text: str) -> list:
     # and one or more dots, exclamation marks or question marks.
     # In the fourth non-capturing group find zero or more whitespace characters.
     # Bind those non-capturing groups into one capturing group which represents a sentence.
-    pattern = r"((?:[\"\']*[A-Z0-9ÕÄÖÜ]+[\wõäöü]*[\,\-\:\;]?[\"\']*[\,\-\:\;]?\s?)" \
-              r"(?:[\"\']*[\wÕÄÖÜõäöü]*[\"\']*[\,\-\:\;]?[\"\']*\s?)*" \
-              r"(?:[\"\']*[\wÕÄÖÜõäöü]+[\"\']*[\.\!\?]+))[\"\']*(?:\s?)"
+    pattern = r"((?:[\"']*[A-Z0-9ÕÄÖÜ]+[\wõäöü]*[-,:;]?[\"']*[-,:;]?\s?)" \
+              r"(?:[\"']*[\wÕÄÖÜõäöü]*[\"']*[-,:;]?[\"']*\s?)*" \
+              r"(?:[\"']*[\wÕÄÖÜõäöü]+[\"']*[.!?]+))[\"']*(?:\s?)"
     # Return a list for all non-overlapping matches found.
     match = re.findall(pattern, text)
     return match

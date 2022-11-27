@@ -82,7 +82,7 @@ def find_matches_from_text(input_string: str) -> collections:
     # Time is always preceded by a new line or a space
     # The number of hours can be 2- or 1-digit. In first case the first number is between 0 and 2.
     # The second number or in case 1-digit hours the number is between 0 and 9.
-    # Separator between hours and minutes can be any character except a digit or whitespace.
+    # Separator between hours and minutes can be any character except a digit.
     # The number of minutes can be 2- or 1-digit. In first case the first number is between 0 and 5.
     # The second number or in case 1-digit minutes the number is between 0 and 9.
     # The time and activity are separated by one or more empty spaces.
