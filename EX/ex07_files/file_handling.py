@@ -208,7 +208,7 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
     :return: None
     """
     # Create header.
-    final_list = [['name', 'date', 'town']]
+    final_list = [['name', 'town', 'date']]
     # For collecting the names absent in dates file but present in towns file.
     helper_list = []
     names_dictionary = {}
@@ -233,9 +233,10 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
         # If the name is not present in names dictionary, add it into helper list
         # in order to append it later to the final list and preserve name appearance order.
         if name not in names_dictionary:
-            helper_list.append([name, "-", town])
+            # If the name is not in names dictionary, there cannot be a date either.
+            helper_list.append([name, town, "-"])
         else:
-            final_list.append([name, names_dictionary[name], town])
+            final_list.append([name, town, names_dictionary[name]])
     final_list.extend(helper_list)
     # Write the final list into file using predefined function write_csv_file.
     write_csv_file(csv_output_filename, final_list)
@@ -244,8 +245,8 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
 def read_csv_file_into_list_of_dicts(filename: str) -> list:
     """
     Read csv file into list of dictionaries.
-    Header line will be used for dict keys.
 
+    Header line will be used for dict keys.
     Each line after header line will result in a dict inside the result list.
     Every line contains the same number of fields.
 
