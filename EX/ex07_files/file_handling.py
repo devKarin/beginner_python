@@ -229,14 +229,14 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
         towns_dictionary.update({name_and_town[0]: name_and_town[1] or "-"})
 
     # Merge names and towns dictionaries into final list.
-    for name, town in towns_dictionary.items():
-        # If the name is not present in names dictionary, add it into helper list
+    for name, date in names_dictionary.items():
+        # If the name is present in towns dictionary, add it straight into final list
         # in order to append it later to the final list and preserve name appearance order.
-        if name not in names_dictionary:
+        if name in towns_dictionary:
             # If the name is not in names dictionary, there cannot be a date either.
-            helper_list.append([name, town, "-"])
+            final_list.append([name, towns_dictionary[name], date])
         else:
-            final_list.append([name, town, names_dictionary[name]])
+            helper_list.append([name, "-", names_dictionary[name]])
     final_list.extend(helper_list)
     # Write the final list into file using predefined function write_csv_file.
     write_csv_file(csv_output_filename, final_list)
