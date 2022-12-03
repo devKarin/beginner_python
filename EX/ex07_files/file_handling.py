@@ -11,7 +11,10 @@ write_contents_to_file(filename: str, contents: str) -> None; Writes contents to
 write_lines_to_file(filename: str, lines: list) -> None; Writes lines to file.
 write_csv_file(filename: str, data: list) -> None; Writes data into CSV file.
 merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv_output_filename: str) -> None;
-Merge information from two files into one CSV file.
+Merges information from two files into one CSV file.
+
+read_csv_file_into_list_of_dicts(filename: str) -> list; Reads csv file into list of dictionaries.
+write_list_of_dicts_to_csv_file(filename: str, data: list) -> None; Writes list of dicts into csv file.
 
 """
 
@@ -233,10 +236,15 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
         # If the name is present in towns dictionary, add it straight into final list
         # in order to append it later to the final list and preserve name appearance order.
         if name in towns_dictionary:
-            # If the name is not in names dictionary, there cannot be a date either.
             final_list.append([name, towns_dictionary[name], date])
+        # If the name is not in towns dictionary, there cannot be a town record either.
         else:
             helper_list.append([name, "-", names_dictionary[name]])
+    # For the names not present in names_dictionary, but present in towns_dictionary, because they
+    # were left unhandled within the pevious loop.
+    for name, town in towns_dictionary.items():
+        if name not in names_dictionary:
+            helper_list.append([name, town, "-"])
     final_list.extend(helper_list)
     # Write the final list into file using predefined function write_csv_file.
     write_csv_file(csv_output_filename, final_list)
@@ -265,13 +273,20 @@ def read_csv_file_into_list_of_dicts(filename: str) -> list:
     If there are only header or no rows in the CSV-file,
     the result is an empty list.
 
-    The order of the elements in the list should be the same
+    The order of the elements in the list is the same
     as the lines in the file (the first line becomes the first element etc.)
 
     :param filename: CSV-file to read.
     :return: List of dictionaries where keys are taken from the header.
     """
-    pass
+    list_of_dictionaries = []
+    with open(filename, newline='') as csv_file:
+        # https://docs.python.org/3/library/csv.html#csv.DictReader
+        # class csv.DictReader(f, fieldnames=None, restkey=None, restval=None, dialect='excel', *args, **kwds)
+        csv_reader = csv.DictReader(csv_file)
+        for row in csv_reader:
+            list_of_dictionaries.append(row)
+    return list_of_dictionaries
 
 
 def write_list_of_dicts_to_csv_file(filename: str, data: list) -> None:
@@ -306,13 +321,27 @@ def write_list_of_dicts_to_csv_file(filename: str, data: list) -> None:
 
     Fields which are not present in one line will be empty.
 
-    The order of the lines in the file should be the same
+    The order of the lines in the file is the same
     as the order of elements in the list.
 
     :param filename: File to write to.
     :param data: List of dictionaries to write to the file.
     :return: None
     """
+    fieldnames = []
+    # In case there are different keys in the input data dictionaries.
+    # In case it is known to have dictionaries with same keys in data, fieldnames = data[0].keys() should be enough.
+    for dictionary in data:
+        keys = dictionary.keys()
+        for key in keys:
+            if key not in fieldnames:
+                fieldnames.append(key)
+
+    with open(filename, 'w', newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in data:
+            writer.writerow(row)
 
 
 if __name__ == '__main__':
@@ -350,3 +379,39 @@ if __name__ == '__main__':
     #   ["john", "12"],
     #   ["mary", "14"]
     # ]
+
+    print(read_csv_file_into_list_of_dicts("example2.csv"))
+    # [
+    #   {"name": "John", "age": "12", "sex": "M"},
+    #   {"name": "Mary", "age": "13", "sex": "F"},
+    # ]
+
+    print(read_csv_file_into_list_of_dicts("example3.csv"))
+    # [
+    #   {"name": "John", "age": "12", "sex": "M", "town": "tallinn"},
+    #   {"name": "Mary", "age": "13", "sex": "F", "town": "london"},
+    # ]
+
+    write_list_of_dicts_to_csv_file("output2.csv", [
+        {"name": "john", "age": "23"},
+        {"name": "mary", "age": "44"}
+    ])
+    # name,age
+    # john,23
+    # mary,44
+
+    write_list_of_dicts_to_csv_file("output3.csv", [
+        {"name": "john", "age": "12"},
+        {"name": "mary", "town": "London"}
+    ])
+    # name,age,town
+    # john,12,
+    # mary,,London
+
+    write_list_of_dicts_to_csv_file("output4.csv", [
+        {"name": "John"},
+        {"name": "Mary", "age": "19", "town": "tallinn"}
+    ])
+    # name,age,town
+    # John,,
+    # Mary,19,tallinn
