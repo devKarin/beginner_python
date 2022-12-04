@@ -19,6 +19,7 @@ write_list_of_dicts_to_csv_file(filename: str, data: list) -> None; Writes list 
 """
 
 import csv
+from datetime import datetime
 
 
 def read_file_contents(filename: str) -> str:
@@ -250,7 +251,22 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
     write_csv_file(csv_output_filename, final_list)
 
 
-def read_csv_file_into_list_of_dicts(filename: str) -> list:
+def get_value_types(dictionary: dict, value_types: dict) -> dict:
+    for key, value in dictionary.items():
+        if (value != '-') and (key not in value_types or value_types[key] != 'str'):
+            try:
+                int(value)
+                value_types.update({key: 'int'})
+            except ValueError:
+                try:
+                    datetime.strptime(value, '%d.%m.%Y').date()
+                    value_types.update({key: 'datetime.date'})
+                except ValueError:
+                    value_types.update({key: 'str'})
+    return value_types
+
+
+def read_csv_file_into_list_of_dicts(filename: str, *typed: bool) -> list:
     """
     Read csv file into list of dictionaries.
 
@@ -283,9 +299,22 @@ def read_csv_file_into_list_of_dicts(filename: str) -> list:
     with open(filename, newline='') as csv_file:
         # https://docs.python.org/3/library/csv.html#csv.DictReader
         # class csv.DictReader(f, fieldnames=None, restkey=None, restval=None, dialect='excel', *args, **kwds)
+        # Saves the file as a csv.DictReader object
         csv_reader = csv.DictReader(csv_file)
+        value_types = {}
         for row in csv_reader:
+            if typed:
+                value_types = get_value_types(row, value_types)
             list_of_dictionaries.append(row)
+        if typed:
+            for dictionary in list_of_dictionaries:
+                for key, value in dictionary.items():
+                    if value == '-':
+                        dictionary.update({key: None})
+                    elif value_types[key] == 'int':
+                        dictionary.update({key: int(value)})
+                    elif value_types[key] == 'datetime.date':
+                        dictionary.update({key: datetime.strptime(value, '%d.%m.%Y').date()})
     return list_of_dictionaries
 
 
@@ -338,10 +367,91 @@ def write_list_of_dicts_to_csv_file(filename: str, data: list) -> None:
                 fieldnames.append(key)
 
     with open(filename, 'w', newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        writer.writeheader()
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, restval='')
+        if fieldnames:
+            writer.writeheader()
         for row in data:
             writer.writerow(row)
+
+
+def read_csv_file_into_list_of_dicts_using_datatypes(filename: str) -> list:
+    """
+    Read data from file and cast values into different datatypes.
+
+    If a field contains only numbers, turn this into int.
+    If a field contains only dates (in format dd.mm.yyyy), turn this into date.
+    Otherwise the datatype is string (default by csv reader).
+
+    Example:
+    name,age
+    john,11
+    mary,14
+
+    Becomes ('age' is int):
+    [
+      {'name': 'john', 'age': 11},
+      {'name': 'mary', 'age': 14}
+    ]
+
+    But if all the fields cannot be cast to int, the field is left to string.
+    Example:
+    name,age
+    john,11
+    mary,14
+    ago,unknown
+
+    Becomes ('age' cannot be cast to int because of "ago"):
+    [
+      {'name': 'john', 'age': '11'},
+      {'name': 'mary', 'age': '14'},
+      {'name': 'ago', 'age': 'unknown'}
+    ]
+
+    Example:
+    name,date
+    john,01.01.2020
+    mary,07.09.2021
+
+    Becomes:
+    [
+      {'name': 'john', 'date': datetime.date(2020, 1, 1)},
+      {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+    ]
+
+    Example:
+    name,date
+    john,01.01.2020
+    mary,late 2021
+
+    Becomes:
+    [
+      {'name': 'john', 'date': "01.01.2020"},
+      {'name': 'mary', 'date': "late 2021"},
+    ]
+
+    Value "-" indicates missing value and should be None in the result
+    Example:
+    name,date
+    john,-
+    mary,07.09.2021
+
+    Becomes:
+    [
+      {'name': 'john', 'date': None},
+      {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+    ]
+
+    None value also doesn't affect the data type
+    (the column will have the type based on the existing values).
+
+    The order of the elements in the list should be the same
+    as the lines in the file.
+
+    For date, strptime can be used:
+    https://docs.python.org/3/library/datetime.html#examples-of-usage-date
+    """
+    list_of_dictionaries = read_csv_file_into_list_of_dicts(filename, True)
+    return list_of_dictionaries
 
 
 if __name__ == '__main__':
@@ -350,7 +460,7 @@ if __name__ == '__main__':
     # hello
     # world
 
-    print(read_csv_file("data.csv"))
+    print("read_csv_file", read_csv_file("data.csv"))
     # [
     #     ["id", "name", "town", "birthday"],
     #     ["1", "ago", "tallinn", "01.01.2021"],
@@ -373,20 +483,20 @@ if __name__ == '__main__':
     # mati,narva,06.08.2020
     # mari,tallinn,-
 
-    print(read_csv_file("Example.csv"))
+    print("read_csv_file", read_csv_file("Example.csv"))
     # [
     #   ["name", "age"],
     #   ["john", "12"],
     #   ["mary", "14"]
     # ]
 
-    print(read_csv_file_into_list_of_dicts("example2.csv"))
+    print("read_csv_file_into_list_of_dicts", read_csv_file_into_list_of_dicts("example2.csv"))
     # [
     #   {"name": "John", "age": "12", "sex": "M"},
     #   {"name": "Mary", "age": "13", "sex": "F"},
     # ]
 
-    print(read_csv_file_into_list_of_dicts("example3.csv"))
+    print("read_csv_file_into_list_of_dicts", read_csv_file_into_list_of_dicts("example3.csv"))
     # [
     #   {"name": "John", "age": "12", "sex": "M", "town": "tallinn"},
     #   {"name": "Mary", "age": "13", "sex": "F", "town": "london"},
@@ -415,3 +525,42 @@ if __name__ == '__main__':
     # name,age,town
     # John,,
     # Mary,19,tallinn
+
+    write_list_of_dicts_to_csv_file("output5.csv", [])
+    # ''
+
+    print("read_csv_file_into_list_of_dicts_using_datatypes",
+          read_csv_file_into_list_of_dicts_using_datatypes("example.csv"))
+    # [
+    #   {'name': 'john', 'age': 12},
+    #   {'name': 'mary', 'age': 14}
+    # ]
+
+    print("read_csv_file_into_list_of_dicts_using_datatypes",
+          read_csv_file_into_list_of_dicts_using_datatypes("example4.csv"))
+    # [
+    #   {'name': 'john', 'age': '11'},
+    #   {'name': 'mary', 'age': '14'},
+    #   {'name': 'ago', 'age': 'unknown'}
+    # ]
+
+    print("read_csv_file_into_list_of_dicts_using_datatypes",
+          read_csv_file_into_list_of_dicts_using_datatypes("example5.csv"))
+    # [
+    #   {'name': 'john', 'date': datetime.date(2020, 1, 1)},
+    #   {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+    # ]
+
+    print("read_csv_file_into_list_of_dicts_using_datatypes",
+          read_csv_file_into_list_of_dicts_using_datatypes("example6.csv"))
+    # [
+    #   {'name': 'john', 'date': "01.01.2020"},
+    #   {'name': 'mary', 'date': "late 2021"},
+    # ]
+
+    print("read_csv_file_into_list_of_dicts_using_datatypes",
+          read_csv_file_into_list_of_dicts_using_datatypes("example7.csv"))
+    # [
+    #   {'name': 'john', 'date': None},
+    #   {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+    # ]
