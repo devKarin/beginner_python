@@ -16,6 +16,9 @@ Merges information from two files into one CSV file.
 read_csv_file_into_list_of_dicts(filename: str) -> list; Reads csv file into list of dictionaries.
 write_list_of_dicts_to_csv_file(filename: str, data: list) -> None; Writes list of dicts into csv file.
 
+read_csv_file_into_list_of_dicts_using_datatypes(filename: str) -> list;
+Reads data from file and casts values into different datatypes.
+
 """
 
 import csv
@@ -275,20 +278,22 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
                 int(value)
                 # If the value type can be cast into integer, do it only in case the type has not been
                 # determined yet.
-                # Otherwise, it has different value types and should be string anyway.
+                # Otherwise, unless it already has 'int' type,
+                # it has different value types and should be string anyway.
                 if key not in value_types:
                     value_types.update({key: 'int'})
-                else:
+                elif value_types[key] != 'int':
                     value_types.update({key: 'str'})
             except ValueError:
                 # If the value type can be cast into datetime.date, do it only in case the type has not been
                 # determined yet.
-                # Otherwise, it has different value types and should be string anyway.
+                # Otherwise, unless it already has 'datetime.date' type,
+                # it has different value types and should be string anyway.
                 try:
                     datetime.strptime(value, '%d.%m.%Y').date()
                     if key not in value_types:
                         value_types.update({key: 'datetime.date'})
-                    else:
+                    elif value_types[key] != 'datetime.date':
                         value_types.update({key: 'str'})
                 except ValueError:
                     value_types.update({key: 'str'})
@@ -349,6 +354,7 @@ def read_csv_file_into_list_of_dicts(filename: str, *typed: bool) -> list:
                         dictionary.update({key: int(value)})
                     elif value_types[key] == 'datetime.date':
                         dictionary.update({key: datetime.strptime(value, '%d.%m.%Y').date()})
+            print(value_types)
     return list_of_dictionaries
 
 
@@ -414,7 +420,7 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str) -> list:
 
     If a field contains only numbers, turn this into int.
     If a field contains only dates (in format dd.mm.yyyy), turn this into date.
-    Otherwise the datatype is string (default by csv reader).
+    Otherwise, the datatype is string (default by csv reader).
 
     Example:
     name,age
