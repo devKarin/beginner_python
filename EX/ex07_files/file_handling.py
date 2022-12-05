@@ -252,15 +252,44 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
 
 
 def get_value_types(dictionary: dict, value_types: dict) -> dict:
+    """
+    Get common value types for dictionary values with the same key.
+
+    Determines, based on value, whether the value type is integer, datetime.date or string.
+    Values like 'None', '-' and '' are ignored and will not change the data type for the rest of the values of a key.
+    If there are different value types for the values with the same key,
+    the value type is determined as a string.
+    If the date format is not dd.mm.yyyy it is considered incorrect and the value is treated as a string,
+    (and therefore all date values for the same key are strings).
+
+    :param dictionary: Dictionary which' values are to be typed.
+    :param value_types: Dictionary to update with value types.
+    :return: Dictionary updated with value types.
+    """
     for key, value in dictionary.items():
-        if (value != '-') and (key not in value_types or value_types[key] != 'str'):
+        # Check key-value pairs where the value is not missing, 'None' or '-'
+        # and where the value type is yet to be determined or value type is anything but string.
+        if (value != '-' and value != 'None' and value != '') and (key not in value_types or value_types[key] != 'str'):
+            # If the value can be cast into integer, set the value type to be integer.
             try:
                 int(value)
-                value_types.update({key: 'int'})
+                # If the value type can be cast into integer, do it only in case the type has not been
+                # determined yet.
+                # Otherwise, it has different value types and should be string anyway.
+                if key not in value_types:
+                    value_types.update({key: 'int'})
+                else:
+                    value_types.update({key: 'str'})
             except ValueError:
+                # If the value type can be cast into datetime.date, do it only in case the type has not been
+                # determined yet.
+                # Otherwise, it has different value types and should be string anyway.
                 try:
                     datetime.strptime(value, '%d.%m.%Y').date()
-                    value_types.update({key: 'datetime.date'})
+                    if key not in value_types:
+                        value_types.update({key: 'datetime.date'})
+                    else:
+                        value_types.update({key: 'str'})
                 except ValueError:
                     value_types.update({key: 'str'})
     return value_types
@@ -301,15 +330,20 @@ def read_csv_file_into_list_of_dicts(filename: str, *typed: bool) -> list:
         # class csv.DictReader(f, fieldnames=None, restkey=None, restval=None, dialect='excel', *args, **kwds)
         # Saves the file as a csv.DictReader object
         csv_reader = csv.DictReader(csv_file)
-        value_types = {}
+        # Dictionary for holding value types is created only in case typed dictionary is expected to be returned.
+        # Theoretically it saves memory space. It's not much but it's honest work. :)
+        if typed:
+            value_types = {}
         for row in csv_reader:
             if typed:
+                # Value types are updated with every row.
                 value_types = get_value_types(row, value_types)
             list_of_dictionaries.append(row)
+        # In case typed dictionary is expected, apply types and replace '-', '' and 'None' with None.
         if typed:
             for dictionary in list_of_dictionaries:
                 for key, value in dictionary.items():
-                    if value == '-':
+                    if value == '-' or value == 'None' or value == '':
                         dictionary.update({key: None})
                     elif value_types[key] == 'int':
                         dictionary.update({key: int(value)})
@@ -450,8 +484,8 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str) -> list:
     For date, strptime can be used:
     https://docs.python.org/3/library/datetime.html#examples-of-usage-date
     """
-    list_of_dictionaries = read_csv_file_into_list_of_dicts(filename, True)
-    return list_of_dictionaries
+    # For the typed version if the dictionary, second optional argument indicating typed option must be True.
+    return read_csv_file_into_list_of_dicts(filename, True)
 
 
 if __name__ == '__main__':
@@ -563,4 +597,13 @@ if __name__ == '__main__':
     # [
     #   {'name': 'john', 'date': None},
     #   {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+    # ]
+
+    print("read_csv_file_into_list_of_dicts_using_datatypes",
+          read_csv_file_into_list_of_dicts_using_datatypes("example8.csv"))
+    # [
+    #    {"id": 1, "firstname": "ago", "blind date": datetime.date(2021, 2, 1)},
+    #    {"id": 2, "firstname": "mary", "blind date": datetime.date(2020, 6, 5)},
+    #    {"id": 3, "firstname": "max", "blind date": None},
+    #    {"id": 4, "firstname": None, "blind date": None},
     # ]
