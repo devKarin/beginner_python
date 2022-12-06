@@ -274,30 +274,31 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
     """
     for key, value in dictionary.items():
         # Check key-value pairs where the value is not missing, 'None' or '-'
-        if value != '-' and value != 'None' and value != '':
+        if value == '-' or value == 'None' or value == '':
+            continue
+        try:
+            int(value)
+            # If the value type can be cast into integer, do it only in case the type has not been
+            # determined yet.
+            # Otherwise, unless it already has 'int' type,
+            # it has different value types and should be string anyway.
+            if key not in value_types:
+                value_types.update({key: 'int'})
+            elif value_types[key] != 'int':
+                value_types.update({key: 'str'})
+        except ValueError:
+            # If the value type can be cast into datetime.date, do it only in case the type has not been
+            # determined yet.
+            # Otherwise, unless it already has 'datetime.date' type,
+            # it has different value types and should be string anyway.
             try:
-                int(value)
-                # If the value type can be cast into integer, do it only in case the type has not been
-                # determined yet.
-                # Otherwise, unless it already has 'int' type,
-                # it has different value types and should be string anyway.
+                datetime.strptime(value, '%d.%m.%Y').date()
                 if key not in value_types:
-                    value_types.update({key: 'int'})
-                elif value_types[key] != 'int':
+                    value_types.update({key: 'datetime.date'})
+                elif value_types[key] != 'datetime.date':
                     value_types.update({key: 'str'})
             except ValueError:
-                # If the value type can be cast into datetime.date, do it only in case the type has not been
-                # determined yet.
-                # Otherwise, unless it already has 'datetime.date' type,
-                # it has different value types and should be string anyway.
-                try:
-                    datetime.strptime(value, '%d.%m.%Y').date()
-                    if key not in value_types:
-                        value_types.update({key: 'datetime.date'})
-                    elif value_types[key] != 'datetime.date':
-                        value_types.update({key: 'str'})
-                except ValueError:
-                    value_types.update({key: 'str'})
+                value_types.update({key: 'str'})
     return value_types
 
 
@@ -495,6 +496,16 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> li
 
 
 def add_missing_keys_to_subdict(dictionary: dict, keys_to_be_checked: list, given_value=None) -> dict:
+    """
+    Add missing keys to the sub-dictionary of a dictionary.
+
+    Helps to normalise data structure by adding missing keys to its sub-dictionaries.
+
+    :param dictionary: Dictionary, which sub-dictionary is needed to be supplemented.
+    :param keys_to_be_checked: List of keys to be checked in dictionary. Can be a list of all the keys available.
+    :param given_value: Value to give to the added key. Defaults to None.
+    :return: Dictionary with supplemented keys.
+    """
     for value in dictionary.values():
         for key in keys_to_be_checked:
             if key not in value:
@@ -505,8 +516,8 @@ def add_missing_keys_to_subdict(dictionary: dict, keys_to_be_checked: list, give
 def read_people_data(directory: str) -> dict:
     """
     Read people data from files.
-    Files are inside directory. Read all *.csv files.
 
+    Files are inside directory. Read all *.csv files.
     Each file has an int field "id" which should be used to merge information.
 
     The result should be one dict where the key is id (int) and value is
@@ -601,8 +612,8 @@ def custom_sort_age(dict_items: dict[int, dict]) -> any:
 
     If the age cannot be calculated, i.e. the age value is -1, the item is ordered last.
 
-    :param dict_items:
-    :return:
+    :param dict_items: Dictionary items to be sorted.
+    :return: Value to use to sort items.
     """
     if dict_items[1]['age'] == -1:
         return 99999
@@ -659,9 +670,8 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
         elif sub_dictionary['death'] is not None:
             delta_date = sub_dictionary['death'].year - sub_dictionary['birth'].year
             # If person died after birthday, add 1 year to te age.
-            if sub_dictionary['death'] >= \
-                    sub_dictionary['birth'].replace(year=sub_dictionary['birth'].year + delta_date):
-                delta_date += 1
+            if sub_dictionary['death'] < sub_dictionary['birth'].replace(year=sub_dictionary['birth'].year + delta_date):
+                delta_date -= 1
             sub_dictionary['age'] = delta_date
         elif sub_dictionary['death'] is None:
             today = date.today()
