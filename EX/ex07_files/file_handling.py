@@ -276,22 +276,19 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
         # Check key-value pairs where the value is not missing, 'None' or '-'
         if value == '-' or value == 'None' or value == '':
             continue
-        try:
-            int(value)
-            # If the value type can be cast into integer, do it only in case the type has not been
-            # determined yet.
-            # Otherwise, unless it already has 'int' type,
-            # it has different value types and should be string anyway.
-            if key not in value_types:
-                value_types.update({key: 'int'})
-            elif value_types[key] != 'int':
-                value_types.update({key: 'str'})
-        except ValueError:
-            # If the value type can be cast into datetime.date, do it only in case the type has not been
-            # determined yet.
-            # Otherwise, unless it already has 'datetime.date' type,
-            # it has different value types and should be string anyway.
+        # If the value contains only digits, it can be cast into integer.
+        # Update only if the key already does not have 'int' type.
+        if value.isdigit() and key not in value_types:
+            value_types.update({key: 'int'})
+        # If the value is integer, but already has different value type it should be updated to string.
+        elif value.isdigit() and value_types[key] == 'int':
+            continue
+        elif not value.isdigit():
             try:
+                # If the value type can be cast into datetime.date, do it only in case the type has not been
+                # determined yet.
+                # Otherwise, unless it already has 'datetime.date' type,
+                # it has different value types and should be string anyway.
                 datetime.strptime(value, '%d.%m.%Y').date()
                 if key not in value_types:
                     value_types.update({key: 'datetime.date'})
@@ -299,6 +296,8 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
                     value_types.update({key: 'str'})
             except ValueError:
                 value_types.update({key: 'str'})
+        else:
+            value_types.update({key: 'str'})
     return value_types
 
 
@@ -664,37 +663,38 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
     """
     dictionary_to_write = read_people_data(person_data_directory)
     # Add status and age keys.
-    for sub_dictionary in dictionary_to_write.values():
-        if sub_dictionary['birth'] is None:
-            sub_dictionary['age'] = -1
-        elif sub_dictionary['death'] is not None:
-            delta_date = sub_dictionary['death'].year - sub_dictionary['birth'].year
+    for sub_dict in dictionary_to_write.values():
+        if sub_dict['birth'] is None:
+            sub_dict['age'] = -1
+        elif sub_dict['death'] is not None:
+            delta_date = sub_dict['death'].year - sub_dict['birth'].year
             # If person died after birthday, add 1 year to te age.
-            if sub_dictionary['death'] < sub_dictionary['birth'].replace(year=sub_dictionary['birth'].year + delta_date):
+            if sub_dict['death'] < sub_dict['birth'].replace(year=sub_dict['birth'].year + delta_date):
                 delta_date -= 1
-            sub_dictionary['age'] = delta_date
-        elif sub_dictionary['death'] is None:
+            sub_dict['age'] = delta_date
+        elif sub_dict['death'] is None:
             today = date.today()
-            delta_date = today.year - sub_dictionary['birth'].year
+            delta_date = today.year - sub_dict['birth'].year
             # If persons birthday is already passed, add 1 year to age.
-            if today < sub_dictionary['birth'].replace(year=sub_dictionary['birth'].year + delta_date):
+            if today < sub_dict['birth'].replace(year=sub_dict['birth'].year + delta_date):
                 delta_date -= 1
-            sub_dictionary['age'] = delta_date
-        if sub_dictionary['death'] is not None:
-            sub_dictionary['status'] = 'dead'
-            sub_dictionary['death'] = datetime.strftime(sub_dictionary['death'], "%d.%m.%Y")
+            sub_dict['age'] = delta_date
+        if sub_dict['death'] is not None:
+            sub_dict['status'] = 'dead'
+            sub_dict['death'] = datetime.strftime(sub_dict['death'], "%d.%m.%Y")
         else:
-            sub_dictionary['status'] = 'alive'
-        if sub_dictionary['birth'] is not None:
-            sub_dictionary['birth'] = datetime.strftime(sub_dictionary['birth'], "%d.%m.%Y")
-        sub_dictionary.update({key: ('-' if value is None else value) for key, value in sub_dictionary.items()})
+            sub_dict['status'] = 'alive'
+        if sub_dict['birth'] is not None:
+            sub_dict['birth'] = datetime.strftime(sub_dict['birth'], "%d.%m.%Y")
+        sub_dict.update({key: ('-' if value is None else value) for key, value in sub_dict.items()})
+        sub_dict.update({key: ('' if key == 'name' and value == '-' else value) for key, value in sub_dict.items()})
     dictionary_to_write = \
         {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]['id'])}
     dictionary_to_write = {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_name)}
     dictionary_to_write = \
         {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_birth, reverse=True)}
     dictionary_to_write = {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_age)}
-    dictionary_to_write = {key: ('-' if value is None else value) for key, value in dictionary_to_write.items()}
+    # dictionary_to_write = {key: ('-' if value is None else value) for key, value in dictionary_to_write.items()}
 
     write_list_of_dicts_to_csv_file(report_filename, list(dictionary_to_write.values()))
 
