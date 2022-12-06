@@ -16,13 +16,16 @@ Merges information from two files into one CSV file.
 read_csv_file_into_list_of_dicts(filename: str) -> list; Reads csv file into list of dictionaries.
 write_list_of_dicts_to_csv_file(filename: str, data: list) -> None; Writes list of dicts into csv file.
 
-read_csv_file_into_list_of_dicts_using_datatypes(filename: str) -> list;
+read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> list;
 Reads data from file and casts values into different datatypes.
+
+read_people_data(directory: str) -> dict; Reads people data from csv-files of the given directory.
 
 """
 
 import csv
-from datetime import datetime
+from datetime import datetime, date
+from pathlib import Path
 
 
 def read_file_contents(filename: str) -> str:
@@ -236,16 +239,16 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
         towns_dictionary.update({name_and_town[0]: name_and_town[1] or "-"})
 
     # Merge names and towns dictionaries into final list.
-    for name, date in names_dictionary.items():
+    for name, visit_date in names_dictionary.items():
         # If the name is present in towns dictionary, add it straight into final list
         # in order to append it later to the final list and preserve name appearance order.
         if name in towns_dictionary:
-            final_list.append([name, towns_dictionary[name], date])
+            final_list.append([name, towns_dictionary[name], visit_date])
         # If the name is not in towns dictionary, there cannot be a town record either.
         else:
             helper_list.append([name, "-", names_dictionary[name]])
     # For the names not present in names_dictionary, but present in towns_dictionary, because they
-    # were left unhandled within the pevious loop.
+    # were left unhandled within the previous loop.
     for name, town in towns_dictionary.items():
         if name not in names_dictionary:
             helper_list.append([name, town, "-"])
@@ -258,22 +261,20 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
     """
     Get common value types for dictionary values with the same key.
 
-    Determines, based on value, whether the value type is integer, datetime.date or string.
-    Values like 'None', '-' and '' are ignored and will not change the data type for the rest of the values of a key.
+    Determines, based on value, whether the value type is integer, 'datetime.date' or string.
+    Values like "None", "-" and " " are ignored and will not change the data type for the rest of the values of a key.
     If there are different value types for the values with the same key,
     the value type is determined as a string.
     If the date format is not dd.mm.yyyy it is considered incorrect and the value is treated as a string,
     (and therefore all date values for the same key are strings).
 
-    :param dictionary: Dictionary which' values are to be typed.
+    :param dictionary: Dictionary with values to be typed.
     :param value_types: Dictionary to update with value types.
     :return: Dictionary updated with value types.
     """
     for key, value in dictionary.items():
         # Check key-value pairs where the value is not missing, 'None' or '-'
-        # and where the value type is yet to be determined or value type is anything but string.
-        if (value != '-' and value != 'None' and value != '') and (key not in value_types or value_types[key] != 'str'):
-            # If the value can be cast into integer, set the value type to be integer.
+        if value != '-' and value != 'None' and value != '':
             try:
                 int(value)
                 # If the value type can be cast into integer, do it only in case the type has not been
@@ -300,7 +301,7 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
     return value_types
 
 
-def read_csv_file_into_list_of_dicts(filename: str, *typed: bool) -> list:
+def read_csv_file_into_list_of_dicts(filename: str | Path, *typed: bool) -> list:
     """
     Read csv file into list of dictionaries.
 
@@ -354,7 +355,6 @@ def read_csv_file_into_list_of_dicts(filename: str, *typed: bool) -> list:
                         dictionary.update({key: int(value)})
                     elif value_types[key] == 'datetime.date':
                         dictionary.update({key: datetime.strptime(value, '%d.%m.%Y').date()})
-            print(value_types)
     return list_of_dictionaries
 
 
@@ -414,7 +414,7 @@ def write_list_of_dicts_to_csv_file(filename: str, data: list) -> None:
             writer.writerow(row)
 
 
-def read_csv_file_into_list_of_dicts_using_datatypes(filename: str) -> list:
+def read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> list:
     """
     Read data from file and cast values into different datatypes.
 
@@ -490,8 +490,203 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str) -> list:
     For date, strptime can be used:
     https://docs.python.org/3/library/datetime.html#examples-of-usage-date
     """
-    # For the typed version if the dictionary, second optional argument indicating typed option must be True.
+    # For the typed version of the dictionary, second optional argument indicating typed option must be True.
     return read_csv_file_into_list_of_dicts(filename, True)
+
+
+def add_missing_keys_to_subdict(dictionary: dict, keys_to_be_checked: list, given_value=None) -> dict:
+    for value in dictionary.values():
+        for key in keys_to_be_checked:
+            if key not in value:
+                value[key] = given_value
+    return dictionary
+
+
+def read_people_data(directory: str) -> dict:
+    """
+    Read people data from files.
+    Files are inside directory. Read all *.csv files.
+
+    Each file has an int field "id" which should be used to merge information.
+
+    The result should be one dict where the key is id (int) and value is
+    a dict of all the different values across the files.
+    Missing keys should be in every dictionary.
+    Missing value is represented as None.
+
+    File: a.csv
+    id,name
+    1,john
+    2,mary
+    3,john
+
+    File: births.csv
+    id,birth
+    1,01.01.2001
+    2,05.06.1990
+
+    File: deaths.csv
+    id,death
+    2,01.02.2020
+    1,-
+
+    Becomes:
+    {
+        1: {"id": 1, "name": "john", "birth": datetime.date(2001, 1, 1), "death": None},
+        2: {"id": 2, "name": "mary", "birth": datetime.date(1990, 6, 5),
+            "death": datetime.date(2020, 2, 1)},
+        3: {"id": 3, "name": "john", "birth": None, "death": None},
+    }
+
+    :param directory: Directory where the csv files are.
+    :return: Dictionary with id as keys and data dictionaries as values.
+    """
+    # Yield csv-files in given directory. Returns a generator.
+    files_in_directory = Path(directory).glob('*.csv')
+    final_dictionary = {}
+    all_keys = []
+    # Loop through csv-files.
+    for file in files_in_directory:
+        # Create a list of dictionaries from file data.
+        list_from_file = read_csv_file_into_list_of_dicts_using_datatypes(file)
+        for dictionary in list_from_file:
+            if dictionary['id'] not in final_dictionary:
+                final_dictionary.update({dictionary['id']: dictionary})
+            else:
+                final_dictionary[dictionary['id']] = {**final_dictionary[dictionary['id']], **dictionary}
+    # Collect all keys.
+    # Although it means looping the dictionary the second time, it is faster than
+    # collecting keys while creating the final dictionary.
+    for value in final_dictionary.values():
+        all_keys.extend(list(value.keys()))
+    # Not removing duplicates in order to preserve the keys order.
+    # Add missing keys with None values to the dictionaries.
+    final_dictionary = add_missing_keys_to_subdict(final_dictionary, all_keys, None)
+    return final_dictionary
+
+
+def custom_sort_birth(dict_items: dict[int, dict]) -> any:
+    """
+    Sort dictionary items by birthdate.
+
+    Items without birthdate are ordered last.
+
+    :param dict_items: Dictionary items to be sorted.
+    :return: Value to use to sort items.
+    """
+    if dict_items[1]['birth'] == '-':
+        return '999999999'
+    else:
+        return dict_items[1]['birth']
+
+
+def custom_sort_name(dict_items: dict[int, dict]) -> any:
+    """
+    Sort dictionary items by name.
+
+    Items without name are ordered first.
+
+    :param dict_items: Dictionary items to be sorted.
+    :return: Value to use to sort items.
+    """
+    if dict_items[1]['name'] == '-':
+        return ''
+    else:
+        return dict_items[1]['name']
+
+
+def custom_sort_age(dict_items: dict[int, dict]) -> any:
+    """
+    Sort dictionary items by name.
+
+    If the age cannot be calculated, i.e. the age value is -1, the item is ordered last.
+
+    :param dict_items:
+    :return:
+    """
+    if dict_items[1]['age'] == -1:
+        return 99999
+    else:
+        return dict_items[1]['age']
+
+
+def generate_people_report(person_data_directory: str, report_filename: str) -> None:
+    """
+    Generate report about people data.
+
+    Data should be read using read_people_data().
+
+    The input files contain fields "birth" and "death" which are dates.
+    Those can be in different files. There are no duplicate headers in the files (except for the "id").
+
+    The report is a CSV file where all the fields are written to
+    (along with the headers).
+    In addition, there should be two fields:
+    - "status" this is either "dead" or "alive" depending on whether
+    there is a death date
+    - "age" - current age or the age when dying.
+    The age is calculated as full years.
+    Birth 01.01.1940, death 01.01.2020 - age: 80
+    Birth 02.01.1940, death 01.01.2020 - age: 79
+
+    If there is no birthdate, then the age is -1.
+
+    When calculating age, dates can be compared.
+
+    The lines in the file should be ordered:
+    - first by the age ascending (younger before older);
+      if the age cannot be calculated, then those lines will come last
+    - if the age is the same, then those lines should be ordered
+      by birthdate descending (newer birth before older birth)
+    - if both the age and birthdate are the same,
+      then by name ascending (a before b). If name is not available, use "-"
+      (people with missing name should be before people with  name)
+    - if the names are the same or name field is missing,
+      order by id ascending.
+
+    Dates in the report should in the format: dd.mm.yyyy
+    (2-digit day, 2-digit month, 4-digit year).
+
+    :param person_data_directory: Directory of input data.
+    :param report_filename: Output file.
+    :return: None
+    """
+    dictionary_to_write = read_people_data(person_data_directory)
+    # Add status and age keys.
+    for sub_dictionary in dictionary_to_write.values():
+        if sub_dictionary['birth'] is None:
+            sub_dictionary['age'] = -1
+        elif sub_dictionary['death'] is not None:
+            delta_date = sub_dictionary['death'].year - sub_dictionary['birth'].year
+            # If person died after birthday, add 1 year to te age.
+            if sub_dictionary['death'] >= \
+                    sub_dictionary['birth'].replace(year=sub_dictionary['birth'].year + delta_date):
+                delta_date += 1
+            sub_dictionary['age'] = delta_date
+        elif sub_dictionary['death'] is None:
+            today = date.today()
+            delta_date = today.year - sub_dictionary['birth'].year
+            # If persons birthday is already passed, add 1 year to age.
+            if today < sub_dictionary['birth'].replace(year=sub_dictionary['birth'].year + delta_date):
+                delta_date -= 1
+            sub_dictionary['age'] = delta_date
+        if sub_dictionary['death'] is not None:
+            sub_dictionary['status'] = 'dead'
+            sub_dictionary['death'] = datetime.strftime(sub_dictionary['death'], "%d.%m.%Y")
+        else:
+            sub_dictionary['status'] = 'alive'
+        if sub_dictionary['birth'] is not None:
+            sub_dictionary['birth'] = datetime.strftime(sub_dictionary['birth'], "%d.%m.%Y")
+        sub_dictionary.update({key: ('-' if value is None else value) for key, value in sub_dictionary.items()})
+    dictionary_to_write = \
+        {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]['id'])}
+    dictionary_to_write = {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_name)}
+    dictionary_to_write = \
+        {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_birth, reverse=True)}
+    dictionary_to_write = {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_age)}
+    dictionary_to_write = {key: ('-' if value is None else value) for key, value in dictionary_to_write.items()}
+
+    write_list_of_dicts_to_csv_file(report_filename, list(dictionary_to_write.values()))
 
 
 if __name__ == '__main__':
@@ -613,3 +808,19 @@ if __name__ == '__main__':
     #    {"id": 3, "firstname": "max", "blind date": None},
     #    {"id": 4, "firstname": None, "blind date": None},
     # ]
+
+    # print(read_people_data("../ex07_files"))
+    # Relative path
+
+    # print(read_people_data("C:\\Users\\karin\\PycharmProjects\\iti0102-2022\\EX\\ex07_files"))
+    # Absolute path
+
+    print(read_people_data("data"))
+    # {
+    #    1: {"id": 1, "name": "john", "birth": datetime.date(2001, 1, 1), "death": None},
+    #    2: {"id": 2, "name": "mary", "birth": datetime.date(1990, 6, 5),
+    #        "death": datetime.date(2020, 2, 1)},
+    #    3: {"id": 3, "name": "john", "birth": None, "death": None},
+    # }
+
+    print(generate_people_report("data", "output6.csv"))
