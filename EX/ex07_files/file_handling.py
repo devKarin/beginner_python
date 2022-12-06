@@ -590,21 +590,6 @@ def custom_sort_birth(dict_items: dict[int, dict]) -> any:
         return dict_items[1]['birth']
 
 
-def custom_sort_name(dict_items: dict[int, dict]) -> any:
-    """
-    Sort dictionary items by name.
-
-    Items without name are ordered first.
-
-    :param dict_items: Dictionary items to be sorted.
-    :return: Value to use to sort items.
-    """
-    if dict_items[1]['name'] == '-':
-        return ''
-    else:
-        return dict_items[1]['name']
-
-
 def custom_sort_age(dict_items: dict[int, dict]) -> any:
     """
     Sort dictionary items by name.
@@ -690,7 +675,10 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
         sub_dict.update({key: ('' if key == 'name' and value == '-' else value) for key, value in sub_dict.items()})
     dictionary_to_write = \
         {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]['id'])}
-    dictionary_to_write = {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_name)}
+    # Name is the only key the assignment that may be missing entirely.
+    if 'name' in dictionary_to_write.keys():
+        dictionary_to_write = \
+            {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]['name'].lower())}
     dictionary_to_write = \
         {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_birth, reverse=True)}
     dictionary_to_write = {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_age)}
