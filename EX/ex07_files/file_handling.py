@@ -32,7 +32,7 @@ using function read_people_data().
 """
 
 import csv
-from datetime import datetime, date
+import datetime
 from pathlib import Path
 
 
@@ -297,7 +297,7 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
                 # determined yet.
                 # Otherwise, unless it already has 'datetime.date' type,
                 # it has different value types and should be string anyway.
-                datetime.strptime(value, '%d.%m.%Y').date()
+                datetime.datetime.strptime(value, '%d.%m.%Y').date()
                 if key not in value_types:
                     value_types.update({key: 'datetime.date'})
                 elif value_types[key] != 'datetime.date':
@@ -362,7 +362,7 @@ def read_csv_file_into_list_of_dicts(filename: str | Path, *typed: bool) -> list
                     elif value_types[key] == 'int':
                         dictionary.update({key: int(value)})
                     elif value_types[key] == 'datetime.date':
-                        dictionary.update({key: datetime.strptime(value, '%d.%m.%Y').date()})
+                        dictionary.update({key: datetime.datetime.strptime(value, '%d.%m.%Y').date()})
     return list_of_dictionaries
 
 
@@ -683,7 +683,7 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
             sub_dict['age'] = delta_year
         # If the death date is missing, use today's date to calculate age.
         elif sub_dict['death'] is None:
-            today = date.today()
+            today = datetime.datetime.today().date()
             delta_year = today.year - sub_dict['birth'].year
             # If persons birthday is yet to come, subtract 1 year from age.
             if today < sub_dict['birth'].replace(year=today.year):
@@ -692,19 +692,21 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
         # If the person is dead, create status 'dead' and convert death date into date string.
         if sub_dict['death'] is not None:
             sub_dict['status'] = 'dead'
-            sub_dict['death'] = datetime.strftime(sub_dict['death'], "%d.%m.%Y")
+            sub_dict['death'] = datetime.datetime.strftime(sub_dict['death'], "%d.%m.%Y")
         # If the person is alive, create status 'alive'.
         else:
             sub_dict['status'] = 'alive'
         # If there is a birthdate, convert it into date string.
         if sub_dict['birth'] is not None:
-            sub_dict['birth'] = datetime.strftime(sub_dict['birth'], "%d.%m.%Y")
+            sub_dict['birth'] = datetime.datetime.strftime(sub_dict['birth'], "%d.%m.%Y")
         # Replace None values with '-', but for the name field with '' as required in assignment.
         sub_dict.update({key: ('-' if value is None
                                else ('' if key == 'name' and value == '-'
-                                     else value)) for key, value in sub_dict.items()})
+                                     else (datetime.datetime.strftime(sub_dict[key], "%d.%m.%Y")
+                                           if isinstance(value, datetime.date) and value is not None else value)))
+                         for key, value in sub_dict.items()})
     # In order to preserve readability, independent sorting steps are used instead of one complex sorting.
-    # In order to not to overwrite sort order by sorting in steps, start from the last step.
+    # In order not to overwrite sort order by sorting in steps, start from the last step.
     dictionary_to_write = \
         {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]['id'])}
     # Name is the only key the assignment that may be missing entirely, because id, birth and death are
