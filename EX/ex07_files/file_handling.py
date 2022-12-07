@@ -595,10 +595,14 @@ def custom_sort_birth(dict_items: dict[int, dict]) -> any:
     # Missing values are for people yet to be born?
     # At this point I can not remember why decided to order them last (if ascending)
     # but it seemed logical at one point.
+    # Compare dates as integers, for that calculate weight from year, month and day.
+    value_for_comparison = 0
     if dict_items[1]['birth'] == '-':
-        return '99999'
+        return 999999
     else:
-        return dict_items[1]['birth']
+        list_from_date = dict_items[1]['birth'].split('.')
+        value_for_comparison += int(list_from_date[2]) * 100 + int(list_from_date[1]) * 10 + int(list_from_date[0])
+    return value_for_comparison
 
 
 def custom_sort_age(dict_items: dict[int, dict]) -> any:
@@ -692,7 +696,7 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
         # If the person is alive, create status 'alive'.
         else:
             sub_dict['status'] = 'alive'
-        # If there is a birthdate, convert it into date strin.
+        # If there is a birthdate, convert it into date string.
         if sub_dict['birth'] is not None:
             sub_dict['birth'] = datetime.strftime(sub_dict['birth'], "%d.%m.%Y")
         # Replace None values with '-', but for the name field with '' as required in assignment.
@@ -856,3 +860,4 @@ if __name__ == '__main__':
     # }
 
     print(generate_people_report("data", "output6.csv"))
+    print(generate_people_report("person_data", "output7.csv"))
