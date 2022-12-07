@@ -601,7 +601,7 @@ def custom_sort_birth(dict_items: dict[int, dict]) -> any:
         return 999999
     else:
         list_from_date = dict_items[1]['birth'].split('.')
-        value_for_comparison += int(list_from_date[2]) * 100 + int(list_from_date[1]) * 10 + int(list_from_date[0])
+        value_for_comparison += int(list_from_date[2]) * 365 + int(list_from_date[1]) * 30 + int(list_from_date[0])
     return value_for_comparison
 
 
