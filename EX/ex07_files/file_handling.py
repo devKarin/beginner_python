@@ -19,7 +19,15 @@ write_list_of_dicts_to_csv_file(filename: str, data: list) -> None; Writes list 
 read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> list;
 Reads data from file and casts values into different datatypes.
 
+add_missing_keys_to_subdict(dictionary: dict, keys_to_be_checked: list, given_value=None) -> dict;
+Normalises data structure by adding missing keys present in other sub-dictionaries to sub-dictionaries of a dictionary.
+
 read_people_data(directory: str) -> dict; Reads people data from csv-files of the given directory.
+custom_sort_birth(dict_items: dict[int, dict]) -> any; Sorts dictionary items by birthdate.
+custom_sort_age(dict_items: dict[int, dict]) -> any; Sorts dictionary items by name.
+generate_people_report(person_data_directory: str, report_filename: str) -> None;
+Generates report about people data which is read from csv-files of given directory by
+using function read_people_data().
 
 """
 
@@ -584,8 +592,11 @@ def custom_sort_birth(dict_items: dict[int, dict]) -> any:
     :param dict_items: Dictionary items to be sorted.
     :return: Value to use to sort items.
     """
+    # Missing values are for people yet to be born?
+    # At this point I can not remember why decided to order them last (if ascending)
+    # but it seemed logical at one point.
     if dict_items[1]['birth'] == '-':
-        return '999999999'
+        return '99999'
     else:
         return dict_items[1]['birth']
 
@@ -599,6 +610,7 @@ def custom_sort_age(dict_items: dict[int, dict]) -> any:
     :param dict_items: Dictionary items to be sorted.
     :return: Value to use to sort items.
     """
+    # If the age can not be calculated, order the record last.
     if dict_items[1]['age'] == -1:
         return 99999
     else:
@@ -609,16 +621,15 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
     """
     Generate report about people data.
 
-    Data should be read using read_people_data().
+    Data is read from csv-files of given directory by using read_people_data().
 
     The input files contain fields "birth" and "death" which are dates.
-    Those can be in different files. There are no duplicate headers in the files (except for the "id").
+    Those can be in different files.
+    It is expected that there are no duplicate headers in the files (except for the "id").
 
-    The report is a CSV file where all the fields are written to
-    (along with the headers).
-    In addition, there should be two fields:
-    - "status" this is either "dead" or "alive" depending on whether
-    there is a death date
+    The report is a CSV file where all the fields are written to (along with the headers).
+    Additionally, two fields are added:
+    - "status" this is either "dead" or "alive" depending on whether there is a death date
     - "age" - current age or the age when dying.
     The age is calculated as full years.
     Birth 01.01.1940, death 01.01.2020 - age: 80
@@ -628,18 +639,18 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
 
     When calculating age, dates can be compared.
 
-    The lines in the file should be ordered:
+    The lines in the output file are ordered as follows:
     - first by the age ascending (younger before older);
       if the age cannot be calculated, then those lines will come last
-    - if the age is the same, then those lines should be ordered
-      by birthdate descending (newer birth before older birth)
+    - if the age is the same, then those lines are ordered by birthdate descending (newer birth before older birth)
     - if both the age and birthdate are the same,
-      then by name ascending (a before b). If name is not available, use "-"
-      (people with missing name should be before people with  name)
+      then by name ascending (a before b).
+      If name is not available, "" is used
+      (people with missing name are ordered before people with name)
     - if the names are the same or name field is missing,
-      order by id ascending.
+      records are ordered by id ascending.
 
-    Dates in the report should in the format: dd.mm.yyyy
+    Dates in the report are in the format: dd.mm.yyyy
     (2-digit day, 2-digit month, 4-digit year).
 
     :param person_data_directory: Directory of input data.
@@ -647,43 +658,66 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
     :return: None
     """
     dictionary_to_write = read_people_data(person_data_directory)
+    # Initate a variable to collect keys for later conditionals.
+    allkeys = []
     # Add status and age keys.
     for sub_dict in dictionary_to_write.values():
+        # Collect keys.
+        allkeys = sub_dict.keys()
+        # As per assignment description 'birth' key is available, 'age' key will be created here.
         if sub_dict['birth'] is None:
             sub_dict['age'] = -1
+        # As per assignment description 'death' key is available.
         elif sub_dict['death'] is not None:
-            delta_date = sub_dict['death'].year - sub_dict['birth'].year
-            # If person died after birthday, add 1 year to te age.
-            if sub_dict['death'] < sub_dict['birth'].replace(year=sub_dict['birth'].year + delta_date):
-                delta_date -= 1
-            sub_dict['age'] = delta_date
+            # Calculate difference in years.
+            delta_year = sub_dict['death'].year - sub_dict['birth'].year
+            # If person died before birthday, subtract 1 year to from age.
+            # Compare date difference by replacing the year.
+            if sub_dict['death'] < sub_dict['birth'].replace(year=sub_dict['death'].year):
+                delta_year -= 1
+            # Assign the year difference to the age key.
+            sub_dict['age'] = delta_year
+        # If the death date is missing, use today's date to calculate age.
         elif sub_dict['death'] is None:
             today = date.today()
-            delta_date = today.year - sub_dict['birth'].year
-            # If persons birthday is already passed, add 1 year to age.
-            if today < sub_dict['birth'].replace(year=sub_dict['birth'].year + delta_date):
-                delta_date -= 1
-            sub_dict['age'] = delta_date
+            delta_year = today.year - sub_dict['birth'].year
+            # If persons birthday is yet to come, subtract 1 year from age.
+            if today < sub_dict['birth'].replace(year=today.year):
+                delta_year -= 1
+            sub_dict['age'] = delta_year
+        # If the person is dead, create status 'dead' and convert death date into date string.
         if sub_dict['death'] is not None:
             sub_dict['status'] = 'dead'
             sub_dict['death'] = datetime.strftime(sub_dict['death'], "%d.%m.%Y")
+        # If the person is alive, create status 'alive'.
         else:
             sub_dict['status'] = 'alive'
+        # If there is a birthdate, convert it into date strin.
         if sub_dict['birth'] is not None:
             sub_dict['birth'] = datetime.strftime(sub_dict['birth'], "%d.%m.%Y")
-        sub_dict.update({key: ('-' if value is None else value) for key, value in sub_dict.items()})
-        sub_dict.update({key: ('' if key == 'name' and value == '-' else value) for key, value in sub_dict.items()})
+        # Replace None values with '-', but for the name field with '' as required in assignment.
+        sub_dict.update({key: ('-' if value is None
+                               else ('' if key == 'name' and value == '-'
+                                     else value)) for key, value in sub_dict.items()})
+    # In order to preserve readability, independent sorting steps are used instead of one complex sorting.
+    # In order to not to overwrite sort order by sorting in steps, start from the last step.
     dictionary_to_write = \
         {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]['id'])}
-    # Name is the only key the assignment that may be missing entirely.
-    if 'name' in dictionary_to_write.keys():
+    # Name is the only key the assignment that may be missing entirely, because id, birth and death are
+    # guaranteed to exist as per description of the assignment and age was created in this function above.
+    if 'name' in allkeys:
+        # For sorting firstly alphabetically, then by length.
         dictionary_to_write = \
-            {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]['name'].lower())}
+            {key: value for key, value in sorted(dictionary_to_write.items(),
+
+                                                 key=lambda item: (item[1]['name'], len(item[1]['name'])))}
+    # Order descending by birthdate - newer birth before.
     dictionary_to_write = \
         {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_birth, reverse=True)}
+    # Order ascending by age. People without ae are ordered last.
     dictionary_to_write = {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_age)}
-    # dictionary_to_write = {key: ('-' if value is None else value) for key, value in dictionary_to_write.items()}
-
+    # Write report into file. Argument for that function needs to be list,
+    # thereby cast parent dictionary values into list.
     write_list_of_dicts_to_csv_file(report_filename, list(dictionary_to_write.values()))
 
 
