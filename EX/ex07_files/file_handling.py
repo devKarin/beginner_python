@@ -3,6 +3,9 @@ EX07 - File handling.
 
 This program makes different reading and writing operations with files.
 
+When files to be read are missing, a notification is printed and an empty data structure is returned.
+Module uses utf-8 encoding.
+
 Available functions:
 read_file_contents(filename: str) -> str; Reads file contents into string.
 read_file_contents_to_list(filename: str) -> list; Reads file contents into list of lines.
@@ -45,9 +48,13 @@ def read_file_contents(filename: str) -> str:
     :param filename: File to read.
     :return: File contents as string.
     """
-    with open(filename, "r") as some_file:
-        contents = some_file.read()
-    return contents
+    try:
+        with open(filename, "r", encoding="utf-8") as some_file:
+            contents = some_file.read()
+        return contents
+    except FileNotFoundError:
+        print("The file was not found. Please check the filename.")
+        return ""
 
 
 def read_file_contents_to_list(filename: str) -> list:
@@ -63,11 +70,15 @@ def read_file_contents_to_list(filename: str) -> list:
     :param filename: File to read.
     :return: List of lines.
     """
-    file_lines = []
-    with open(filename, "r") as some_file:
-        for line in some_file:
-            file_lines.append(line.strip())
-    return file_lines
+    try:
+        file_lines = []
+        with open(filename, "r", encoding="utf-8") as some_file:
+            for line in some_file:
+                file_lines.append(line.strip())
+        return file_lines
+    except FileNotFoundError:
+        print("The file was not found. Please check the filename.")
+        return []
 
 
 def read_csv_file(filename: str) -> list:
@@ -93,23 +104,27 @@ def read_csv_file(filename: str) -> list:
     :param filename: File to read.
     :return: List of lists.
     """
-    file_lines = []
-    with open(filename) as csv_file:
-        # Saves the file as a csv.reader object
-        # and separates the lines in file to lists of strings
-        # which were separated by the delimiter.
-        csv_reader = csv.reader(csv_file, delimiter=',')
+    try:
+        file_lines = []
+        with open(filename, encoding="utf-8") as csv_file:
+            # Saves the file as a csv.reader object
+            # and separates the lines in file to lists of strings
+            # which were separated by the delimiter.
+            csv_reader = csv.reader(csv_file, delimiter=",")
 
-        # Iterate over rows read from file.
-        for row in csv_reader:
-            row_as_list = []
-            # Iterate over elements in row separated by comma.
-            for element in row:
-                # Create a list from elements in row.
-                row_as_list.append(element)
-            # Create a list from rows in file.
-            file_lines.append(row_as_list)
-    return file_lines
+            # Iterate over rows read from file.
+            for row in csv_reader:
+                row_as_list = []
+                # Iterate over elements in row separated by comma.
+                for element in row:
+                    # Create a list from elements in row.
+                    row_as_list.append(element)
+                # Create a list from rows in file.
+                file_lines.append(row_as_list)
+        return file_lines
+    except FileNotFoundError:
+        print("The file was not found. Please check the filename.")
+        return []
 
 
 def write_contents_to_file(filename: str, contents: str) -> None:
@@ -122,7 +137,7 @@ def write_contents_to_file(filename: str, contents: str) -> None:
     :param contents: Content to write to.
     :return: None
     """
-    with open(filename, "w") as some_file:
+    with open(filename, "w", encoding="utf-8") as some_file:
         some_file.write(contents)
 
 
@@ -140,7 +155,7 @@ def write_lines_to_file(filename: str, lines: list) -> None:
     :return: None
     """
     # Note: not appending, but overwriting.
-    with open(filename, "w") as some_file:
+    with open(filename, "w", encoding="utf-8") as some_file:
         # It is easier to concatenate list elements into one string with newline and then write it into file.
         final_string = ""
         for line in lines:
@@ -171,8 +186,8 @@ def write_csv_file(filename: str, data: list) -> None:
     :param data: List of lists to write to the file.
     :return: None
     """
-    # According to documentation: "If csvfile (here: filename is a file object, it should be opened with newline=''."
-    with open(filename, "w", newline='') as csv_file:
+    # According to documentation: "If csvfile (here: filename is a file object, it should be opened with newline=""."
+    with open(filename, "w", newline="", encoding="utf-8") as csv_file:
         # Create csv writer, where the elements are separated with commas.
         csv_writer = csv.writer(csv_file, delimiter=",")
         # Iterate over list of lists id est write into file row by row.
@@ -226,7 +241,7 @@ def merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv
     :return: None
     """
     # Create header.
-    final_list = [['name', 'town', 'date']]
+    final_list = [["name", "town", "date"]]
     # For collecting the names absent in dates file but present in towns file.
     helper_list = []
     names_dictionary = {}
@@ -269,7 +284,7 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
     """
     Get common value types for dictionary values with the same key.
 
-    Determines, based on value, whether the value type is integer, 'datetime.date' or string.
+    Determines, based on value, whether the value type is integer, "datetime.date" or string.
     Values like "None", "-" and " " are ignored and will not change the data type for the rest of the values of a key.
     If there are different value types for the values with the same key,
     the value type is determined as a string.
@@ -281,31 +296,31 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
     :return: Dictionary updated with value types.
     """
     for key, value in dictionary.items():
-        # Check key-value pairs where the value is not missing, 'None' or '-'
-        if value == '-' or value == 'None' or value == '':
+        # Check key-value pairs where the value is not missing, "None" or "-"
+        if value == "-" or value == "None" or value == "":
             continue
         # If the value contains only digits, it can be cast into integer.
-        # Update only if the key already does not have 'int' type.
+        # Update only if the key already does not have "int" type.
         if value.isdigit() and key not in value_types:
-            value_types.update({key: 'int'})
+            value_types.update({key: "int"})
         # If the value is integer, but already has different value type it should be updated to string.
-        elif value.isdigit() and value_types[key] == 'int':
+        elif value.isdigit() and value_types[key] == "int":
             continue
         elif not value.isdigit():
             try:
                 # If the value type can be cast into datetime.date, do it only in case the type has not been
                 # determined yet.
-                # Otherwise, unless it already has 'datetime.date' type,
+                # Otherwise, unless it already has "datetime.date" type,
                 # it has different value types and should be string anyway.
-                datetime.datetime.strptime(value, '%d.%m.%Y').date()
+                datetime.datetime.strptime(value, "%d.%m.%Y").date()
                 if key not in value_types:
-                    value_types.update({key: 'datetime.date'})
-                elif value_types[key] != 'datetime.date':
-                    value_types.update({key: 'str'})
+                    value_types.update({key: "datetime.date"})
+                elif value_types[key] != "datetime.date":
+                    value_types.update({key: "str"})
             except ValueError:
-                value_types.update({key: 'str'})
+                value_types.update({key: "str"})
         else:
-            value_types.update({key: 'str'})
+            value_types.update({key: "str"})
     return value_types
 
 
@@ -338,32 +353,36 @@ def read_csv_file_into_list_of_dicts(filename: str | Path, *typed: bool) -> list
     :param filename: CSV-file to read.
     :return: List of dictionaries where keys are taken from the header.
     """
-    list_of_dictionaries = []
-    with open(filename, newline='') as csv_file:
-        # https://docs.python.org/3/library/csv.html#csv.DictReader
-        # class csv.DictReader(f, fieldnames=None, restkey=None, restval=None, dialect='excel', *args, **kwds)
-        # Saves the file as a csv.DictReader object
-        csv_reader = csv.DictReader(csv_file)
-        # Dictionary for holding value types is created only in case typed dictionary is expected to be returned.
-        # Theoretically it saves memory space. It's not much but it's honest work. :)
-        if typed:
-            value_types = {}
-        for row in csv_reader:
+    try:
+        list_of_dictionaries = []
+        with open(filename, newline="", encoding="utf-8") as csv_file:
+            # https://docs.python.org/3/library/csv.html#csv.DictReader
+            # class csv.DictReader(f, fieldnames=None, restkey=None, restval=None, dialect="excel", *args, **kwds)
+            # Saves the file as a csv.DictReader object
+            csv_reader = csv.DictReader(csv_file)
+            # Dictionary for holding value types is created only in case typed dictionary is expected to be returned.
+            # Theoretically it saves memory space. It's not much but it's honest work. :)
             if typed:
-                # Value types are updated with every row.
-                value_types = get_value_types(row, value_types)
-            list_of_dictionaries.append(row)
-        # In case typed dictionary is expected, apply types and replace '-', '' and 'None' with None.
-        if typed:
-            for dictionary in list_of_dictionaries:
-                for key, value in dictionary.items():
-                    if value == '-' or value == 'None' or value == '':
-                        dictionary.update({key: None})
-                    elif value_types[key] == 'int':
-                        dictionary.update({key: int(value)})
-                    elif value_types[key] == 'datetime.date':
-                        dictionary.update({key: datetime.datetime.strptime(value, '%d.%m.%Y').date()})
-    return list_of_dictionaries
+                value_types = {}
+            for row in csv_reader:
+                if typed:
+                    # Value types are updated with every row.
+                    value_types = get_value_types(row, value_types)
+                list_of_dictionaries.append(row)
+            # In case typed dictionary is expected, apply types and replace "-", "" and "None" with None.
+            if typed:
+                for dictionary in list_of_dictionaries:
+                    for key, value in dictionary.items():
+                        if value == "-" or value == "None" or value == "":
+                            dictionary.update({key: None})
+                        elif value_types[key] == "int":
+                            dictionary.update({key: int(value)})
+                        elif value_types[key] == "datetime.date":
+                            dictionary.update({key: datetime.datetime.strptime(value, "%d.%m.%Y").date()})
+        return list_of_dictionaries
+    except FileNotFoundError:
+        print("The file was not found. Please check the filename or Path.")
+        return []
 
 
 def write_list_of_dicts_to_csv_file(filename: str, data: list) -> None:
@@ -414,8 +433,8 @@ def write_list_of_dicts_to_csv_file(filename: str, data: list) -> None:
             if key not in fieldnames:
                 fieldnames.append(key)
 
-    with open(filename, 'w', newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, restval='')
+    with open(filename, "w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, restval="")
         if fieldnames:
             writer.writeheader()
         for row in data:
@@ -435,10 +454,10 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> li
     john,11
     mary,14
 
-    Becomes ('age' is int):
+    Becomes ("age" is int):
     [
-      {'name': 'john', 'age': 11},
-      {'name': 'mary', 'age': 14}
+      {"name": "john", "age": 11},
+      {"name": "mary", "age": 14}
     ]
 
     But if all the fields cannot be cast to int, the field is left to string.
@@ -448,11 +467,11 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> li
     mary,14
     ago,unknown
 
-    Becomes ('age' cannot be cast to int because of "ago"):
+    Becomes ("age" cannot be cast to int because of "ago"):
     [
-      {'name': 'john', 'age': '11'},
-      {'name': 'mary', 'age': '14'},
-      {'name': 'ago', 'age': 'unknown'}
+      {"name": "john", "age": "11"},
+      {"name": "mary", "age": "14"},
+      {"name": "ago", "age": "unknown"}
     ]
 
     Example:
@@ -462,8 +481,8 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> li
 
     Becomes:
     [
-      {'name': 'john', 'date': datetime.date(2020, 1, 1)},
-      {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+      {"name": "john", "date": datetime.date(2020, 1, 1)},
+      {"name": "mary", "date": datetime.date(2021, 9, 7)},
     ]
 
     Example:
@@ -473,8 +492,8 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> li
 
     Becomes:
     [
-      {'name': 'john', 'date': "01.01.2020"},
-      {'name': 'mary', 'date': "late 2021"},
+      {"name": "john", "date": "01.01.2020"},
+      {"name": "mary", "date": "late 2021"},
     ]
 
     Value "-" indicates missing value and should be None in the result
@@ -485,8 +504,8 @@ def read_csv_file_into_list_of_dicts_using_datatypes(filename: str | Path) -> li
 
     Becomes:
     [
-      {'name': 'john', 'date': None},
-      {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+      {"name": "john", "date": None},
+      {"name": "mary", "date": datetime.date(2021, 9, 7)},
     ]
 
     None value also doesn't affect the data type
@@ -560,7 +579,7 @@ def read_people_data(directory: str) -> dict:
     :return: Dictionary with id as keys and data dictionaries as values.
     """
     # Yield csv-files in given directory. Returns a generator.
-    files_in_directory = Path(directory).glob('*.csv')
+    files_in_directory = Path(directory).glob("*.csv")
     final_dictionary = {}
     all_keys = []
     # Loop through csv-files.
@@ -568,10 +587,10 @@ def read_people_data(directory: str) -> dict:
         # Create a list of dictionaries from file data.
         list_from_file = read_csv_file_into_list_of_dicts_using_datatypes(file)
         for dictionary in list_from_file:
-            if dictionary['id'] not in final_dictionary:
-                final_dictionary.update({dictionary['id']: dictionary})
+            if dictionary["id"] not in final_dictionary:
+                final_dictionary.update({dictionary["id"]: dictionary})
             else:
-                final_dictionary[dictionary['id']] = {**final_dictionary[dictionary['id']], **dictionary}
+                final_dictionary[dictionary["id"]] = {**final_dictionary[dictionary["id"]], **dictionary}
     # Collect all keys.
     # Although it means looping the dictionary the second time, it is faster than
     # collecting keys while creating the final dictionary.
@@ -597,10 +616,10 @@ def custom_sort_birth(dict_items: dict[int, dict]) -> any:
     # but it seemed logical at one point.
     # Compare dates as integers, for that calculate weight from year, month and day.
     value_for_comparison = 0
-    if dict_items[1]['birth'] == '-':
+    if dict_items[1]["birth"] == "-":
         return 999999
     else:
-        list_from_date = dict_items[1]['birth'].split('.')
+        list_from_date = dict_items[1]["birth"].split(".")
         value_for_comparison += int(list_from_date[2]) * 365 + int(list_from_date[1]) * 30 + int(list_from_date[0])
     return value_for_comparison
 
@@ -615,10 +634,10 @@ def custom_sort_age(dict_items: dict[int, dict]) -> any:
     :return: Value to use to sort items.
     """
     # If the age can not be calculated, order the record last.
-    if dict_items[1]['age'] == -1:
+    if dict_items[1]["age"] == -1:
         return 99999
     else:
-        return dict_items[1]['age']
+        return dict_items[1]["age"]
 
 
 def generate_people_report(person_data_directory: str, report_filename: str) -> None:
@@ -668,55 +687,55 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
     for sub_dict in dictionary_to_write.values():
         # Collect keys.
         allkeys = sub_dict.keys()
-        # As per assignment description 'birth' key is available, 'age' key will be created here.
-        if sub_dict['birth'] is None:
-            sub_dict['age'] = -1
-        # As per assignment description 'death' key is available.
-        elif sub_dict['death'] is not None:
+        # As per assignment description "birth" key is available, "age" key will be created here.
+        if sub_dict["birth"] is None:
+            sub_dict["age"] = -1
+        # As per assignment description "death" key is available.
+        elif sub_dict["death"] is not None:
             # Calculate difference in years.
-            delta_year = sub_dict['death'].year - sub_dict['birth'].year
+            delta_year = sub_dict["death"].year - sub_dict["birth"].year
             # If person died before birthday, subtract 1 year to from age.
             # Compare date difference by replacing the year.
-            if sub_dict['death'] < sub_dict['birth'].replace(year=sub_dict['death'].year):
+            if sub_dict["death"] < sub_dict["birth"].replace(year=sub_dict["death"].year):
                 delta_year -= 1
             # Assign the year difference to the age key.
-            sub_dict['age'] = delta_year
+            sub_dict["age"] = delta_year
         # If the death date is missing, use today's date to calculate age.
-        elif sub_dict['death'] is None:
+        elif sub_dict["death"] is None:
             today = datetime.datetime.today().date()
-            delta_year = today.year - sub_dict['birth'].year
+            delta_year = today.year - sub_dict["birth"].year
             # If persons birthday is yet to come, subtract 1 year from age.
-            if today < sub_dict['birth'].replace(year=today.year):
+            if today < sub_dict["birth"].replace(year=today.year):
                 delta_year -= 1
-            sub_dict['age'] = delta_year
-        # If the person is dead, create status 'dead' and convert death date into date string.
-        if sub_dict['death'] is not None:
-            sub_dict['status'] = 'dead'
-            sub_dict['death'] = datetime.datetime.strftime(sub_dict['death'], "%d.%m.%Y")
-        # If the person is alive, create status 'alive'.
+            sub_dict["age"] = delta_year
+        # If the person is dead, create status "dead" and convert death date into date string.
+        if sub_dict["death"] is not None:
+            sub_dict["status"] = "dead"
+            sub_dict["death"] = datetime.datetime.strftime(sub_dict["death"], "%d.%m.%Y")
+        # If the person is alive, create status "alive".
         else:
-            sub_dict['status'] = 'alive'
+            sub_dict["status"] = "alive"
         # If there is a birthdate, convert it into date string.
-        if sub_dict['birth'] is not None:
-            sub_dict['birth'] = datetime.datetime.strftime(sub_dict['birth'], "%d.%m.%Y")
-        # Replace None values with '-', but for the name field with '' as required in assignment.
-        sub_dict.update({key: ('-' if value is None
-                               else ('' if key == 'name' and value == '-'
+        if sub_dict["birth"] is not None:
+            sub_dict["birth"] = datetime.datetime.strftime(sub_dict["birth"], "%d.%m.%Y")
+        # Replace None values with "-", but for the name field with "" as required in assignment.
+        sub_dict.update({key: ("-" if value is None
+                               else ("" if key == "name" and value == "-"
                                      else (datetime.datetime.strftime(sub_dict[key], "%d.%m.%Y")
                                            if isinstance(value, datetime.date) and value is not None else value)))
                          for key, value in sub_dict.items()})
     # In order to preserve readability, independent sorting steps are used instead of one complex sorting.
     # In order not to overwrite sort order by sorting in steps, start from the last step.
     dictionary_to_write = \
-        {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]['id'])}
+        {key: value for key, value in sorted(dictionary_to_write.items(), key=lambda item: item[1]["id"])}
     # Name is the only key the assignment that may be missing entirely, because id, birth and death are
     # guaranteed to exist as per description of the assignment and age was created in this function above.
-    if 'name' in allkeys:
+    if "name" in allkeys:
         # For sorting firstly alphabetically, then by length.
         dictionary_to_write = \
             {key: value for key, value in sorted(dictionary_to_write.items(),
 
-                                                 key=lambda item: (item[1]['name'], len(item[1]['name'])))}
+                                                 key=lambda item: (item[1]["name"], len(item[1]["name"])))}
     # Order descending by birthdate - newer birth before.
     dictionary_to_write = \
         {key: value for key, value in sorted(dictionary_to_write.items(), key=custom_sort_birth, reverse=True)}
@@ -727,11 +746,15 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
     write_list_of_dicts_to_csv_file(report_filename, list(dictionary_to_write.values()))
 
 
-if __name__ == '__main__':
-    write_lines_to_file("file.txt", ["hello", "world"])
+if __name__ == "__main__":
+
+    print("read_file_contents", read_file_contents("nasty.txt"))
+
+    write_lines_to_file("file.txt", ["hello", "world", "jänes"])
     # file.txt:
     # hello
     # world
+    # jänes
 
     print("read_csv_file", read_csv_file("data.csv"))
     # [
@@ -800,42 +823,42 @@ if __name__ == '__main__':
     # Mary,19,tallinn
 
     write_list_of_dicts_to_csv_file("output5.csv", [])
-    # ''
+    # ""
 
     print("read_csv_file_into_list_of_dicts_using_datatypes",
           read_csv_file_into_list_of_dicts_using_datatypes("example.csv"))
     # [
-    #   {'name': 'john', 'age': 12},
-    #   {'name': 'mary', 'age': 14}
+    #   {"name": "john", "age": 12},
+    #   {"name": "mary", "age": 14}
     # ]
 
     print("read_csv_file_into_list_of_dicts_using_datatypes",
           read_csv_file_into_list_of_dicts_using_datatypes("example4.csv"))
     # [
-    #   {'name': 'john', 'age': '11'},
-    #   {'name': 'mary', 'age': '14'},
-    #   {'name': 'ago', 'age': 'unknown'}
+    #   {"name": "john", "age": "11"},
+    #   {"name": "mary", "age": "14"},
+    #   {"name": "ago", "age": "unknown"}
     # ]
 
     print("read_csv_file_into_list_of_dicts_using_datatypes",
           read_csv_file_into_list_of_dicts_using_datatypes("example5.csv"))
     # [
-    #   {'name': 'john', 'date': datetime.date(2020, 1, 1)},
-    #   {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+    #   {"name": "john", "date": datetime.date(2020, 1, 1)},
+    #   {"name": "mary", "date": datetime.date(2021, 9, 7)},
     # ]
 
     print("read_csv_file_into_list_of_dicts_using_datatypes",
           read_csv_file_into_list_of_dicts_using_datatypes("example6.csv"))
     # [
-    #   {'name': 'john', 'date': "01.01.2020"},
-    #   {'name': 'mary', 'date': "late 2021"},
+    #   {"name": "john", "date": "01.01.2020"},
+    #   {"name": "mary", "date": "late 2021"},
     # ]
 
     print("read_csv_file_into_list_of_dicts_using_datatypes",
           read_csv_file_into_list_of_dicts_using_datatypes("example7.csv"))
     # [
-    #   {'name': 'john', 'date': None},
-    #   {'name': 'mary', 'date': datetime.date(2021, 9, 7)},
+    #   {"name": "john", "date": None},
+    #   {"name": "mary", "date": datetime.date(2021, 9, 7)},
     # ]
 
     print("read_csv_file_into_list_of_dicts_using_datatypes",
