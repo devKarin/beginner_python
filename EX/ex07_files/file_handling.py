@@ -353,36 +353,36 @@ def read_csv_file_into_list_of_dicts(filename: str | Path, *typed: bool) -> list
     :param filename: CSV-file to read.
     :return: List of dictionaries where keys are taken from the header.
     """
+    list_of_dictionaries = []
+    # Dictionary for holding value types is created only in case typed dictionary is expected to be returned.
+    # Theoretically it saves memory space. It's not much but it's honest work. :)
+    if typed:
+        value_types = {}
     try:
-        list_of_dictionaries = []
         with open(filename, newline="", encoding="utf-8") as csv_file:
             # https://docs.python.org/3/library/csv.html#csv.DictReader
             # class csv.DictReader(f, fieldnames=None, restkey=None, restval=None, dialect="excel", *args, **kwds)
             # Saves the file as a csv.DictReader object
             csv_reader = csv.DictReader(csv_file)
-            # Dictionary for holding value types is created only in case typed dictionary is expected to be returned.
-            # Theoretically it saves memory space. It's not much but it's honest work. :)
-            if typed:
-                value_types = {}
             for row in csv_reader:
                 if typed:
                     # Value types are updated with every row.
                     value_types = get_value_types(row, value_types)
                 list_of_dictionaries.append(row)
-            # In case typed dictionary is expected, apply types and replace "-", "" and "None" with None.
-            if typed:
-                for dictionary in list_of_dictionaries:
-                    for key, value in dictionary.items():
-                        if value == "-" or value == "None" or value == "":
-                            dictionary.update({key: None})
-                        elif value_types[key] == "int":
-                            dictionary.update({key: int(value)})
-                        elif value_types[key] == "datetime.date":
-                            dictionary.update({key: datetime.datetime.strptime(value, "%d.%m.%Y").date()})
-        return list_of_dictionaries
     except FileNotFoundError:
         print("The file was not found. Please check the filename or Path.")
         return []
+        # In case typed dictionary is expected, apply types and replace "-", "" and "None" with None.
+    if typed:
+        for dictionary in list_of_dictionaries:
+            for key, value in dictionary.items():
+                if value == "-" or value == "None" or value == "":
+                    dictionary.update({key: None})
+                elif value_types[key] == "int":
+                    dictionary.update({key: int(value)})
+                elif value_types[key] == "datetime.date":
+                    dictionary.update({key: datetime.datetime.strptime(value, "%d.%m.%Y").date()})
+        return list_of_dictionaries
 
 
 def write_list_of_dicts_to_csv_file(filename: str, data: list) -> None:
@@ -749,6 +749,8 @@ def generate_people_report(person_data_directory: str, report_filename: str) -> 
 if __name__ == "__main__":
 
     print("read_file_contents", read_file_contents("nasty.txt"))
+    # The file was not found. Please check the filename.
+    # read_file_contents
 
     write_lines_to_file("file.txt", ["hello", "world", "jänes"])
     # file.txt:
