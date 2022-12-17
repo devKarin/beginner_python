@@ -90,7 +90,7 @@ def recursive_sum(n: int) -> int:
     """
     summary = 0
     if n >= 0:
-        summary = n + recursive_sum(n-1)
+        summary = n + recursive_sum(n - 1)
     return summary
 
 
