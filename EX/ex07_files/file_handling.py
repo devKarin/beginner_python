@@ -16,6 +16,11 @@ write_csv_file(filename: str, data: list) -> None; Writes data into CSV file.
 merge_dates_and_towns_into_csv(dates_filename: str, towns_filename: str, csv_output_filename: str) -> None;
 Merges information from two files into one CSV file.
 
+get_value_types(dictionary: dict, value_types: dict) -> dict;
+Gets common value types for dictionary values with the same key.
+
+apply_value_types(dictionary: dict, value_types: dict) -> dict; Applies predefined value types to dictionary.
+
 read_csv_file_into_list_of_dicts(filename: str) -> list; Reads csv file into list of dictionaries.
 write_list_of_dicts_to_csv_file(filename: str, data: list) -> None; Writes list of dicts into csv file.
 
@@ -324,6 +329,26 @@ def get_value_types(dictionary: dict, value_types: dict) -> dict:
     return value_types
 
 
+def apply_value_types(dictionary: dict, value_types: dict) -> dict:
+    """
+    Apply predefined value types to dictionary.
+
+    Gets predefined value types from one dictionary and applies them to another based on the same key.
+
+    :param dictionary: dictionary which values need to be converted
+    :param value_types: dictionary holding predefined value types
+    :return: dictionary with converted values
+    """
+    for key, value in dictionary.items():
+        if value in ["-", "None", ""]:
+            dictionary.update({key: None})
+        elif value_types[key] == "int":
+            dictionary.update({key: int(value)})
+        elif value_types[key] == "datetime.date":
+            dictionary.update({key: datetime.datetime.strptime(value, "%d.%m.%Y").date()})
+    return dictionary
+
+
 def read_csv_file_into_list_of_dicts(filename: str | Path, *typed: bool) -> list:
     """
     Read csv file into list of dictionaries.
@@ -353,9 +378,10 @@ def read_csv_file_into_list_of_dicts(filename: str | Path, *typed: bool) -> list
     :param filename: CSV-file to read.
     :return: List of dictionaries where keys are taken from the header.
     """
-    try:
-        list_of_dictionaries = []
-        with open(filename, newline="", encoding="utf-8") as csv_file:
+
+    list_of_dictionaries = []
+    with open(filename, newline="", encoding="utf-8") as csv_file:
+        try:
             # https://docs.python.org/3/library/csv.html#csv.DictReader
             # class csv.DictReader(f, fieldnames=None, restkey=None, restval=None, dialect="excel", *args, **kwds)
             # Saves the file as a csv.DictReader object
@@ -369,20 +395,14 @@ def read_csv_file_into_list_of_dicts(filename: str | Path, *typed: bool) -> list
                     # Value types are updated with every row.
                     value_types = get_value_types(row, value_types)
                 list_of_dictionaries.append(row)
-            # In case typed dictionary is expected, apply types and replace "-", "" and "None" with None.
-            if typed:
-                for dictionary in list_of_dictionaries:
-                    for key, value in dictionary.items():
-                        if value == "-" or value == "None" or value == "":
-                            dictionary.update({key: None})
-                        elif value_types[key] == "int":
-                            dictionary.update({key: int(value)})
-                        elif value_types[key] == "datetime.date":
-                            dictionary.update({key: datetime.datetime.strptime(value, "%d.%m.%Y").date()})
-        return list_of_dictionaries
-    except FileNotFoundError:
-        print("The file was not found. Please check the filename or Path.")
-        return []
+        except FileNotFoundError:
+            print("The file was not found. Please check the filename or Path.")
+            return []
+        # In case typed dictionary is expected, apply types and replace "-", "" and "None" with None.
+        if typed:
+            for dictionary in list_of_dictionaries:
+                apply_value_types(dictionary, value_types)
+    return list_of_dictionaries
 
 
 def write_list_of_dicts_to_csv_file(filename: str, data: list) -> None:
