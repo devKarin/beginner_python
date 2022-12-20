@@ -21,13 +21,6 @@ test__students_study__night_no_coffee_needed()
 test__students_study__night_edge_case_no_coffee_needed()
     -> Tests nighttime 1 or 4 regardless the coffee.
 
-test_students_study__invalid_time_0()
-    -> Tests out of range time 0 regardless the coffee.
-test_students_study__invalid_time_28()
-    -> Tests out of range time 28 regardless the coffee.
-test__students_study__invalid_time_negative()
-    -> Tests out of range time -2 regardless the coffee.
-
 test__lottery__all_winning_numbers()
     -> Tests all winning numbers.
 test__lottery__all_equal_positive_numbers()
@@ -41,24 +34,37 @@ test__lottery__b_and_c_equal_but_not_a()
 test__lottery__all_numbers_different()
     -> Tests all different numbers.
 test__lottery__b_equal_to_a_c_different()
-    -> Tests number b and a are equal with each other but not equal to c.
+    -> Tests number b and number a are equal with each other but not equal to c.
 test__lottery__c_equal_to_a_b_different()
-    -> Tests number c and a are equal with each other but not equal to b.
+    -> Tests number c and number a are equal with each other but not equal to b.
 
 test__fruit_order__amount_zero()
     -> Tests fruit amount 0 - the order can not be placed.
+test__fruit_order__no_big_baskets_no_small_baskets()
+    -> Tests when there are no big and no small baskets - the order can not be placed.
 test__fruit_order__no_big_baskets_not_enough_small_baskets()
-    -> Tests no big baskets and not enough small baskets.
+    -> Tests when there are no big baskets and not enough small baskets - the order can not be placed.
 test__fruit_order__no_big_baskets_enough_small_baskets()
-    -> Tests no big baskets but enough small baskets.
-test__fruit_order__big_baskets_but_not_enough_small_baskets()
-    -> Tests amount left from big_baskets doesn't fit into small baskets.
-test__fruit_order__enough_both_baskets_amount_fits_into_big()
-    -> Tests when there is enough both baskets, but order fits into big baskets.
+    -> Tests when there are no big baskets but enough small baskets.
+test__fruit_order__not_enough_big_baskets_no_small_baskets()
+    -> Tests when there are no small baskets and not enough amount of big baskets.
+test__fruit_order__not_enough_big_baskets_not_enough_small_baskets()
+    -> Tests when there is not enough big baskets and the amount of fruits left does not fit into small baskets -
+    the order can not be placed.
+test__fruit_order__not_enough_big_baskets_enough_small_baskets()
+    -> Tests when there is not enough big baskets, but the fruit amount left can be covered using small baskets.
+test__fruit_order__enough_big_baskets_no_small_baskets()
+    -> Tests when there is enough big baskets but there are no small baskets.
+test__fruit_order__enough_big_baskets_but_not_enough_small_baskets()
+    -> Tests when the amount left from big_baskets doesn't fit into small baskets - the order can not be placed.
+test__fruit_order__enough_both_baskets_exact_amount()
+    -> Test when the ordered amount fits into big and small baskets exactly.
 test__fruit_order__enough_both_baskets_all_big_baskets_used()
-    -> Tests when there is enough both baskets, and all big baskets are used.
+    -> Tests when there is exact amount of big baskets and abundance of small baskets.
+test__fruit_order__enough_both_baskets_all_small_baskets_are_used()
+    -> Tests when there is abundance of big baskets and exact amount of small baskets.
 test__fruit_order__enough_both_baskets()
-    -> Tests when ordered amount is shared between big baskets (preferred) and small baskets.
+    -> Tests when there is abundance of both (small and big) baskets.
 
 """
 
@@ -299,7 +305,7 @@ def test__lottery__all_equal_negative_numbers():
 
 def test__lottery__b_and_c_equal_but_not_a():
     """
-    Numbers b and c are equal with each other but not equal with a.
+    Numbers b and c are equal with each other but not equal with number a.
 
     Test case:
     b == c != a
@@ -337,7 +343,7 @@ def test__lottery__all_numbers_different():
 
 def test__lottery__b_equal_to_a_c_different():
     """
-    Number b is equal to a.
+    Number b is equal to number a.
 
     Test case:
     a == b != c
@@ -352,7 +358,7 @@ def test__lottery__b_equal_to_a_c_different():
 
 def test__lottery__c_equal_to_a_b_different():
     """
-    Number c is equal to a, but not equal to b.
+    Number c is equal to number a, but not equal to number b.
 
     Test case:
     a == c != b
@@ -383,6 +389,22 @@ def test__fruit_order__amount_zero():
     assert fruit_order(23, 1, 0) == 0
     assert fruit_order(0, 4, 0) == 0
     assert fruit_order(200, 0, 0) == 0
+
+
+def test__fruit_order__no_big_baskets_no_small_baskets():
+    """
+    There are no big and no small baskets.
+
+    Test case:
+    small_baskets == 0
+    big_baskets == 0
+    ordered_amount == any
+
+    Expected: -1
+    :return:
+    """
+    assert fruit_order(0, 0, 1) == -1
+    assert fruit_order(0, 0, 89789) == -1
 
 
 def test__fruit_order__no_big_baskets_not_enough_small_baskets():
@@ -420,129 +442,169 @@ def test__fruit_order__no_big_baskets_enough_small_baskets():
     assert fruit_order(485, 0, 485) == 485
 
 
-def test__fruit_order__big_baskets_but_not_enough_small_baskets():
+def test__fruit_order__not_enough_big_baskets_no_small_baskets():
+    """
+    There are no small baskets and the amount of big baskets is not enough.
+
+    Test case:
+    small_baskets == 0
+    big_baskets * 5 < ordered amount
+
+    Expected: -1
+    :return:
+    """
+    assert fruit_order(0, 5, 26) == -1
+    assert fruit_order(0, 10, 60) == -1
+    assert fruit_order(0, 300, 30000) == -1
+
+
+def test__fruit_order__not_enough_big_baskets_not_enough_small_baskets():
+    """
+    There is not enough big baskets and the amount of fruits left does not fit into small baskets.
+
+    Test case:
+    small_baskets < ordered_amount - big_baskets * 5
+    big_baskets < ordered_amount // 5
+    ordered amount == any
+
+    Expected: -1
+    :return:
+    """
+    assert fruit_order(2, 1, 10) == -1
+    assert fruit_order(1, 8, 45) == -1
+    assert fruit_order(4, 1, 14) == -1
+    assert fruit_order(5, 6000, 30010) == -1
+    assert fruit_order(1, 50000, 250020) == -1
+    assert fruit_order(23, 5, 50) == -1
+
+
+def test__fruit_order__not_enough_big_baskets_enough_small_baskets():
+    """
+    There is not enough big baskets, but the fruit amount left can be covered using small baskets.
+
+    Test case:
+
+    small_baskets >= ordered_amount - big_baskets * 5
+    big_baskets < ordered_amount // 5
+    ordered_amount == any
+
+    Expected: ordered_amount - big_baskets * 5
+    :return:
+    """
+    assert fruit_order(5, 1, 10) == 5
+    assert fruit_order(5, 8, 45) == 5
+    assert fruit_order(9, 1, 14) == 9
+    assert fruit_order(10, 6000, 30010) == 10
+    assert fruit_order(25, 70, 374) == 24
+    assert fruit_order(10, 10, 60) == 10
+
+
+def test__fruit_order__enough_big_baskets_no_small_baskets():
+    """
+    There is enough big baskets but there are no small baskets.
+
+    Test case:
+    small_baskets == 0
+    big_baskets >= ordered_amount // 5
+    ordered_amount == any
+
+    Expected: 0 or -1
+    :return:
+    """
+    assert fruit_order(0, 10, 50) == 0
+    assert fruit_order(0, 2, 11) == -1
+    assert fruit_order(0, 100, 5) == 0
+    assert fruit_order(0, 4000, 9) == -1
+    assert fruit_order(0, 9, 50) == -1
+    assert fruit_order(0, 90, 52) == -1
+
+
+def test__fruit_order__enough_big_baskets_but_not_enough_small_baskets():
     """
     Amount left from big_baskets doesn't fit into small baskets.
 
     Test case:
-    small_baskets < ordered_amount - big_baskets * 5
-    big_baskets == any
+    small_baskets < ordered_amount - (ordered_amount // 5 ) * 5
+    big_baskets >= ordered_amount // 5
     ordered_amount == any
 
     Expected: -1
     :return:
     """
     assert fruit_order(1, 1, 7) == -1
-    assert fruit_order(1, 50000, 250020) == -1
-    assert fruit_order(23, 5, 50) == -1
-    assert fruit_order(0, 9, 50) == -1
-    assert fruit_order(0, 90, 52) == -1
+    assert fruit_order(1, 14, 7) == -1
+    assert fruit_order(3, 100, 504) == -1
+    assert fruit_order(3, 7890, 14) == -1
 
 
-def test__fruit_order__enough_both_baskets_amount_fits_into_big():
+def test__fruit_order__enough_both_baskets_exact_amount():
     """
-    Ordered amount fits into big baskets and no small baskets are needed.
+    Ordered amount fits into big and small baskets exactly.
 
-    Test case:
-    small_baskets == any
-    big_baskets == any
-    ordered_amount == big_baskets * 5
+    small_baskets == ordered_amount - big_baskets
+    big_baskets == ordered_amount // 5
+    ordered_amount == any
 
-    Expected: 0
+    Expected: small_baskets
     :return:
     """
+    assert fruit_order(1, 1, 6) == 1
+    assert fruit_order(4, 50, 254) == 4
+    assert fruit_order(2, 11, 57) == 2
+    assert fruit_order(3, 98765, 493828) == 3
+
+
+def test__fruit_order__enough_both_baskets_all_big_baskets_used():
+    """
+    There is exact amount of big baskets and abundance of small baskets.
+
+    Test case:
+    small_baskets > ordered_amount - big_baskets * 5
+    big_baskets == ordered_amount // 5
+    ordered_amount == any
+
+    Expected: ordered_amount - big_baskets * 5
+    :return:
+    """
+    assert fruit_order(8, 1, 6) == 1
+    assert fruit_order(30, 24, 123) == 3
+    assert fruit_order(45630, 2, 12) == 2
     assert fruit_order(1, 1, 5) == 0
     assert fruit_order(5890, 3000, 15000) == 0
     assert fruit_order(50, 10, 50) == 0
     assert fruit_order(50, 4, 20) == 0
 
 
-def test__fruit_order__enough_both_baskets_all_big_baskets_used():
+def test__fruit_order__enough_both_baskets_all_small_baskets_are_used():
     """
-    Ordered amount is shared between big baskets (preferred) and small baskets. All big baskets are used.
+    There is abundance of big baskets and exact amount of small baskets.
 
     Test case:
-    small_baskets == any
-    big_baskets == any
-    ordered_amount == big_baskets * 5 + small_baskets_needed
+    small_baskets == ordered_amount - (ordered_amount // 5) * 5
+    big_baskets > ordered_amount // 5
+    ordered_amount == any
 
-    Expected: ordered_amount - big_baskets * 5
+    Expected: small_baskets
     :return:
     """
-    assert fruit_order(8, 1, 6) == 1
-    assert fruit_order(25, 70, 374) == 24
-    assert fruit_order(10, 10, 60) == 10
+    assert fruit_order(1, 4000, 11) == 1
+    assert fruit_order(2, 100, 457) == 2
+    assert fruit_order(3, 54, 28) == 3
+    assert fruit_order(4, 2, 9) == 4
 
 
 def test__fruit_order__enough_both_baskets():
     """
-    Ordered amount is shared between big baskets (preferred) and small baskets.
+    There is abundance of both (small and big) baskets.
 
     Test case:
-    small_baskets == any
-    big_baskets == any
-    big_baskets_used = ordered_amount // 5
+    small_baskets > ordered_amount - (ordered_amount // 5) * 5
+    big_baskets > ordered_amount // 5
     ordered_amount == any
 
-    Expected: ordered_amount - big_baskets_used * 5
+    Expected: ordered_amount - (ordered_amount // 5) * 5
     :return:
     """
     assert fruit_order(8, 114, 64) == 4
     assert fruit_order(25, 8, 34) == 4
     assert fruit_order(10, 15, 59) == 4
-
-# def test__fruit_order__no_small_baskets():
-    """
-    No big small baskets are ordered.
-
-    Test case:
-    small_baskets == 0
-    big_baskets == any
-    ordered_amount == any
-
-    Expected: 0
-    :return:
-    """
-    # assert fruit_order(0, 2, 10) == 0
-    # assert fruit_order(0, 5, 25) == 0
-    # assert fruit_order(0, 9999, 49995) == 0
-
-
-# def test__fruit_order__incorrect_amount():
-    """
-    The amount of fruits in big and small baskets doesn't add up.
-
-    Test case:
-    big_baskets == any
-    small_baskets == any
-    big_baskets * 5 + small_baskets != ordered_amount
-
-
-    Expected: -1
-    :return:
-    """
-    # assert fruit_order(1, 4, 16) == -1
-    # assert fruit_order(0, 5, 40) == -1
-    # assert fruit_order(101, 0, 5) == -1
-    # assert fruit_order(1, 3, 15) == -1
-    # assert fruit_order(12, 12, 12) == -1
-
-
-# def test__fruit_order__correct_amount():
-    """
-    The amount of fruits in big and small baskets adds up.
-
-    Test case:
-    big_baskets == any
-    small_baskets == any
-    big_baskets * 5 + small_baskets == ordered_amount
-
-
-    Expected: small_baskets
-    :return:
-    """
-    # assert fruit_order(1, 4, 21) == 1
-    # assert fruit_order(1, 3, 16) == 1
-    # assert fruit_order(101, 0, 101) == 101
-    # assert fruit_order(55, 3, 70) == 55
-    # assert fruit_order(12, 12, 72) == 12
