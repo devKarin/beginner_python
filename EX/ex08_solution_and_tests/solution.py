@@ -65,21 +65,29 @@ def fruit_order(small_baskets: int, big_baskets: int, ordered_amount: int) -> in
     # If there is no amount, zero small baskets are needed.
     if ordered_amount == 0:
         return 0
-    # If there are no big baskets and not enough small baskets, the order can't be placed.
-    elif big_baskets == 0 and small_baskets < ordered_amount:
-        return -1
-    # If there are no big baskets, but enough small baskets, the amount of small baskets needed
-    # is equal to ordered amount.
-    elif big_baskets == 0:
-        return ordered_amount
-    # If there are big and small baskets, but the amount left from big_baskets
-    # doesn't fit into small baskets, the order can not be fulfilled.
-    elif ordered_amount - big_baskets * 5 > small_baskets:
-        return -1
-    # If there is enough both size of baskets, return how many small baskets are needed and thereby used.
-    else:
-        max_big_baskets_used = ordered_amount // 5
-        if big_baskets > max_big_baskets_used:
-            return ordered_amount - max_big_baskets_used * 5
+    # If there is equal amount of basket capacity and ordered fruit amount
+    # or the basket capacity is greater than the fruit amount ordered, check other conditions.
+    elif big_baskets * 5 + small_baskets >= ordered_amount:
+        # If there are no big baskets, the amount of small baskets needed is the ordered amount.
+        if big_baskets == 0:
+            return ordered_amount
+        # If the capacity of available big baskets is equal to the ordered amount, no small baskets are needed.
+        elif big_baskets * 5 == ordered_amount:
+            return 0
+        # If the capacity of available big baskets exceeds the ordered amount,
+        # place fruits in the big baskets first.
+        elif big_baskets * 5 > ordered_amount:
+            # The amount of small baskets needed is the ordered amount minus the amount placed into big baskets.
+            small_baskets_needed = ordered_amount - (ordered_amount // 5) * 5
+        # Otherwise the amount of small baskets needed is the amount that exceeds big basket's capacity.
         else:
-            return ordered_amount - big_baskets * 5
+            small_baskets_needed = ordered_amount - big_baskets * 5
+
+        # If there is enough small baskets, return the amount of small baskets needed.
+        if small_baskets_needed <= small_baskets:
+            return small_baskets_needed
+            # Otherwise the order can not be placed.
+        else:
+            return -1
+    else:
+        return -1
