@@ -378,7 +378,6 @@ def read_csv_file_into_list_of_dicts(filename: str | Path, *typed: bool) -> list
     :param filename: CSV-file to read.
     :return: List of dictionaries where keys are taken from the header.
     """
-
     list_of_dictionaries = []
     with open(filename, newline="", encoding="utf-8") as csv_file:
         try:
