@@ -516,6 +516,7 @@ def test__fruit_order__enough_big_baskets_no_small_baskets():
     assert fruit_order(0, 2, 11) == -1
     assert fruit_order(0, 100, 5) == 0
     assert fruit_order(0, 4000, 9) == -1
+    assert fruit_order(0, 10203, 5008) == -1
     assert fruit_order(0, 9, 50) == -1
     assert fruit_order(0, 90, 52) == -1
 
@@ -538,6 +539,7 @@ def test__fruit_order__enough_big_baskets_but_not_enough_small_baskets():
     assert fruit_order(3, 2, 14) == -1
     assert fruit_order(3, 100, 504) == -1
     assert fruit_order(3, 7890, 14) == -1
+    assert fruit_order(3, 8521, 1244) == -1
 
 
 def test__fruit_order__enough_both_baskets_exact_amount():
@@ -576,6 +578,7 @@ def test__fruit_order__enough_both_baskets_all_big_baskets_used():
     assert fruit_order(5890, 3000, 15000) == 0
     assert fruit_order(50, 10, 50) == 0
     assert fruit_order(50, 4, 20) == 0
+    assert fruit_order(1234, 1000, 5123) == 123
 
 
 def test__fruit_order__enough_both_baskets_all_small_baskets_are_used():
