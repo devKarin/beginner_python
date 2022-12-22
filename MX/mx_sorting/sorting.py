@@ -135,8 +135,7 @@ def sort_people_by_name(people: list[Person]) -> list:
     """
     # Sort people list by the name in lowercase using built-in sorted function and anonymous lambda function.
     sorted_list = sorted(people, key=lambda person: person.name.casefold())
-    # In order to return only person names without using loop, they can be mapped instead.
-    return list(map(lambda person: person.name.lower(), sorted_list))
+    return sorted_list
 
 
 def sort_people_by_age_name_height(people: list[Person]) -> list:
@@ -155,8 +154,7 @@ def sort_people_by_age_name_height(people: list[Person]) -> list:
     # Sort people list first by age, then by name in lowercase and then by height using
     # built-in sorted function and anonymous lambda function.
     sorted_list = sorted(people, key=lambda person: (person.age, person.name.casefold(), person.height))
-    # In order to return only person names without using loop, they can be mapped instead.
-    return list(map(lambda person: person.name.lower(), sorted_list))
+    return sorted_list
 
 
 def sort_people_by_popularity_of_name(people: list[Person]) -> list:
@@ -178,16 +176,10 @@ def sort_people_by_popularity_of_name(people: list[Person]) -> list:
     # then sort the object list people by the name count descending (for this "-" in front of the
     # first sorting condition is used).
     # Then, sort the object list people by person names ascending (alphabetically).
-    sorted_list = sorted(people,
-                         key=lambda person:
-                         (-list(
-                             map(lambda person: person.name.lower(), people)
-                         ).count(person.name.lower()),
-                          person.name.casefold()
-                          )
-                         )
-    # In order to return only person names without using loop, they can be mapped instead.
-    return list(map(lambda person: person.name.lower(), sorted_list))
+    sorted_list =\
+        sorted(people, key=lambda person: (-list(map(lambda person: person.name.lower(),
+                                                     people)).count(person.name.lower()), person.name.casefold()))
+    return sorted_list
 
 
 if __name__ == '__main__':
