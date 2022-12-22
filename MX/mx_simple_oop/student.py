@@ -12,6 +12,7 @@ class Student:
 
     Student has name and finished status, which is by default false.
     """
+
     def __init__(self, name):
         """
         Initialize the Student class.
