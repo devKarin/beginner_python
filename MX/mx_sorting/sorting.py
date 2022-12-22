@@ -8,7 +8,7 @@ Person; Person class
 
 Functions in Person class:
 __init__; Person constructor.
-__repr__; Tweets representation. Returns the name, age ad height of the person as an f-string.
+__repr__; Person representation. Returns the name, age ad height of the person as an f-string.
 sort_people_by_name(people: list[Person]) -> list; Sort people by their name in alphabetical order.
 sort_people_by_age_name_height(people: list[Person]) -> list; Sort people by their age, name and height.
 sort_people_by_popularity_of_name(people: list[Person]) -> list;
