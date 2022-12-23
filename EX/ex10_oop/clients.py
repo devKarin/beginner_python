@@ -60,6 +60,7 @@ class Client:
     def __repr__(self):
         """
         Client representation.
+
         :return: clients name
         """
         return self.name
@@ -129,7 +130,9 @@ def largest_earnings_per_day(filename: str) -> Optional[Client]:
         list(filter(lambda client: client.current_amount > client.starting_amount, sorted_by_largest_earnings))
     # Return the client who has earned the most money per day. If the list is empty (no-one has earned money),
     # return None.
-    return max(sorted_by_largest_earnings, key=lambda client: client.earnings_per_day()) or None
+    if not sorted_by_largest_earnings:
+        return
+    return max(sorted_by_largest_earnings, key=lambda client: client.earnings_per_day())
 
 
 def largest_loss_per_day(filename: str) -> Optional[Client]:
@@ -153,7 +156,9 @@ def largest_loss_per_day(filename: str) -> Optional[Client]:
         list(filter(lambda client: client.current_amount < client.starting_amount, sorted_by_largest_loss))
     # Return the client who has lost the most money per day. If the list is empty (no-one has lost money),
     # return None.
-    return min(sorted_by_largest_loss, key=lambda client: client.earnings_per_day()) or None
+    if not sorted_by_largest_loss:
+        return
+    return min(sorted_by_largest_loss, key=lambda client: client.earnings_per_day())
 
 
 if __name__ == '__main__':
