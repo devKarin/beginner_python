@@ -1,5 +1,5 @@
 """
-WAT
+WAT - WAT.
 
 At this point it is unclear what this module does.
 
@@ -12,65 +12,73 @@ unknown
 """
 
 
-def function_a():
+def function_a(arg):
     """
     Unknown function.
+
     :return:
     """
     pass
 
 
-def function_b():
+def function_b(arg):
     """
     Unknown function.
+
     :return:
     """
     pass
 
 
-def function_c():
+def function_c(arg):
     """
     Unknown function.
+
     :return:
     """
     pass
 
 
-def function_d():
+def function_d(arg):
     """
     Unknown function.
+
     :return:
     """
     pass
 
 
-def function_e():
+def function_e(arg):
     """
     Unknown function.
+
     :return:
     """
     pass
 
 
-def function_f():
+def function_f(arg):
     """
     Unknown function.
+
     :return:
     """
     pass
 
 
-def function_g():
+def function_g(arg):
     """
     Unknown function.
+
     :return:
     """
     pass
 
 
-def function_h():
+def function_h(arg):
     """
     Unknown function.
+
     :return:
     """
     pass
