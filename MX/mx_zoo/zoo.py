@@ -97,15 +97,14 @@ def find_how_many_pumpkins_are_needed_to_feed_animals(animal_list: list) -> int:
     # In order to reduce the list of pumpkins needed, first such list needs to be created.
     # For this map function combined with lambda function can be used.
     # First the average weight of animal species needs to be found using animal weight range.
-    # Then the amount of pumpkins needed in kg-s is calculated (6% of boddy mass for 90 days for 2 animals).
-    # Then pumpkins in pc-s is calculated (1 pumpkin weighs 3 kg-s) and rounded up to get whole pumpkins.
+    # Then the amount of pumpkins needed in kg-s is calculated (6% of body mass for 90 days for 2 animals).
+    # Then pumpkins in pc-s is calculated (1 pumpkin weighs 3 kg-s).
     # For every animal species which is not carnivorous by its diet, the amount of pumpkins is added to the list.
     # For carnivorous species 0 is added to the list.
-    # Finally, the pumpkin list is reduced by using the predefined function and the result is returned.
-    return reduce(lambda a, b: a + b,
-                  list(map(lambda animal:
-                           math.ceil(2 * 90 * (0.06 * sum(animal.weight_range) / 2 / 3)
-                                     if animal.diet != "carnivorous" else 0), animal_list)))
+    # Finally, the pumpkin list is reduced by using the predefined function, the result is rounded up and returned.
+    return math.ceil(reduce(lambda a, b: a + b,
+                            list(map(lambda animal: 2 * 90 * (0.06 * sum(animal.weight_range) / 2 / 3
+                                                              if animal.diet != "carnivorous" else 0), animal_list))))
 
 
 def sort_alphabetically_by_scientific_name(animal_list: list) -> list:
