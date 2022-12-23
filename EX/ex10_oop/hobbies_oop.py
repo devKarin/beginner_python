@@ -8,7 +8,7 @@ Person; Person class
 
 Functions in Person class:
 __init__; Person constructor.
-__repr__; Tweet representation. Returns the tweeting user, tweet content, tweet time and retweets as an f-string.
+__repr__; Person representation. Returns persons full name.
 @property full_name(self) -> str; Property decorator which defines full name for person object.
 
 Available functions:
