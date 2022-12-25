@@ -39,7 +39,7 @@ class AlchemicalElement:
 
     def __repr__(self) -> str:
         """
-        AlchemicalElement representation.
+        Representation of AlchemicalElement.
 
         Returns element name as a formatted string.
         :return:
@@ -67,15 +67,15 @@ class AlchemicalStorage:
 
         :param element: Input object to add to storage.
         """
-        try:
-            # Check whether the element is a type of AlchemicalElement before adding it into storage.
-            # If not, raise a TypeError.
-            if not isinstance(element, AlchemicalElement):
-                raise TypeError
-            self.storage.append(element)
-            return element
-        except TypeError:
-            print("You are trying to add an element which is not a type of AlchemicalElement.")
+        # try:
+        # Check whether the element is a type of AlchemicalElement before adding it into storage.
+        # If not, raise a TypeError.
+        if not isinstance(element, AlchemicalElement):
+            raise TypeError
+        self.storage.append(element)
+        return element
+        # except TypeError:
+        # print("You are trying to add an element which is not a type of AlchemicalElement.")
 
     def pop(self, element_name: str) -> AlchemicalElement | None:
         """
