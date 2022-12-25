@@ -1,5 +1,5 @@
 """
-EX11.1 - Alchemy
+EX11.1 - Alchemy.
 
 This program organises people and their hobbies.
 
@@ -28,10 +28,22 @@ class AlchemicalElement:
 
     Every element must have a name.
     """
+
     def __init__(self, name: str):
+        """
+        Initialize the AlchemicalElement class.
+
+        Every element has a name.
+        """
         self.name = name
 
     def __repr__(self) -> str:
+        """
+        AlchemicalElement representation.
+
+        Returns element name as a formatted string
+        :return:
+        """
         return f"<AE: {self.name}>"
 
 
@@ -57,14 +69,13 @@ class AlchemicalStorage:
         """
         try:
             # Check whether the element is a type of AlchemicalElement before adding it into storage.
-            # If not, raise a TypeError and return.
+            # If not, raise a TypeError.
             if not isinstance(element, AlchemicalElement):
                 raise TypeError()
             self.storage.append(element)
             return element
         except TypeError:
             print("You are trying to add an element which is not a type of AlchemicalElement.")
-            return
 
     def pop(self, element_name: str) -> AlchemicalElement | None:
         """
@@ -130,7 +141,7 @@ class AlchemicalStorage:
         :return: Content as a string.
         """
         # Initiate the final output string.
-        output = f"Content:\n"
+        output = "Content:\n"
         # Initiate a dictionary for easier counting of elements.
         element_dictionary = {}
         if not self.storage:
@@ -139,10 +150,10 @@ class AlchemicalStorage:
             # If the storage is not empty loop its elements in alphabetical order (by name) and store the
             # amount of elements with the same name in dictionary.
             for item in sorted(self.storage, key=lambda element: element.name):
-                # In order to avoid double-counting, only add element into dictionary and count its amount
-                # if it has not been done yet.
                 if item.name not in element_dictionary:
-                    element_dictionary[item.name] = self.storage.count(item)
+                    element_dictionary[item.name] = 1
+                else:
+                    element_dictionary[item.name] += 1
             # Loop through the dictionary and create output string.
             for key, value in element_dictionary.items():
                 output += f" * {key} x {value}\n"
@@ -160,7 +171,7 @@ if __name__ == '__main__':
     print(element_one)  # <AE: Fire>
     print(element_two)  # <AE: Water>
 
-    # storage.add(2)  # -> You are trying to add an element which is not a type of AlchemicalElement.
+    storage.add(2)  # -> You are trying to add an element which is not a type of AlchemicalElement.
     storage.add(element_one)
     storage.add(element_two)
 
@@ -197,5 +208,8 @@ if __name__ == '__main__':
 
     print(storage.get_content())
     # Content:
-    #  Empty
-    print(storage.extract())
+    #  * Earth x 1
+    #  * Fire x 1
+    #  * Water x 3
+    #  * Wind x 1
+    print(storage.extract())  # [<AE: Fire>, <AE: Water>, <AE: Water>, <AE: Wind>, <AE: Earth>, <AE: Water>]
