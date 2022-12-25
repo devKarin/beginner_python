@@ -41,7 +41,7 @@ class AlchemicalElement:
         """
         AlchemicalElement representation.
 
-        Returns element name as a formatted string
+        Returns element name as a formatted string.
         :return:
         """
         return f"<AE: {self.name}>"
@@ -71,7 +71,7 @@ class AlchemicalStorage:
             # Check whether the element is a type of AlchemicalElement before adding it into storage.
             # If not, raise a TypeError.
             if not isinstance(element, AlchemicalElement):
-                raise TypeError()
+                raise TypeError
             self.storage.append(element)
             return element
         except TypeError:
@@ -141,11 +141,11 @@ class AlchemicalStorage:
         :return: Content as a string.
         """
         # Initiate the final output string.
-        output = "Content:\n"
+        output = "Content:"
         # Initiate a dictionary for easier counting of elements.
         element_dictionary = {}
         if not self.storage:
-            output += " Empty."
+            output += "\n Empty."
         else:
             # If the storage is not empty loop its elements in alphabetical order (by name) and store the
             # amount of elements with the same name in dictionary.
@@ -156,7 +156,7 @@ class AlchemicalStorage:
                     element_dictionary[item.name] += 1
             # Loop through the dictionary and create output string.
             for key, value in element_dictionary.items():
-                output += f" * {key} x {value}\n"
+                output += f"\n * {key} x {value}"
         return output
 
 
