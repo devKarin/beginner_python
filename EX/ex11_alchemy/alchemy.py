@@ -1,7 +1,7 @@
 """
 EX11.1 - Alchemy.
 
-This program organises people and their hobbies.
+This program organises alchemical elements.
 
 Available classes:
 AlchemicalElement; AlchemicalElement class
@@ -10,6 +10,8 @@ AlchemicalRecipes; AlchemicalRecipes class
 DuplicateRecipeNamesException; DuplicateRecipeNamesException class, extends the Exception class.
 RecipeOverlapException; RecipeOverlapException class, extends the Exception class.
 Cauldron; Cauldron class, extends the AlchemicalStorage class.
+Catalyst; Catalyst class, extends the AlchemicalElement class.
+Purifier; Purifier class, extends the AlchemicalStorage class.
 
 Methods in AlchemicalElement class:
 __init__; AlchemicalElement constructor. Every element has a name.
@@ -29,12 +31,24 @@ add_recipe(self, first_component_name: str, second_component_name: str, product_
     -> Determines if recipe is valid and then add it to recipes.
 get_product_name(self, first_component_name: str, second_component_name: str) -> str or None;
     -> Returns the name of the product for the two components in recipe.
+get_component_names(self, product_name: str) -> tuple[str, str] or None;
+    -> Return the names of the components for the product in recipe.
 
 Methods in Cauldron class:
 __init__(self, recipes: AlchemicalRecipes); Cauldron class constructor.
-    -> Uses base class constructor and extends it with recipes from AlchemicalRecipes class.
+    -> Uses base class (AlchemicalStorage) constructor and extends it with recipes from AlchemicalRecipes class.
 add(self, element: AlchemicalElement);
     -> Adds element to storage and checks if it can combine with anything already inside.
+
+Methods in Catalyst class:
+__init__(self, name: str, uses: int); Catalyst class constructor.
+    -> Uses base class (AlchemicalElement) constructor and extends it with uses attribute.
+__repr__(self) -> str; AlchemicalElement representation. Returns element name as a formatted string.
+
+Methods in Purifier class:
+__init__(self, recipes: AlchemicalRecipes); Purifier class constructor.
+    -> Uses base class (AlchemicalStorage) constructor and extends it with recipes from AlchemicalRecipes class.
+add(self, element: AlchemicalElement); Adds element to storage and checks whether it can be split into anything.
 
 """
 
@@ -235,6 +249,17 @@ class AlchemicalRecipes:
             if components == {first_component_name, second_component_name}:
                 return product
 
+    def get_component_names(self, product_name: str) -> tuple[str, str] or None:
+        """
+        Return the names of the components for the product in recipe.
+
+        If the product is in the recipe, returns its components, if not, returns None.
+
+        :param product_name:
+        :return: components for the product according to recipe
+        """
+        return tuple(self.recipes[product_name])
+
 
 class DuplicateRecipeNamesException(Exception):
     """Raised when attempting to add a recipe that has same names for components and product."""
@@ -287,14 +312,34 @@ class Cauldron(AlchemicalStorage):
         # Check the storage starting from last added element.
         for item in reversed(self.storage):
             # If the storage item which is currently checked combined with element which is added is
-            # already described in recipes then remove the storage item from storage.
-            # Since the storage list is checked in reverse order the last item with the same name is removed.
-            # Also find the product name from recipes and add it into storage.
-            # After that break the loop.
-            if {item.name, element.name} in self.recipes.recipes.values():
-                # Using super() here in order to specify, this is AlchemicalStorage method pop, not the general list
-                # method pop().
-                super().pop(item.name)
+            # already described in recipes then next check whether the storage item or element is a catalyst.
+            if self.recipes.get_product_name(item.name, element.name):
+                # If both of the items are catalysts and can be used (uses > 0), reduce uses for both of them,
+                # add the product of them into the storage and break the loop.
+                if isinstance(element, Catalyst) and element.uses > 0 and isinstance(item, Catalyst) and item.uses > 0:
+                    item.uses -= 1
+                    element.uses -= 1
+                # If only the new element is a catalyst and can be used reduce the usage of it and remove the
+                # other item from storage, add the product of them into the storage and break the loop.
+                elif isinstance(element, Catalyst) and element.uses > 0 and not isinstance(item, Catalyst):
+                    element.uses -= 1
+                    super().pop(item.name)
+                # If only the item already in storage is a useful catalyst, reduce the usage of it,
+                # add the product of it with the new element into the storage and break the loop.
+                elif isinstance(item, Catalyst) and item.uses > 0 and not isinstance(element, Catalyst):
+                    item.uses -= 1
+                # In case one of the items is a useless catalysts, continue looping.
+                # If the item in the storage is the useless catalyst, next combination will be checked.
+                # It the new element is a useless catalyst, it finally results in adding it into storage.
+                elif isinstance(item, Catalyst) or isinstance(element, Catalyst):
+                    continue
+                # If neither of the items is a catalyst, then remove the storage item from storage and add
+                # the product of both of them into storage and break the loop.
+                else:
+                    # Using super() here in order to specify, this is AlchemicalStorage method pop, not the general list
+                    # method pop().
+                    # Since the storage list is checked in reverse order the last item with the same name is removed.
+                    super().pop(item.name)
                 # First get product name using AlchemicalRecipes class method get_product_name.
                 # Then create the instance of AlchemicalElement using product name found from recipes.
                 # Then add the element into storage using base class AlchemicalStorage method add
@@ -307,7 +352,81 @@ class Cauldron(AlchemicalStorage):
             super().add(element)
 
 
+class Catalyst(AlchemicalElement):
+    """Catalyst class."""
+
+    def __init__(self, name: str, uses: int):
+        """
+        Initialize the Catalyst class.
+
+        :param name: The name of the Catalyst.
+        :param uses: The number of uses the Catalyst has.
+        """
+        super().__init__(name)
+        self.uses = uses
+
+    def __repr__(self) -> str:
+        """
+        Representation of the Catalyst class.
+
+        Example:
+            catalyst = Catalyst("Philosophers' stone", 3)
+            print(catalyst) # -> <C: Philosophers' stone (3)>
+
+        :return: String representation of the Catalyst.
+        """
+        return f"<C: {self.name} ({self.uses})>"
+
+
+class Purifier(AlchemicalStorage):
+    """
+    Purifier class.
+
+    Extends the 'AlchemicalStorage' class.
+    """
+
+    def __init__(self, recipes: AlchemicalRecipes):
+        """
+        Initialize the Purifier class.
+
+        Use the base constructor and extend it with recipes from AlchemicalRecipes class.
+        """
+        super().__init__()
+        self.recipes = recipes
+
+    def add(self, element: AlchemicalElement):
+        """
+        Add element to storage and check whether it can be split into anything.
+
+        Use the 'recipes' object that was given in the constructor to determine the combinations.
+
+        Example:
+            recipes = AlchemicalRecipes()
+            recipes.add_recipe('Water', 'Wind', 'Ice')
+            purifier = Purifier(recipes)
+            purifier.add(AlchemicalElement('Ice'))
+            purifier.extract() # -> [<AE: Water>, <AE: Wind>]   or  [<AE: Wind>, <AE: Water>]
+
+        :param element: Input object to add to storage.
+        """
+        # Although the type checking is already in the base class method add, type needs to be checked here before
+        # accessing attributes which may not exist.
+        if not isinstance(element, AlchemicalElement):
+            raise TypeError
+        # Get the components from recipes. If there is no recipe for that element, results in None.
+        components = self.recipes.get_component_names(element.name)
+        if not components:
+            super().add(element)
+        # If there is a recipe for the element, create AlchemicalElement instances from its components and
+        # add them into storage using base class add method.
+        else:
+            super().add(AlchemicalElement(components[0]))
+            super().add(AlchemicalElement(components[1]))
+
+
 if __name__ == '__main__':
+    print("1st PART: The Alchemist *************************************************")
+
     element_one = AlchemicalElement('Fire')
     element_two = AlchemicalElement('Water')
     element_three = AlchemicalElement('Water')
@@ -360,6 +479,8 @@ if __name__ == '__main__':
     #  * Wind x 1
     print(storage.extract())  # [<AE: Fire>, <AE: Water>, <AE: Water>, <AE: Wind>, <AE: Earth>, <AE: Water>]
 
+    print("2nd PART: Empedocles *************************************************")
+
     recipes = AlchemicalRecipes()
     recipes.add_recipe('Fire', 'Water', 'Steam')
     recipes.add_recipe('Fire', 'Earth', 'Iron')
@@ -398,3 +519,28 @@ if __name__ == '__main__':
     cauldron.add(AlchemicalElement('Water'))
 
     print(cauldron.extract())  # -> [<AE: Earth>, <AE: Iron>, <AE: Rust>]
+
+    print("3rd PART: Philosophers' stone *************************************************")
+
+    philosophers_stone = Catalyst("Philosophers' stone", 2)
+
+    recipes = AlchemicalRecipes()
+    recipes.add_recipe("Philosophers' stone", 'Mercury', 'Gold')
+    recipes.add_recipe("Fire", 'Earth', 'Iron')
+
+    cauldron = Cauldron(recipes)
+    cauldron.add(philosophers_stone)
+    cauldron.add(AlchemicalElement('Mercury'))
+    print(cauldron.extract())  # -> [<C: Philosophers' stone (1)>, <AE: Gold>]
+
+    cauldron.add(philosophers_stone)
+    cauldron.add(AlchemicalElement('Mercury'))
+    print(cauldron.extract())  # -> [<C: Philosophers' stone (0)>, <AE: Gold>]
+
+    cauldron.add(philosophers_stone)
+    cauldron.add(AlchemicalElement('Mercury'))
+    print(cauldron.extract())  # -> [<C: Philosophers' stone (0)>, <AE: Mercury>]
+
+    purifier = Purifier(recipes)
+    purifier.add(AlchemicalElement('Iron'))
+    print(purifier.extract())  # -> [<AE: Fire>, <AE: Earth>]    or      [<AE: Earth>, <AE: Fire>]
