@@ -316,10 +316,12 @@ class Cauldron(AlchemicalStorage):
             # already described in recipes then next check whether the storage item or element is a catalyst.
             if self.recipes.get_product_name(item.name, element.name):
                 # If both of the items are catalysts and can be used (uses > 0), reduce uses for both of them,
-                # add the product of them into the storage and break the loop.
+                # add the new element into the storage and
+                # add the product of them into the storage also and break the loop.
                 if isinstance(element, Catalyst) and element.uses > 0 and isinstance(item, Catalyst) and item.uses > 0:
                     item.uses -= 1
                     element.uses -= 1
+                    super().add(element)
                 # If only the new element is a catalyst and can be used reduce the usage of it and remove the
                 # other item from storage, add the product of them into the storage and break the loop.
                 elif isinstance(element, Catalyst) and element.uses > 0 and not isinstance(item, Catalyst):
@@ -524,6 +526,7 @@ if __name__ == '__main__':
     print("3rd PART: Philosophers' stone *************************************************")
 
     philosophers_stone = Catalyst("Philosophers' stone", 2)
+    catalyst_b = Catalyst("Catalyst B", 0)
 
     recipes = AlchemicalRecipes()
     recipes.add_recipe("Philosophers' stone", 'Mercury', 'Gold')
@@ -539,6 +542,7 @@ if __name__ == '__main__':
     print(cauldron.extract())  # -> [<C: Philosophers' stone (0)>, <AE: Gold>]
 
     cauldron.add(philosophers_stone)
+    # cauldron.add(catalyst_b)
     cauldron.add(AlchemicalElement('Mercury'))
     print(cauldron.extract())  # -> [<C: Philosophers' stone (0)>, <AE: Mercury>]
 
