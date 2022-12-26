@@ -6,18 +6,35 @@ This program organises people and their hobbies.
 Available classes:
 AlchemicalElement; AlchemicalElement class
 AlchemicalStorage; AlchemicalStorage class
+AlchemicalRecipes; AlchemicalRecipes class
+DuplicateRecipeNamesException; DuplicateRecipeNamesException class, extends the Exception class.
+RecipeOverlapException; RecipeOverlapException class, extends the Exception class.
+Cauldron; Cauldron class, extends the AlchemicalStorage class.
 
-Functions in AlchemicalElement class:
+Methods in AlchemicalElement class:
 __init__; AlchemicalElement constructor. Every element has a name.
 __repr__; AlchemicalElement representation. Returns element name as a formatted string.
 
-Functions in AlchemicalStorage class:
-__init__; AlchemicalStorage constructor. Storage is initially and empty list.
+Methods in AlchemicalStorage class:
+__init__; AlchemicalStorage constructor. Storage is initially an empty list.
 add(self, element: AlchemicalElement); Adds object with the type of AlchemicalElement into storage.
 pop(self, element_name: str) -> AlchemicalElement | None;
     -> Removes and returns previously added element from storage by its name.
 extract(self) -> list[AlchemicalElement]; Returns a list of all the elements from storage and empties the storage.
 get_content(self) -> str; Returns a string that gives an overview of the contents of the storage.
+
+Methods in AlchemicalRecipes class:
+__init__(self); AlchemicalRecipes constructor. Recipes object is initially an empty dictionary.
+add_recipe(self, first_component_name: str, second_component_name: str, product_name: str);
+    -> Determines if recipe is valid and then add it to recipes.
+get_product_name(self, first_component_name: str, second_component_name: str) -> str or None;
+    -> Returns the name of the product for the two components in recipe.
+
+Methods in Cauldron class:
+__init__(self, recipes: AlchemicalRecipes); Cauldron class constructor.
+    -> Uses base class constructor and extends it with recipes from AlchemicalRecipes class.
+add(self, element: AlchemicalElement);
+    -> Adds element to storage and checks if it can combine with anything already inside.
 
 """
 
@@ -67,15 +84,12 @@ class AlchemicalStorage:
 
         :param element: Input object to add to storage.
         """
-        # try:
         # Check whether the element is a type of AlchemicalElement before adding it into storage.
         # If not, raise a TypeError.
         if not isinstance(element, AlchemicalElement):
             raise TypeError
         self.storage.append(element)
         return element
-        # except TypeError:
-        # print("You are trying to add an element which is not a type of AlchemicalElement.")
 
     def pop(self, element_name: str) -> AlchemicalElement | None:
         """
@@ -160,6 +174,135 @@ class AlchemicalStorage:
         return output
 
 
+class AlchemicalRecipes:
+    """AlchemicalRecipes class."""
+
+    def __init__(self):
+        """
+        Initialize the AlchemicalRecipes class.
+
+        'AlchemicalRecipes' has a recipe's dictionary.
+        """
+        # Initially recipes dictionary is empty.
+        self.recipes = {}
+
+    def add_recipe(self, first_component_name: str, second_component_name: str, product_name: str):
+        """
+        Determine if recipe is valid and then add it to recipes.
+
+        A recipe consists of three strings, two components and their product.
+        If any of the parameters are the same, raise the 'DuplicateRecipeNamesException' exception.
+        If there already exists a recipe for the given pair of components, raise the 'RecipeOverlapException' exception.
+
+        :param first_component_name: The name of the first component element.
+        :param second_component_name: The name of the second component element.
+        :param product_name: The name of the product element.
+        """
+        # If in the set of components are less than 3 items, there must be duplicates and exception will be raised.
+        if len({first_component_name, second_component_name, product_name}) < 3:
+            raise DuplicateRecipeNamesException()
+        # If the set of components already exist, raise exception for recipe overlapping.
+        if {first_component_name, second_component_name} in self.recipes.values():
+            raise RecipeOverlapException()
+        # Otherwise update recipe dictionary.
+        self.recipes[product_name] = {first_component_name, second_component_name}
+
+    def get_product_name(self, first_component_name: str, second_component_name: str) -> str or None:
+        """
+        Return the name of the product for the two components in recipe.
+
+        The order of the first_component_name and second_component_name is interchangeable, so search for combinations
+        of (first_component_name, second_component_name) and (second_component_name, first_component_name).
+
+        If there are no combinations for the two components, return None
+
+        Example:
+            recipes = AlchemicalRecipes()
+            recipes.add_recipe('Water', 'Wind', 'Ice')
+            recipes.get_product_name('Water', 'Wind')  # ->  'Ice'
+            recipes.get_product_name('Wind', 'Water')  # ->  'Ice'
+            recipes.get_product_name('Fire', 'Water')  # ->  None
+            recipes.add_recipe('Water', 'Fire', 'Steam')
+            recipes.get_product_name('Fire', 'Water')  # ->  'Steam'
+
+        :param first_component_name: The name of the first component element.
+        :param second_component_name: The name of the second component element.
+        :return: The name of the product element or None.
+        """
+        # Find the product for given components from recipes dictionary and return it.
+        # If the product is not in dictionary, returns None.
+        for product, components in self.recipes.items():
+            if components == {first_component_name, second_component_name}:
+                return product
+
+
+class DuplicateRecipeNamesException(Exception):
+    """Raised when attempting to add a recipe that has same names for components and product."""
+
+    pass
+
+
+class RecipeOverlapException(Exception):
+    """Raised when attempting to add a pair of components that is already used for another existing recipe."""
+
+    pass
+
+
+class Cauldron(AlchemicalStorage):
+    """
+    Cauldron class.
+
+    Extends the 'AlchemicalStorage' class.
+    """
+
+    def __init__(self, recipes: AlchemicalRecipes):
+        """
+        Initialize the Cauldron class.
+
+        Use the base constructor and extend it with recipes from AlchemicalRecipes class.
+        """
+        super().__init__()
+        self.recipes = recipes
+
+    def add(self, element: AlchemicalElement):
+        """
+        Add element to storage and check if it can combine with anything already inside.
+
+        Use the 'recipes' object that was given in the constructor to determine the combinations.
+
+        Example:
+            recipes = AlchemicalRecipes()
+            recipes.add_recipe('Water', 'Wind', 'Ice')
+            cauldron = Cauldron(recipes)
+            cauldron.add(AlchemicalElement('Water'))
+            cauldron.add(AlchemicalElement('Wind'))
+            cauldron.extract() # -> [<AE: Ice>]
+
+        :param element: Input object to add to storage.
+        """
+        # Check the storage starting from last added element.
+        for item in reversed(self.storage):
+            # If the storage item which is currently checked combined with element which is added is
+            # already described in recipes then remove the storage item from storage.
+            # Since the storage list is checked in reverse order the last item with the same name is removed.
+            # Also find the product name from recipes and add it into storage.
+            # After that break the loop.
+            if {item.name, element.name} in self.recipes.recipes.values():
+                # Using super() here in order to specify, this is AlchemicalStorage method pop, not the general list
+                # method pop().
+                super().pop(item.name)
+                # First get product name using AlchemicalRecipes class method get_product_name.
+                # Then create the instance of AlchemicalElement using product name found from recipes.
+                # Then add the element into storage using base class AlchemicalStorage method add
+                # which also checks the correct type.
+                super().add(AlchemicalElement(self.recipes.get_product_name(element.name, item.name)))
+                break
+        # If the loop was running to the end without break, the element was not found
+        # and needs to be added into the storage.
+        else:
+            super().add(element)
+
+
 if __name__ == '__main__':
     element_one = AlchemicalElement('Fire')
     element_two = AlchemicalElement('Water')
@@ -171,7 +314,6 @@ if __name__ == '__main__':
     print(element_one)  # <AE: Fire>
     print(element_two)  # <AE: Water>
 
-    storage.add(2)  # -> You are trying to add an element which is not a type of AlchemicalElement.
     storage.add(element_one)
     storage.add(element_two)
 
@@ -213,3 +355,42 @@ if __name__ == '__main__':
     #  * Water x 3
     #  * Wind x 1
     print(storage.extract())  # [<AE: Fire>, <AE: Water>, <AE: Water>, <AE: Wind>, <AE: Earth>, <AE: Water>]
+
+    recipes = AlchemicalRecipes()
+    recipes.add_recipe('Fire', 'Water', 'Steam')
+    recipes.add_recipe('Fire', 'Earth', 'Iron')
+    recipes.add_recipe('Water', 'Iron', 'Rust')
+
+    print(recipes.get_product_name('Water', 'Fire'))  # -> 'Steam'
+    print(recipes.get_product_name('Water', 'Earth'))  # -> 'None'
+    print(recipes.get_product_name('Fire', 'Water'))  # -> 'Steam'
+
+    try:
+        recipes.add_recipe('Fire', 'Something else', 'Fire')
+        print('Did not raise, not working as intended.')
+
+    except DuplicateRecipeNamesException:
+        print('Raised DuplicateRecipeNamesException, working as intended!')
+
+    try:
+        recipes.add_recipe('Fire', 'Earth', 'Gold')
+        print('Did not raise, not working as intended.')
+
+    except RecipeOverlapException:
+        print('Raised RecipeOverlapException, working as intended!')
+
+    cauldron = Cauldron(recipes)
+    cauldron.add(AlchemicalElement('Earth'))
+    cauldron.add(AlchemicalElement('Water'))
+    cauldron.add(AlchemicalElement('Fire'))
+
+    print(cauldron.extract())  # -> [<AE: Earth>, <AE: Steam>]
+
+    cauldron.add(AlchemicalElement('Earth'))
+    cauldron.add(AlchemicalElement('Earth'))
+    cauldron.add(AlchemicalElement('Earth'))
+    cauldron.add(AlchemicalElement('Fire'))
+    cauldron.add(AlchemicalElement('Fire'))
+    cauldron.add(AlchemicalElement('Water'))
+
+    print(cauldron.extract())  # -> [<AE: Earth>, <AE: Iron>, <AE: Rust>]
