@@ -280,6 +280,10 @@ class Cauldron(AlchemicalStorage):
 
         :param element: Input object to add to storage.
         """
+        # Although the type checking is already in the base class method add, type needs to be checked here before
+        # accessing attributes which may not exist.
+        if not isinstance(element, AlchemicalElement):
+            raise TypeError
         # Check the storage starting from last added element.
         for item in reversed(self.storage):
             # If the storage item which is currently checked combined with element which is added is
