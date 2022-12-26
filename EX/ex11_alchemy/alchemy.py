@@ -258,7 +258,8 @@ class AlchemicalRecipes:
         :param product_name:
         :return: components for the product according to recipe
         """
-        return tuple(self.recipes[product_name])
+        if product_name in self.recipes:
+            return tuple(self.recipes[product_name])
 
 
 class DuplicateRecipeNamesException(Exception):
