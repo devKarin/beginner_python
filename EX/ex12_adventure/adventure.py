@@ -48,7 +48,7 @@ class Adventurer:
         """
         self.name = name
         self.class_type = class_type
-        self.power = max(power, 0)
+        self.power = power
         self.experience = experience
         if class_type not in {"Druid", "Wizard", "Paladin"}:
             self.class_type = "Fighter"
