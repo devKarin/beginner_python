@@ -86,11 +86,11 @@ class Adventurer:
         """
         if exp < 0:
             return
-        if exp > 99:
-            self.power += math.floor(exp / 10)
+        self.experience += exp
+        if self.experience > 99:
+            self.power += math.floor(self.experience / 10)
             self.experience = 0
-        else:
-            self.experience += exp
+
 
 
 class Monster:
