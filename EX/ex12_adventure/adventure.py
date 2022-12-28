@@ -19,7 +19,38 @@ add_experience(self, exp: int); Add experience or power to adventurer.
 
 Methods in Monster class:
 __init__(self, name: str, type: str, power: int); Monster class constructor. Every monster has a name, a type and power.
+@property def name(self); Returns the name of the monster.
 __repr__(self) -> str; Representation of Monster. Returns monster data as a formatted string.
+
+Methods in World class:
+__init__(self, python_master: str = "Sõber");
+    -> Initialize the class 'World'. Every world instance must have a name which is a name of the Python Master.
+    Every object has a Python Master, adventurer list, list of active adventurers, monster list, list of active
+    monsters, graveyard and sometimes necromancers.
+@property def python_master(self); Returns the Python Master.
+get_python_master(self); Returns the Python Master.
+get_adventurer_list(self) -> list; Returns the list of adventurers in this world.
+get_monster_list(self) -> list; Returns the list of monsters in this world.
+get_graveyard(self) -> list; Returns list of all characters (adventurers and monsters) fallen during the game.
+add_adventurer(self, character: Adventurer); Adds an adventurer into the world.
+add_monster(self, character: Monster); Adds a monster into the world.
+remove_character(self, name: str); Remove character from the world by name using graveyard.
+necromancers_active(self, is_necromancers_active: bool); Sets necromancers activity in the world.
+revive_graveyard(self); Revives all characters in graveyard.
+get_active_adventurers(self) -> list; Returns active adventurers sorted by experience descending.
+add_strongest_adventurer(self, class_type: str); Activates the strongest adventurer.
+add_weakest_adventurer(self, class_type: str); Activate the weakest adventurer.
+add_most_experienced_adventurer(self, class_type: str); Activates the most experienced adventurer.
+add_least_experienced_adventurer(self, class_type: str); Activates the least experienced adventurer.
+add_adventurer_by_name(self, name: str); Activates adventurer by name.
+add_all_adventurers_of_class_type(self, class_type: str); Activates all adventurers with given class type.
+add_all_adventurers(self); Activates all non-active adventurers.
+get_active_monsters(self) -> list; Returns active monsters sorted by power descending.
+add_monster_by_name(self, name: str); Activates monster by name.
+add_strongest_monster(self); Activates the strongest monster.
+add_weakest_monster(self); Activates the weakest monster.
+add_all_monsters_of_type(self, type: str); Activates all monsters with given type.
+add_all_monsters(self); Adds all non-active monsters.
 
 """
 
@@ -92,7 +123,6 @@ class Adventurer:
             self.experience = 0
 
 
-
 class Monster:
     """
     Monster class.
@@ -144,16 +174,17 @@ class World:
     """
     Class 'World'.
 
-    Every world instance must have a name.
+    Every world instance must have a name which is a name of the Python Master.
     """
 
     def __init__(self, python_master: str = "Sõber"):
         """
         Initialize the class 'World'.
 
-        Every object has a python master.
+        Every object has a Python Master, adventurer list, list of active adventurers, monster list,
+        list of active monsters, graveyard and sometimes necromancers.
         """
-        self._master = python_master
+        self.__master = python_master
         self.adventurer_list = []
         self.monster_list = []
         self.graveyard = []
@@ -165,48 +196,52 @@ class World:
     @property
     def python_master(self):
         """
-        Return the name of the Python Master.
+        Return the Python Master.
 
-        Returns the name of the Python Master.
-        :return: the name of the python master
+        Returns the Python Master.
+
+        :return: the python master
         """
-        return self._master
+        return self.__master
 
     def get_python_master(self):
         """
-        Get the name of the Python Master.
+        Get the Python Master.
 
-        :return: the name of the instance (python master)
+        Returns the Python Master.
+
+        :return: the python master instance
         """
         return self.python_master
 
-    def get_adventurer_list(self):
+    def get_adventurer_list(self) -> list:
         """
         Get the list of adventurers in this world.
 
+        Return sthe list of adventurers in this world.
+
         :return: list of adventurers
         """
-        # return [adventurer.name for adventurer in self.adventurer_list]
         return self.adventurer_list
 
-    def get_monster_list(self):
+    def get_monster_list(self) -> list:
         """
         Get the list of monsters in this world.
 
+        Returns the list of monsters in this world.
+
         :return: list of monsters
         """
-        # return [monster.name for monster in self.monster_list]
         return self.monster_list
 
     def get_graveyard(self) -> list:
         """
         Get the list of fallen characters in this world.
 
-        Gets the list of all characters (adventurers and monsters) fallen during the game.
+        Returns list of all characters (adventurers and monsters) fallen during the game.
 
         :return: list of fallen characters
         """
-        # return [character.name for character in self.graveyard]
         return self.graveyard
 
     def add_adventurer(self, character: Adventurer):
@@ -239,7 +274,7 @@ class World:
 
     def remove_character(self, name: str):
         """
-        Remove character from the world using graveyard.
+        Remove character from the world by name using graveyard.
 
         Removes character from world and adds it into graveyard.
         If the character is already in the graveyard, deletes the character.
@@ -247,17 +282,19 @@ class World:
         :param name: character to remove
         :return:
         """
-        if name in [character.name for character in self.adventurer_list]:
-            removed_character = self.adventurer_list\
-                .pop(self.adventurer_list.index(lambda character: character.name == name))
-            self.graveyard.append(removed_character)
+        character_to_remove = list(filter(lambda character: character.name == name, self.adventurer_list))
+        if character_to_remove:
+            self.graveyard.append(character_to_remove)
+            self.adventurer_list.remove(character_to_remove)
             return
-        if name in [character.name for character in self.monster_list]:
-            removed_character = self.monster_list.pop(self.monster_list.index(lambda character: character.name == name))
-            self.graveyard.append(removed_character)
+        character_to_remove = list(filter(lambda character: character.name == name, self.monster_list))
+        if character_to_remove:
+            self.graveyard.append(character_to_remove)
+            self.monster_list.remove(character_to_remove)
             return
-        if name in [character.name for character in self.graveyard]:
-            self.graveyard.pop(self.graveyard.index(lambda character: character.name == name))
+        character_to_remove = list(filter(lambda character: character.name == name, self.graveyard))
+        if character_to_remove:
+            self.graveyard.remove(character_to_remove)
 
     def necromancers_active(self, is_necromancers_active: bool):
         """
@@ -283,10 +320,10 @@ class World:
         if not self.is_necromancers_active:
             return
         for character in self.graveyard:
-            if character.type:
+            if isinstance(character, Monster):
                 character.type = "Zombie"
                 self.monster_list.append(character)
-            elif character.class_type:
+            elif isinstance(character, Adventurer):
                 self.add_monster(Monster(character.name, "Zombie", character.power))
         self.graveyard.clear()
         self.is_necromancers_active = False
@@ -342,7 +379,7 @@ class World:
         """
         filtered_list = list(filter(lambda adventurer: adventurer.class_type == class_type, self.adventurer_list))
         if filtered_list:
-            most_experienced_adventurer = max(filtered_list, key=lambda adventurer: adventurer.power)
+            most_experienced_adventurer = max(filtered_list, key=lambda adventurer: adventurer.experience)
             self.active_adventurers.append(most_experienced_adventurer)
             self.adventurer_list.remove(most_experienced_adventurer)
 
@@ -357,7 +394,7 @@ class World:
         """
         filtered_list = list(filter(lambda adventurer: adventurer.class_type == class_type, self.adventurer_list))
         if filtered_list:
-            least_experienced_adventurer = min(filtered_list, key=lambda adventurer: adventurer.power)
+            least_experienced_adventurer = min(filtered_list, key=lambda adventurer: adventurer.experience)
             self.active_adventurers.append(least_experienced_adventurer)
             self.adventurer_list.remove(least_experienced_adventurer)
 
@@ -370,10 +407,9 @@ class World:
         :param name: adventurer name
         :return:
         """
-        if name in self.get_adventurer_list():
-            adventurers_to_activate = [adventurer for adventurer in self.adventurer_list if adventurer.name == name]
-            self.active_adventurers.extend(adventurers_to_activate)
-            self.adventurer_list.remove(adventurer for adventurer in adventurers_to_activate)
+        adventurers_to_activate = list(filter(lambda adventurer: adventurer.name == name, self.adventurer_list))
+        self.active_adventurers.extend(adventurers_to_activate)
+        self.adventurer_list.remove(adventurer for adventurer in adventurers_to_activate)
 
     def add_all_adventurers_of_class_type(self, class_type: str):
         """
@@ -418,10 +454,9 @@ class World:
         :param name: monster name
         :return:
         """
-        if name in self.get_monster_list():
-            monsters_to_activate = [monster for monster in self.monster_list if monster.name == name]
-            self.active_monsters.extend(monsters_to_activate)
-            self.monster_list.remove(monster for monster in monsters_to_activate)
+        monsters_to_activate = list(filter(lambda monster: monster.name == name, self.monster_list))
+        self.active_monsters.extend(monsters_to_activate)
+        self.monster_list.remove(monster for monster in monsters_to_activate)
 
     def add_strongest_monster(self):
         """
