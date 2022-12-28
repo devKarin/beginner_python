@@ -284,12 +284,12 @@ class World:
         """
         character_to_remove = list(filter(lambda character: character.name == name, self.adventurer_list))
         if character_to_remove:
-            self.graveyard.append(character_to_remove)
+            self.graveyard.append(character_to_remove[0])
             self.adventurer_list.remove(character_to_remove[0])
             return
         character_to_remove = list(filter(lambda character: character.name == name, self.monster_list))
         if character_to_remove:
-            self.graveyard.append(character_to_remove)
+            self.graveyard.append(character_to_remove[0])
             self.monster_list.remove(character_to_remove[0])
             return
         character_to_remove = list(filter(lambda character: character.name == name, self.graveyard))
@@ -508,6 +508,17 @@ class World:
         """
         self.active_monsters.extend(monster for monster in self.monster_list)
         self.adventurer_list.clear()
+
+    def go_adventure(self, deadly: bool = False):
+        """
+        Apply game logic.
+
+        Applies game logic to the world.
+
+        :param deadly:
+        :return:
+        """
+        pass
 
 
 if __name__ == "__main__":
