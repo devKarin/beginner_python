@@ -88,10 +88,11 @@ class Adventurer:
         """
         if exp < 0:
             return
-        self.experience += exp
-        if self.experience > 99:
-            self.power = math.floor(self.experience / 10)
+        if exp > 99:
+            self.power += math.floor(exp / 10)
             self.experience = 0
+        else:
+            self.experience += exp
 
 
 class Monster:
@@ -187,7 +188,7 @@ class World:
 
         :return: list of adventurers
         """
-        #return [adventurer.name for adventurer in self.adventurer_list]
+        # return [adventurer.name for adventurer in self.adventurer_list]
         return self.adventurer_list
 
     def get_monster_list(self):
