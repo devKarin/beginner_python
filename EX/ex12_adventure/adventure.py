@@ -282,17 +282,17 @@ class World:
         :param name: character to remove
         :return:
         """
-        character_to_remove = list(filter(lambda character: character.name == name, self.adventurer_list))
+        character_to_remove = list(filter(lambda character: character.name == name, self.adventurer_list))[0]
         if character_to_remove:
             self.graveyard.append(character_to_remove)
             self.adventurer_list.remove(character_to_remove)
             return
-        character_to_remove = list(filter(lambda character: character.name == name, self.monster_list))
+        character_to_remove = list(filter(lambda character: character.name == name, self.monster_list))[0]
         if character_to_remove:
             self.graveyard.append(character_to_remove)
             self.monster_list.remove(character_to_remove)
             return
-        character_to_remove = list(filter(lambda character: character.name == name, self.graveyard))
+        character_to_remove = list(filter(lambda character: character.name == name, self.graveyard))[0]
         if character_to_remove:
             self.graveyard.remove(character_to_remove)
 
@@ -324,7 +324,7 @@ class World:
                 character.type = "Zombie"
                 self.monster_list.append(character)
             elif isinstance(character, Adventurer):
-                self.add_monster(Monster(character.name, "Zombie", character.power))
+                self.add_monster(Monster(character.name, f"Zombie {character.class_type}", character.power))
         self.graveyard.clear()
         self.is_necromancers_active = False
 
@@ -409,7 +409,8 @@ class World:
         """
         adventurers_to_activate = list(filter(lambda adventurer: adventurer.name == name, self.adventurer_list))
         self.active_adventurers.extend(adventurers_to_activate)
-        self.adventurer_list.remove(adventurer for adventurer in adventurers_to_activate)
+        self.adventurer_list = \
+            list(filter(lambda adventurer: adventurer not in adventurers_to_activate, self.adventurer_list))
 
     def add_all_adventurers_of_class_type(self, class_type: str):
         """
@@ -422,7 +423,7 @@ class World:
         """
         filtered_list = list(filter(lambda adventurer: adventurer.class_type == class_type, self.adventurer_list))
         self.active_adventurers.extend(filtered_list)
-        self.adventurer_list.remove(adventurer for adventurer in filtered_list)
+        self.adventurer_list = list(filter(lambda adventurer: adventurer not in filtered_list, self.adventurer_list))
 
     def add_all_adventurers(self):
         """
@@ -456,7 +457,7 @@ class World:
         """
         monsters_to_activate = list(filter(lambda monster: monster.name == name, self.monster_list))
         self.active_monsters.extend(monsters_to_activate)
-        self.monster_list.remove(monster for monster in monsters_to_activate)
+        self.monster_list = list(filter(lambda monster: monster not in monsters_to_activate, self.monster_list))
 
     def add_strongest_monster(self):
         """
@@ -495,7 +496,7 @@ class World:
         """
         filtered_list = list(filter(lambda monster: monster.type == type, self.monster_list))
         self.active_monsters.extend(filtered_list)
-        self.monster_list.remove(monster for monster in filtered_list)
+        self.monster_list = list(filter(lambda monster: monster not in filtered_list, self.monster_list))
 
     def add_all_monsters(self):
         """
