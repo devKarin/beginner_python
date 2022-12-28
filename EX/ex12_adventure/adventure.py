@@ -72,6 +72,8 @@ class Adventurer:
         :param power: power points to add to adventurer
         :return:
         """
+        if power < 0:
+            return
         self.power += power
 
     def add_experience(self, exp: int):
@@ -117,7 +119,7 @@ class Monster:
     @property
     def name(self):
         """
-        Name of the monster.
+        Return the name of the monster.
 
         If the monster type is 'Zombie', adds prefix 'Undead' to the name.
 
@@ -164,7 +166,7 @@ class World:
     @property
     def python_master(self):
         """
-        The name of the Python Master.
+        Return the name of the Python Master.
 
         Returns the name of the Python Master.
         :return: the name of the python master
@@ -185,8 +187,8 @@ class World:
 
         :return: list of adventurers
         """
-        # return self.adventurer_list
-        return [adventurer.name for adventurer in self.adventurer_list]
+        #return [adventurer.name for adventurer in self.adventurer_list]
+        return self.adventurer_list
 
     def get_monster_list(self):
         """
@@ -194,8 +196,8 @@ class World:
 
         :return: list of monsters
         """
-        # return self.monster_list
-        return [monster.name for monster in self.monster_list]
+        # return [monster.name for monster in self.monster_list]
+        return self.monster_list
 
     def get_graveyard(self) -> list:
         """
@@ -205,8 +207,8 @@ class World:
 
         :return: list of fallen characters
         """
-        # return self.graveyard
-        return [character.name for character in self.graveyard]
+        # return [character.name for character in self.graveyard]
+        return self.graveyard
 
     def add_adventurer(self, character: Adventurer):
         """
