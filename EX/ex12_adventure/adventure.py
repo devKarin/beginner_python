@@ -48,8 +48,8 @@ class Adventurer:
         """
         self.name = name
         self.class_type = class_type
-        self.power = power
-        self.experience = max(0, experience)
+        self.power = max(power, 0)
+        self.experience = experience
         if class_type not in {"Druid", "Wizard", "Paladin"}:
             self.class_type = "Fighter"
         if power > 99:
@@ -72,8 +72,6 @@ class Adventurer:
         :param power: power points to add to adventurer
         :return:
         """
-        if power < 0:
-            return
         self.power += power
 
     def add_experience(self, exp: int):
