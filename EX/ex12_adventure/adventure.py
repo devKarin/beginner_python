@@ -154,7 +154,7 @@ class Monster:
 
         :return: name of the monster
         """
-        if self.type == "Zombie":
+        if self.type.startswith("Zombie"):
             return f"Undead {self.initial_name}"
         else:
             return self.initial_name
@@ -282,19 +282,19 @@ class World:
         :param name: character to remove
         :return:
         """
-        character_to_remove = list(filter(lambda character: character.name == name, self.adventurer_list))[0]
+        character_to_remove = list(filter(lambda character: character.name == name, self.adventurer_list))
         if character_to_remove:
             self.graveyard.append(character_to_remove)
-            self.adventurer_list.remove(character_to_remove)
+            self.adventurer_list.remove(character_to_remove[0])
             return
-        character_to_remove = list(filter(lambda character: character.name == name, self.monster_list))[0]
+        character_to_remove = list(filter(lambda character: character.name == name, self.monster_list))
         if character_to_remove:
             self.graveyard.append(character_to_remove)
-            self.monster_list.remove(character_to_remove)
+            self.monster_list.remove(character_to_remove[0])
             return
-        character_to_remove = list(filter(lambda character: character.name == name, self.graveyard))[0]
+        character_to_remove = list(filter(lambda character: character.name == name, self.graveyard))
         if character_to_remove:
-            self.graveyard.remove(character_to_remove)
+            self.graveyard.remove(character_to_remove[0])
 
     def necromancers_active(self, is_necromancers_active: bool):
         """
