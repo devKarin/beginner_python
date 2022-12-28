@@ -84,11 +84,11 @@ class Adventurer:
         :param exp: experience points to add to the adventurer
         :return:
         """
+        if exp < 0:
+            return
         self.experience += exp
         if self.experience > 99:
             self.power = math.floor(self.experience / 10)
-            self.experience = 0
-        elif self.experience <= 0:
             self.experience = 0
 
 
@@ -116,6 +116,13 @@ class Monster:
 
     @property
     def name(self):
+        """
+        Name of the monster.
+
+        If the monster type is 'Zombie', adds prefix 'Undead' to the name.
+
+        :return: name of the monster
+        """
         if self.type == "Zombie":
             return f"Undead {self.initial_name}"
         else:
@@ -156,6 +163,12 @@ class World:
     # The name of the Python Master must not be changed.
     @property
     def python_master(self):
+        """
+        The name of the Python Master.
+
+        Returns the name of the Python Master.
+        :return: the name of the python master
+        """
         return self._master
 
     def get_python_master(self):
