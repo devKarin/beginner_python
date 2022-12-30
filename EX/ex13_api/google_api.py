@@ -53,7 +53,7 @@ def get_links_from_spreadsheet(id: str, token_file_name: str) -> list:
         service = build("sheets", "v4", credentials=credentials)
         sheets = service.spreadsheets()
         # Fetch the cell values from the A column, first sheet of the spreadsheet defined using its id.
-        result = sheets.values().get(spreadsheetId=id, range="Sheet1!A:A").execute()
+        result = sheets.values().get(spreadsheetId=id, range="A:A").execute()
         values = result.get("values", [])
 
         if not values:
