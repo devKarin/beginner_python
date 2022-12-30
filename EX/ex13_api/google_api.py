@@ -60,7 +60,8 @@ def get_links_from_spreadsheet(id: str, token_file_name: str) -> list:
             print("No content found.")
             return []
         # Since every row is a list with one value itself, unpack them.
-        values = [f"https://www.youtube.com/playlist?list={value[0]}" for value in values]
+        # values = [f"https://www.youtube.com/playlist?list={value[0].strip()}" for value in values]
+        values = [value[0].strip() for value in values]
         return values
 
     except HttpError as err:
@@ -78,9 +79,9 @@ def get_links_from_playlist(link: str, developer_key: str) -> list:
     Returns
         ['https://youtube.com/watch?v=r_It_X7v-1E', 'https://youtube.com/watch?v=U4ogK0MIzqk', ... and so on]
 
-    :param link:
-    :param developer_key:
-    :return:
+    :param link: full url to a YouTube playlist
+    :param developer_key: api key for connecting the application with YouTube api
+    :return: list of url-s to videos of given playlist
     """
     # Disable OAuthlib's HTTPS verification when running locally.
     # *DO NOT* leave this option enabled in production.
