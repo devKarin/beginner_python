@@ -509,6 +509,77 @@ class World:
         self.active_monsters.extend(monster for monster in self.monster_list)
         self.adventurer_list.clear()
 
+    def remove_animals_and_ents(self):
+        """
+        Remove Animal and Ent type monsters from active monsters if Druid is present.
+
+        Removes Animal or Ent type monsters from active monsters list and adds them into monsters list if
+        among adventurers is an adventurer with a class type Druid.
+
+        :return:
+        """
+        # Is there a Druid among adventurers.
+        if list(filter(lambda adventurer: adventurer.class_type == "Druid", self.active_adventurers)):
+            # If there are monsters with type Animal or Ent they return from active monsters into monsters list.
+            animals_and_ents = list(filter(lambda monster: monster.type == "Animal" or monster.type == "Ent",
+                                           self.active_monsters))
+            for monster in animals_and_ents:
+                self.active_monsters.remove(monster)
+                self.monster_list.append(monster)
+
+    def double_paladin_power(self):
+        """
+        Double Paladin class type active adventurers power.
+
+        Doubles the power of all Paladin class type adventurers if there is an active monster of type "Zombie",
+        "Zombie Fighter", "Zombie Druid", "Zombie Paladin" or "Zombie Wizard".
+
+        :return:
+        """
+        if list(filter(lambda monster: monster.type in ["Zombie",
+                                                        "Zombie Fighter",
+                                                        "Zombie Druid",
+                                                        "Zombie Paladin",
+                                                        "Zombie Wizard"], self.active_monsters)):
+            paladins = list(filter(lambda adventurer: adventurer.class_type == "Paladin", self.active_adventurers))
+            for paladin in paladins:
+                paladin.power *= 2
+
+    def resume_paladin_power(self):
+        """
+        Resume the power of all Paladin class type active adventurers after the fight.
+
+        Resumes the power level of all active adventurers of class type Paladin to the pre-fight level.
+
+        :return:
+        """
+        paladins = list(filter(lambda adventurer: adventurer.class_type == "Paladin", self.active_adventurers))
+        for paladin in paladins:
+            paladin.power /= 2
+
+    def compare_powers(self):
+        """
+        Compare active adventurers and active monsters powers to decide the winners.
+
+        Compares the sum power of active adventurers and active monsters and returns a tuple containing a character
+        marking the winner ("A" - adventurers win, "M" - monsters win, T -tie),summed power of adventurers and
+        summed power of monsters.
+
+        :return: tuple containing character marking the winning team and teams summed powers
+        """
+        adventurers_power = 0
+        monsters_power = 0
+        for adventurer in self.active_adventurers:
+            adventurers_power += adventurer.power
+        for monster in self.active_monsters:
+            monsters_power += monster.power
+        if adventurers_power > monsters_power:
+            return "A", adventurers_power, monsters_power
+        if adventurers_power < monsters_power:
+            return "M", adventurers_power, monsters_power
+        if adventurers_power == monsters_power:
+            return "T", adventurers_power, monsters_power
+
     def go_adventure(self, deadly: bool = False):
         """
         Apply game logic.
@@ -518,7 +589,54 @@ class World:
         :param deadly:
         :return:
         """
-        pass
+        # Set power conditions prior adventure.
+        self.remove_animals_and_ents()
+        self.double_paladin_power()
+        # Decide who is going to win.
+        game_result = self.compare_powers()
+        self.resume_paladin_power()
+        # Add experience.
+        if game_result[0] == "A":
+            experience_gained = math.floor(game_result[2] / len(self.active_adventurers))
+            for adventurer in self.active_adventurers:
+                if deadly:
+                    adventurer.add_experience(experience_gained * 2)
+                else:
+                    adventurer.add_experience(experience_gained)
+        elif game_result[0] == "T":
+            experience_gained = math.floor(game_result[2] / len(self.active_adventurers))
+            for adventurer in self.active_adventurers:
+                adventurer.add_experience(math.floor(experience_gained / 2))
+
+        # Move fighters into proper list after the adventure.
+        if not deadly:
+            self.adventurer_list.extend(self.active_adventurers)
+            self.active_adventurers.clear()
+            self.monster_list.extend(self.active_monsters)
+            self.active_monsters.clear()
+        elif deadly:
+            if game_result[0] == "A":
+                self.adventurer_list.extend(self.active_adventurers)
+                self.active_adventurers.clear()
+                # Since the elements of active monsters list can not be deleted during looping the same list
+                # use a helper list.
+                monsters_to_remove = self.get_active_monsters()
+                for monster in monsters_to_remove:
+                    # Moves the monster into the graveyard.
+                    self.remove_character(monster.name)
+                    # Removes the monster completely.
+                    self.remove_character(monster.name)
+            elif game_result[0] == "M":
+                self.monster_list.extend(self.active_monsters)
+                self.active_monsters.clear()
+                # Since the elements of active adventurers list can not be deleted during looping the same list
+                # use a helper list.
+                adventurers_to_remove = self.get_active_adventurers()
+                for adventurer in adventurers_to_remove:
+                    # Moves the adventurer into the graveyard.
+                    self.remove_character(adventurer.name)
+                    # Removes the adventurer completely.
+                    self.remove_character(adventurer.name)
 
 
 if __name__ == "__main__":
@@ -548,7 +666,9 @@ if __name__ == "__main__":
     world.add_adventurer(hero)
     world.add_adventurer(friend)
     world.add_adventurer(another_friend)
-    print(world.get_adventurer_list())  # -> Sander, Peep ja Toots
+    print(world.get_adventurer_list())
+    # -> [Sander, the Paladin, Power: 50, Experience: 0.,
+    # Peep, the Druid, Power: 45, Experience: 0., Toots, the Wizard, Power: 40, Experience: 0.]
 
     world.add_monster(annoying_friend)
     # Ei, tüütu sõber, sa ei saa olla vaenlane.
@@ -572,7 +692,7 @@ if __name__ == "__main__":
     print("Mängime esimese seikluse läbi!")
     world.add_strongest_adventurer("Druid")
     world.add_strongest_monster()
-    print(world.get_active_adventurers())  # -> Peep
+    print(world.get_active_adventurers())  # -> [Peep, the Druid, Power: 45, Experience: 0.]
     print(world.get_active_monsters())  # -> [Goblin Spearman of type Goblin, Power: 10.]
     print()
 
