@@ -580,6 +580,28 @@ class World:
         if adventurers_power == monsters_power:
             return "T", adventurers_power, monsters_power
 
+    def calculate_experience(self, result: tuple, deadly: bool):
+        """
+        Calculate new experience points after the adventure.
+
+        Calculates the amount of gained experience and adds them to winners accordingly.
+
+        :param result: the result of the adventure given as a tuple containing winner and power points
+        :param deadly: was the adventure deadly or not
+        :return:
+        """
+        if result[0] == "A":
+            experience_gained = math.floor(result[2] / len(self.active_adventurers))
+            for adventurer in self.active_adventurers:
+                if deadly:
+                    adventurer.add_experience(experience_gained * 2)
+                else:
+                    adventurer.add_experience(experience_gained)
+        elif result[0] == "T":
+            experience_gained = math.floor(result[2] / len(self.active_adventurers))
+            for adventurer in self.active_adventurers:
+                adventurer.add_experience(math.floor(experience_gained / 2))
+
     def go_adventure(self, deadly: bool = False):
         """
         Apply game logic.
@@ -596,17 +618,7 @@ class World:
         game_result = self.compare_powers()
         self.resume_paladin_power()
         # Add experience.
-        if game_result[0] == "A":
-            experience_gained = math.floor(game_result[2] / len(self.active_adventurers))
-            for adventurer in self.active_adventurers:
-                if deadly:
-                    adventurer.add_experience(experience_gained * 2)
-                else:
-                    adventurer.add_experience(experience_gained)
-        elif game_result[0] == "T":
-            experience_gained = math.floor(game_result[2] / len(self.active_adventurers))
-            for adventurer in self.active_adventurers:
-                adventurer.add_experience(math.floor(experience_gained / 2))
+        self.calculate_experience(game_result, deadly)
 
         # Move fighters into proper list after the adventure.
         if not deadly:
@@ -623,9 +635,10 @@ class World:
                 monsters_to_remove = self.get_active_monsters()
                 for monster in monsters_to_remove:
                     # Moves the monster into the graveyard.
-                    self.remove_character(monster.name)
+                    self.graveyard.append(monster)
+                    self.active_monsters.remove(monster)
                     # Removes the monster completely.
-                    self.remove_character(monster.name)
+                    # self.remove_character(monster.name)
             elif game_result[0] == "M":
                 self.monster_list.extend(self.active_monsters)
                 self.active_monsters.clear()
@@ -634,9 +647,10 @@ class World:
                 adventurers_to_remove = self.get_active_adventurers()
                 for adventurer in adventurers_to_remove:
                     # Moves the adventurer into the graveyard.
-                    self.remove_character(adventurer.name)
+                    self.graveyard.append(adventurer)
+                    self.active_adventurers.remove(adventurer)
                     # Removes the adventurer completely.
-                    self.remove_character(adventurer.name)
+                    # self.remove_character(adventurer.name)
 
 
 if __name__ == "__main__":
