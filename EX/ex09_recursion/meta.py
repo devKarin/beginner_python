@@ -15,7 +15,7 @@ setrecursionlimit(10000)
 
 def tree(length):
     """
-    A turtle program to draw a binary tree.
+    Draw a binary tree using turtle.
 
     Starts with a trunk 200px tall.
     Each new branch is 3/5 as big as its trunk.
