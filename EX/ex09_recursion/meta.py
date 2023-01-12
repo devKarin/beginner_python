@@ -68,7 +68,16 @@ def apply_dragon_rules(string):
     :param string: sentence with "a" and "b" characters that need to be replaced
     :return: new sentence with "a" and "b" characters replaced
     """
-    pass
+    sentence = ""
+    if len(string) <= 0:
+        return ""
+    if string[-1] == "a":
+        sentence += apply_dragon_rules(string[:-1]) + "aRbFR"
+    elif string[-1] == "b":
+        sentence += apply_dragon_rules(string[:-1]) + "LFaLb"
+    else:
+        sentence += apply_dragon_rules(string[:-1]) + string[-1]
+    return sentence
 
 
 def curve(string, depth):
@@ -82,7 +91,12 @@ def curve(string, depth):
     :param depth: how many times the rules are applied
     :return: instructionset for drawing the dragon at iteration 'depth'
     """
-    pass
+    instruction_set = ""
+    if depth == 0:
+        return ""
+    else:
+        instruction_set += curve(string, depth - 1) + apply_dragon_rules(string)
+    return instruction_set
 
 
 def format_curve(string):
@@ -95,7 +109,14 @@ def format_curve(string):
     :param string: instruction string
     :return: clean instructions with only "F", "R", and "L" characters
     """
-    pass
+    sentence = ""
+    if len(string) <= 0:
+        return ""
+    if string[-1] in ["a", "b"]:
+        sentence += format_curve(string[:-1])
+    else:
+        sentence += format_curve(string[:-1]) + string[-1]
+    return sentence
 
 
 def draw_dragon(string, length):
@@ -132,13 +153,22 @@ if __name__ == '__main__':
     # Move the tree a bit down, otherwise it will grow out of the window.
     t.setpos(0, -200)
     t.left(90)
+    '''
     tree(200)
 
-    '''
+    
     s = curve("Fa", 8)
     s = format_curve(s)
     l = get_line_length(100, 8)
     draw_dragon(s, l)
     '''
+
+    print(apply_dragon_rules("a"))  # -> "aRbFR"
+    print(apply_dragon_rules("aa"))  # -> "aRbFRaRbFR"
+    print(apply_dragon_rules("FRaFRb"))  # -> "FRaRbFRFRLFaLb"
+    print(curve("Fa", 2))  # -> "FaRbFRRLFaLbFR"
+    print(format_curve("Fa"))  # -> "F"
+    print(format_curve("FaRbFR"))  # -> "FRFR"
+
     save(t)
     t.getscreen().exitonclick()
