@@ -89,7 +89,7 @@ def curve(string, depth):
 
     :param string: current instruction string
     :param depth: how many times the rules are applied
-    :return: instructionset for drawing the dragon at iteration 'depth'
+    :return: instruction set for drawing the dragon at iteration 'depth'
     """
     instruction_set = ""
     if depth == 0:
@@ -130,7 +130,19 @@ def draw_dragon(string, length):
     :param string: instructions left to process
     :param length: how many pixels to move forward, left or right
     """
-    pass
+    if len(string) <= 0:
+        return
+    if string[0] == "L":
+        t.left(90)
+        t.forward(length)
+        draw_dragon(string[1:], length)
+    elif string[0] == "R":
+        t.right(90)
+        t.forward(length)
+        draw_dragon(string[1:], length)
+    elif string[0] == "F":
+        t.forward(length)
+        draw_dragon(string[1:], length)
 
 
 def get_line_length(dragon_width, depth):
@@ -139,7 +151,7 @@ def get_line_length(dragon_width, depth):
 
 
 def save(t: Turtle):
-    """Save the turtle graphic to file which can be opened with a image editor like GIMP."""
+    """Save the turtle graphic to file which can be opened with an image editor like GIMP."""
     t.ht()  # hide him
     t.getscreen().getcanvas().postscript(file='tree.ps')
 
@@ -148,20 +160,20 @@ if __name__ == '__main__':
     t = Turtle()
     t.getscreen().bgcolor("#1c262b")
     t.color("#96004f")
-    t.speed(0)
+    t.speed(1)
     t.pensize(3)
+    '''
     # Move the tree a bit down, otherwise it will grow out of the window.
     t.setpos(0, -200)
     t.left(90)
-    '''
-    tree(200)
 
-    
+    tree(200)
+    '''
+
     s = curve("Fa", 8)
     s = format_curve(s)
     l = get_line_length(100, 8)
     draw_dragon(s, l)
-    '''
 
     print(apply_dragon_rules("a"))  # -> "aRbFR"
     print(apply_dragon_rules("aa"))  # -> "aRbFRaRbFR"
