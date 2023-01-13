@@ -79,7 +79,7 @@ class Adventurer:
         """
         self.name = name
         self.class_type = class_type
-        self.power = power
+        self.power = int(power)
         self.experience = experience
         if class_type not in {"Druid", "Wizard", "Paladin"}:
             self.class_type = "Fighter"
@@ -142,7 +142,7 @@ class Monster:
         :param power: monster power points
         """
         self.type = type
-        self. power = power
+        self. power = int(power)
         self.type = type
         self.initial_name = name
 
@@ -556,6 +556,7 @@ class World:
         paladins = list(filter(lambda adventurer: adventurer.class_type == "Paladin", self.active_adventurers))
         for paladin in paladins:
             paladin.power /= 2
+            round(paladin.power)
 
     def compare_powers(self):
         """
