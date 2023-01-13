@@ -1,5 +1,5 @@
 """
-EX08.3 - OOP tests. Tests.
+EX08.3 - OOP tests, tests.
 
 This program consists tests for the module solution.py.
 
@@ -84,7 +84,6 @@ def test_produce_cake_only_basic(factory):
     Expected: 1 basic cake
 
     :param factory: factory which produces cakes
-
     :return:
     """
     amount = factory.bake_cake(1, 1)
@@ -102,7 +101,6 @@ def test_produce_cake_only_medium(factory):
     4kg toppings and 4kg base -> expected 2 medium cakes
 
     :param factory: factory which produces cakes
-
     :return:
     """
     assert factory.bake_cake(2, 2) == 1
@@ -120,7 +118,6 @@ def test_produce_cake_only_large(factory):
     10kg toppings and 10kg base -> expected 2 large cakes
 
     :param factory: factory which produces cakes
-
     :return:
     """
     assert factory.bake_cake(5, 5) == 1
@@ -138,7 +135,6 @@ def test_produce_cake_medium_remaining_ingredients_produce_more_cakes(factory):
     5kg toppings and 5kg base -> expected not 2 medium cakes (but 1 large cake)
 
     :param factory: factory which produces cakes
-
     :return:
     """
     assert factory.bake_cake(3, 3) != 1
@@ -156,7 +152,6 @@ def test_produce_cake_large_remaining_ingredients_produce_more_cakes(factory):
     11kg toppings and 11kg base -> expected not 2 large cakes (but 2 large cakes and 1 basic cake)
 
     :param factory: factory which produces cakes
-
     :return:
     """
     assert factory.bake_cake(6, 6) != 1
@@ -173,7 +168,6 @@ def test_produce_cake_get_cakes(factory):
     Expected: List with 1 cake, the last cake baked is not None and is an instance of Cake class.
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(1, 1)
@@ -201,7 +195,6 @@ def test_produce_cakes_get_last_cakes(factory):
     5) the length of the cake list is 1 when 1 last cake is requested
 
     :param factory: factory which produces cakes
-
     :return:
     """
     amount = factory.bake_cake(3, 3)
@@ -227,7 +220,6 @@ def test_produce_cakes_order_medium_before(factory):
     Cakes should be produced and stored in order: "medium" , not "medium" (basic).
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(3, 3)
@@ -250,7 +242,6 @@ def test_produce_cakes_order_large_before(factory):
     Cakes should be produced and stored in order: "large" , not "large" (basic).
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(6, 6)
@@ -272,7 +263,6 @@ def test_get_cakes_correct_amount(factory):
     Expected: 3
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(9, 9)
@@ -300,7 +290,6 @@ def test_get_last_cakes_correct_amount(factory):
     3) 2
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(9, 9)
@@ -323,7 +312,6 @@ def test_get_cakes_returns_cakes(factory):
     Expected: Type of Cake
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(9, 9)
@@ -345,7 +333,6 @@ def test_get_last_cakes_returns_cakes(factory):
     Expected: Type of Cake
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(9, 9)
@@ -367,7 +354,6 @@ def test_produce_cakes_order(factory):
     2) the types of cakes returned by function get_last_cakes are in following order: "large", "medium", "basic".
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(8, 8)
@@ -504,7 +490,6 @@ def test_factory_str_amount(factory):
 
     Expected: "Factory with <cake amount> cakes."
     :param factory: factory which produces cakes
-
     :return:
     """
     num = random.randint(3, 1000)
@@ -526,7 +511,6 @@ def test_factory_str_single(factory):
     "Factory with 1 cake."
 
     :param factory: factory which produces cakes
-
     :return:
     """
     factory.bake_cake(1, 1)
