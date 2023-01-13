@@ -104,6 +104,7 @@ class Adventurer:
         :return:
         """
         self.power += power
+        round(self.power)
 
     def add_experience(self, exp: int):
         """
@@ -218,7 +219,7 @@ class World:
         """
         Get the list of adventurers in this world.
 
-        Return sthe list of adventurers in this world.
+        Returns the list of adventurers in this world.
 
         :return: list of adventurers
         """
@@ -507,7 +508,7 @@ class World:
         :return:
         """
         self.active_monsters.extend(monster for monster in self.monster_list)
-        self.adventurer_list.clear()
+        self.monster_list.clear()
 
     def remove_animals_and_ents(self):
         """
@@ -521,8 +522,7 @@ class World:
         # Is there a Druid among adventurers.
         if list(filter(lambda adventurer: adventurer.class_type == "Druid", self.active_adventurers)):
             # If there are monsters with type Animal or Ent they return from active monsters into monsters list.
-            animals_and_ents = list(filter(lambda monster: monster.type == "Animal" or monster.type == "Ent",
-                                           self.active_monsters))
+            animals_and_ents = list(filter(lambda monster: monster.type in ["Animal", "Ent"], self.active_monsters))
             for monster in animals_and_ents:
                 self.active_monsters.remove(monster)
                 self.monster_list.append(monster)
@@ -651,6 +651,47 @@ class World:
                     self.active_adventurers.remove(adventurer)
                     # Removes the adventurer completely.
                     # self.remove_character(adventurer.name)
+
+
+if __name__ == "__main__2":
+    world = World("Sõber")
+    hero = Adventurer("Sander", "Paladin", 50)
+    hero2 = Adventurer("Toomas", "Druid", 50)
+    hero3 = Adventurer("Toots", "Druid", 1)
+    hero3.add_experience(149)
+
+    print(hero3.power == 15)
+
+    monster = Monster("Giant Badger", "Animal", 39043)
+    monster2 = Monster("Monsu", "Zombie", 149)
+    monster3 = Monster("Tilluke asi", "suva", 1)
+
+    world.add_monster(monster)
+    world.add_monster(monster2)
+    world.add_adventurer(hero)
+    world.add_adventurer(hero2)
+
+    print(world.get_adventurer_list())  # Sander, Toomas
+    print(world.get_monster_list())  # Giant Badger, Monsu
+
+    world.add_all_adventurers()
+    print(world.get_adventurer_list())  # []
+    print(world.get_active_adventurers())  # Sander, Toomas
+    world.add_all_monsters()
+    print(world.get_monster_list())  # []
+    print(world.get_active_monsters())  # Giant Badger, Monsu
+
+    world.go_adventure(True)
+
+    print(world.get_active_adventurers())  # []
+    print(world.get_graveyard())
+
+    world.add_monster(monster3)
+    world.add_adventurer(hero3)
+    world.add_adventurer_by_name("Toomas")
+    world.add_monster_by_name("Tilluke asi")
+    world.go_adventure(True)
+    print(hero2)
 
 
 if __name__ == "__main__":
