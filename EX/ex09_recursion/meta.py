@@ -5,6 +5,14 @@ This program draws recursively using python turtle module.
 
 Available functions:
 tree(length); Draws a binary tree using turtle.
+apply_dragon_rules(string); Writes a recursive function which replaces characters in string.
+curve(string, depth); Recursively generates the next depth of rules.
+format_curve(string); Removes a and b symbols from the instruction string using recursion.
+draw_dragon(string, length); Draws the dragon by using turtle and by reading the string recursively.
+
+Helper functions:
+get_line_length(dragon_width, depth); Returns one Turtle step length if the width and depth are known.
+save(t: Turtle); Saves the turtle graphic to file which can be opened with an image editor like GIMP.
 
 """
 
@@ -56,9 +64,9 @@ def tree(length):
 
 def apply_dragon_rules(string):
     """
-    Write a recursive function that replaces characters in string.
+    Write a recursive function which replaces characters in string.
 
-    Like so:
+    Examples:
         "a" -> "aRbFR"
         "b" -> "LFaLb"
     apply_dragon_rules("a") -> "aRbFR"
@@ -85,24 +93,29 @@ def curve(string, depth):
     Recursively generate the next depth of rules.
 
     Calls apply_dragon_rules() function `depth` times.
+
+    Example:
     curve("Fa", 2) -> "FaRbFRRLFaLbFR"
 
     :param string: current instruction string
     :param depth: how many times the rules are applied
     :return: instruction set for drawing the dragon at iteration 'depth'
     """
-    instruction_set = ""
-    if depth == 0:
-        return ""
+    if depth <= 0:
+        return string
     else:
-        instruction_set += curve(string, depth - 1) + apply_dragon_rules(string)
-    return instruction_set
+        instruction_set = apply_dragon_rules(string)
+    # Saving the new depth value into a variable speeds up the recursion.
+    depth -= 1
+    # Call again with new values.
+    return curve(instruction_set, depth)
 
 
 def format_curve(string):
     """
-    Use recursions to remove  a  and  b  symbols from the instruction string.
+    Remove a and b symbols from the instruction string using recursion.
 
+    Example:
     format_curve("Fa") -> "F"
     format_curve("FaRbFR") -> "FRFR"
 
@@ -120,9 +133,10 @@ def format_curve(string):
 
 
 def draw_dragon(string, length):
-    """Draws the dragon by reading the string recursively.
+    """
+    Draw the dragon by using turtle and by reading the string recursively.
 
-    Use t.right(), t.left(), t.forward() and draw_dragon() to move turtle.
+    Uses t.right(), t.left(), t.forward() and draw_dragon() to move turtle.
         L - means turn 90 degrees to left and go forward
         R - means turn 90 degrees to right and go forward
         F - means don't turn just go forward
@@ -160,27 +174,28 @@ if __name__ == '__main__':
     t = Turtle()
     t.getscreen().bgcolor("#1c262b")
     t.color("#96004f")
-    t.speed(1)
+    t.speed(0)
     t.pensize(3)
-    '''
-    # Move the tree a bit down, otherwise it will grow out of the window.
-    t.setpos(0, -200)
-    t.left(90)
 
-    tree(200)
-    '''
+    # Move the tree a bit down, otherwise it will grow out of the window.
+    # t.setpos(0, -200)
+    t.left(90)
+    # tree(200)
 
     s = curve("Fa", 8)
     s = format_curve(s)
-    l = get_line_length(100, 8)
-    draw_dragon(s, l)
+    line_length = get_line_length(100, 8)
+    draw_dragon(s, line_length)
 
-    print(apply_dragon_rules("a"))  # -> "aRbFR"
-    print(apply_dragon_rules("aa"))  # -> "aRbFRaRbFR"
-    print(apply_dragon_rules("FRaFRb"))  # -> "FRaRbFRFRLFaLb"
-    print(curve("Fa", 2))  # -> "FaRbFRRLFaLbFR"
-    print(format_curve("Fa"))  # -> "F"
-    print(format_curve("FaRbFR"))  # -> "FRFR"
+    print("apply_dragon_rules", apply_dragon_rules("a"))  # -> "aRbFR"
+    print("apply_dragon_rules", apply_dragon_rules("b"))  # -> "LFaLb"
+    print("apply_dragon_rules", apply_dragon_rules("aa"))  # -> "aRbFRaRbFR"
+    print("apply_dragon_rules", apply_dragon_rules("FRaFRb"))  # -> "FRaRbFRFRLFaLb"
+    print("curve", curve("Fa", 2))  # -> "FaRbFRRLFaLbFR"
+    print("curve", curve("FaRbFR", 1))  # -> "FaRbFRRLFaLbFR"
+    print("curve", curve("Fa", 4))  # -> "FaRbFRRLFaLbFRRLFaRbFRLLFaLbFRRLFaRbFRRLFaLbFRLLFaRbFRLLFaLbFR"
+    print("format_curve", format_curve("Fa"))  # -> "F"
+    print("format_curve", format_curve("FaRbFR"))  # -> "FRFR"
 
     save(t)
     t.getscreen().exitonclick()
