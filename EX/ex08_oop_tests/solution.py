@@ -47,7 +47,7 @@ class Factory:
 
     def __repr__(self):
         """
-        Factory representation.
+        Return factory representation.
 
         Returns Factory data as a formatted string containing the amount of cakes factory has.
         :return: string representation of factory data containing the amount of cake it has
@@ -188,6 +188,13 @@ class Cake:
 
 
 class WrongIngredientsAmountException(Exception):
+    """
+    WrongIngredientsAmountException class.
+
+    WrongIngredientsAmountException extends the built-in Exception class and is raised when the cake has wrong amount
+    of ingredients.
+    """
+
     pass
 
 
