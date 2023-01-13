@@ -103,8 +103,7 @@ class Adventurer:
         :param power: power points to add to adventurer
         :return:
         """
-        self.power += power
-        round(self.power)
+        self.power += int(power)
 
     def add_experience(self, exp: int):
         """
@@ -555,8 +554,7 @@ class World:
         """
         paladins = list(filter(lambda adventurer: adventurer.class_type == "Paladin", self.active_adventurers))
         for paladin in paladins:
-            paladin.power /= 2
-            round(paladin.power)
+            paladin.power = round(paladin.power / 2)
 
     def compare_powers(self):
         """
@@ -654,7 +652,7 @@ class World:
                     # self.remove_character(adventurer.name)
 
 
-if __name__ == "__main__2":
+if __name__ == "__main__":
     world = World("Sõber")
     hero = Adventurer("Sander", "Paladin", 50)
     hero2 = Adventurer("Toomas", "Druid", 50)
@@ -676,26 +674,44 @@ if __name__ == "__main__2":
     print(world.get_monster_list())  # Giant Badger, Monsu
 
     world.add_all_adventurers()
+
     print(world.get_adventurer_list())  # []
     print(world.get_active_adventurers())  # Sander, Toomas
+
     world.add_all_monsters()
+
     print(world.get_monster_list())  # []
     print(world.get_active_monsters())  # Giant Badger, Monsu
 
     world.go_adventure(True)
 
-    print(world.get_active_adventurers())  # []
-    print(world.get_graveyard())
-
     world.add_monster(monster3)
     world.add_adventurer(hero3)
     world.add_adventurer_by_name("Toomas")
     world.add_monster_by_name("Tilluke asi")
+
     world.go_adventure(True)
-    print(hero2)
+
+    print(hero2)  # "Toomas, the Druid, Power: 64, Experience: 2."
 
 
-if __name__ == "__main__":
+if __name__ == "__main__2":
+    hero = Adventurer("Mart", "Wizard", 50)
+    hero2 = Adventurer("Sander", "Paladin", 50)
+    monster = Monster("Goblin", "Goblin", 5)
+    zombie = Monster("Goblin", "Zombie", 5)
+    world = World("PM")
+
+    world.get_graveyard().append(hero)
+    world.get_graveyard().append(hero2)
+    world.get_graveyard().append(monster)
+    world.get_graveyard().append(zombie)
+
+    world.revive_graveyard()
+    print(len(world.get_graveyard()))  # 4
+
+
+if __name__ == "__main__3":
     print("Kord oli maailm.")
     world = World("Sõber")
     print(world.get_python_master())  # -> "Sõber"
