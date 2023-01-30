@@ -614,7 +614,7 @@ class World:
         self.double_paladin_power()
         # Decide who is going to win.
         game_result = self.compare_powers()
-        self.resume_paladin_power()
+        # self.resume_paladin_power()
         # Add experience.
         self.calculate_experience(game_result, deadly)
 
