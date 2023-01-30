@@ -117,9 +117,9 @@ class Adventurer:
         """
         if exp < 0:
             return
-        # self.experience += exp
-        if self.experience + exp > 99:
-            self.power += math.floor((self.experience + exp) / 10)
+        self.experience += exp
+        if self.experience > 99:
+            self.power += math.floor(self.experience / 10)
             self.experience = 0
 
 
@@ -599,7 +599,7 @@ class World:
         elif result[0] == "T":
             experience_gained = math.floor(result[2] / len(self.active_adventurers))
             for adventurer in self.active_adventurers:
-                adventurer.add_experience(math.floor(experience_gained / 2))
+                adventurer.add_experience(experience_gained)
 
     def go_adventure(self, deadly: bool = False):
         """
