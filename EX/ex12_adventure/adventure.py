@@ -552,9 +552,14 @@ class World:
 
         :return:
         """
-        paladins = list(filter(lambda adventurer: adventurer.class_type == "Paladin", self.active_adventurers))
-        for paladin in paladins:
-            paladin.power = math.floor(paladin.power / 2)
+        if list(filter(lambda monster: monster.type in ["Zombie",
+                                                        "Zombie Fighter",
+                                                        "Zombie Druid",
+                                                        "Zombie Paladin",
+                                                        "Zombie Wizard"], self.active_monsters)):
+            paladins = list(filter(lambda adventurer: adventurer.class_type == "Paladin", self.active_adventurers))
+            for paladin in paladins:
+                paladin.power = math.floor(paladin.power / 2)
 
     def compare_powers(self):
         """
@@ -589,6 +594,7 @@ class World:
         :param deadly: was the adventure deadly or not
         :return:
         """
+        self.resume_paladin_power()
         if result[0] == "A" or result[0] == "T":
             experience_gained = math.floor(result[2] / len(self.active_adventurers))
             for adventurer in self.active_adventurers:
@@ -616,7 +622,6 @@ class World:
         game_result = self.compare_powers()
         # Add experience.
         self.calculate_experience(game_result, deadly)
-        self.resume_paladin_power()
 
         # Move fighters into proper list after the adventure.
         if not deadly:
