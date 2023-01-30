@@ -589,17 +589,16 @@ class World:
         :param deadly: was the adventure deadly or not
         :return:
         """
-        if result[0] == "A":
+        if result[0] == "A" or result[0] == "T":
             experience_gained = math.floor(result[2] / len(self.active_adventurers))
             for adventurer in self.active_adventurers:
                 if deadly:
                     adventurer.add_experience(experience_gained * 2)
                 else:
                     adventurer.add_experience(experience_gained)
-        elif result[0] == "T":
-            experience_gained = math.floor(result[2] / len(self.active_adventurers))
+        if result[0] == "T":
             for adventurer in self.active_adventurers:
-                adventurer.add_experience(experience_gained)
+                adventurer.experience = (math.floor(adventurer.experience / 2))
 
     def go_adventure(self, deadly: bool = False):
         """
