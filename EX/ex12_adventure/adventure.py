@@ -624,7 +624,7 @@ class World:
         self.calculate_experience(game_result, deadly)
 
         # Move fighters into proper list after the adventure.
-        if not deadly:
+        if not deadly or (deadly and game_result[0] == "T"):
             self.adventurer_list.extend(self.active_adventurers)
             self.active_adventurers.clear()
             self.monster_list.extend(self.active_monsters)
