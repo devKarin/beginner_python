@@ -554,7 +554,7 @@ class World:
         """
         paladins = list(filter(lambda adventurer: adventurer.class_type == "Paladin", self.active_adventurers))
         for paladin in paladins:
-            paladin.power = round(paladin.power / 2)
+            paladin.power = math.floor(paladin.power / 2)
 
     def compare_powers(self):
         """
