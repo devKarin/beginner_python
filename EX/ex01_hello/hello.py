@@ -1,6 +1,5 @@
-"""EX01 Hello."""
+"""EX01 Hello.
 
-"""
 1. Print Hello
 Example output:
 

@@ -1,6 +1,5 @@
-"""EX01 Cashier."""
+"""EX01 Cashier.
 
-"""
 4. Cashier
 This program gets a number (always 1-100) as input and prints to the console
 the minimum amount of coins a cashier needs to return as an exchange to cover

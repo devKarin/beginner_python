@@ -1,6 +1,5 @@
-"""EX01 Greetings."""
+"""EX01 Greetings.
 
-"""
 3. GreetingsGreetingsGreetings
 Example output:
 

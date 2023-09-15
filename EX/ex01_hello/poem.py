@@ -1,6 +1,5 @@
-"""EX01 Poem."""
+"""EX01 Poem.
 
-"""
 2. Poem
 Example output:
 

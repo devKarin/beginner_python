@@ -1,7 +1,8 @@
 """
 EX09.2 - Recursion: Inception.
 
-This program makes different operations using loop-based functions and offering recursion-based alternatives to them.
+This program makes different operations using loop-based functions and offering recursion-based
+alternatives to them.
 
 Available functions:
 x_sum_loop(nums: list, x: int) -> int;

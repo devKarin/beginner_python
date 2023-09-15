@@ -11,23 +11,27 @@ car_makes(all_cars: str) -> list; Returns unique car makes from string.
 
 car_models(all_cars: str) -> list; Returns unique car models from string.
 
-create_cars_list(all_cars: str) -> list; Helper function. Returns a two-dimensional list of car makes and models.
+create_cars_list(all_cars: str) -> list; Helper function. Returns a two-dimensional
+list of car makes and models.
 
-create_car_dictionary(cars_list: list) -> dict; Helper function. Returns a list of car makes and models as dictionary.
+create_car_dictionary(cars_list: list) -> dict; Helper function.
+Returns a list of car makes and models as dictionary.
 
-search_by_make(all_cars: str, search_parameter: str) -> list; Returns a list of car makes from string
-based on a search-string.
+search_by_make(all_cars: str, search_parameter: str) -> list; Returns a list of car makes from
+string based on a search-string.
 
 search_by_model(all_cars: str, search_parameter: str) -> list; Returns a list of cars from string
 based on a search-string to search for a car model.
 
-car_make_and_models(all_cars: str) -> list; Creates a two-dimensional list with car makes and models from a string.
+car_make_and_models(all_cars: str) -> list; Creates a two-dimensional list with car
+makes and models from a string.
 
 add_cars(car_list: list, all_cars: str) -> list; Adds cars from a list into an existing cars list.
 
 number_of_cars(all_cars: str) -> list; Creates a list of tuples with make quantities.
 
-car_list_as_string(cars: list) -> str; Creates a comma separated string from cars list with makes and models.
+car_list_as_string(cars: list) -> str; Creates a comma separated string from cars list
+with makes and models.
 
 """
 
@@ -383,13 +387,16 @@ def car_list_as_string(cars: list) -> str:
 
 if __name__ == '__main__':
     print('List on cars:')
-    print(list_of_cars("Audi A4,Skoda Superb,Audi A4"))  # ["Audi A4", "Skoda Superb", "Audi A4"]
-    print(list_of_cars("Audi A4 Skoda Superb Audi A4"))  # ["Audi A4 Skoda Superb Audi A4"]
+    # ["Audi A4", "Skoda Superb", "Audi A4"]
+    print(list_of_cars("Audi A4,Skoda Superb,Audi A4"))
+    # ["Audi A4 Skoda Superb Audi A4"]
+    print(list_of_cars("Audi A4 Skoda Superb Audi A4"))
     print(list_of_cars(""))  # []
     print("*****")
 
     print('Car makes:')
-    print(car_makes("Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon,Skoda Superb,Skoda Superb,BMW x5"))
+    print(car_makes(
+        "Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon,Skoda Superb,Skoda Superb,BMW x5"))
     # ['Audi', 'Skoda', 'BMW', 'Seat']
 
     print(car_makes("Mazda 6,Mazda 6,Mazda 6,Mazda 6"))  # ['Mazda']
@@ -397,48 +404,64 @@ if __name__ == '__main__':
     print("*****")
 
     print('Car models:')
-    print(car_models("Audi A4,Skoda Superb,Audi A4,Audi A6"))  # ["A4", "Superb", "A6"]
+    # ["A4", "Superb", "A6"]
+    print(car_models("Audi A4,Skoda Superb,Audi A4,Audi A6"))
     print(car_models(""))  # []
     print("*****")
 
     print('Search by make:')
-    print(search_by_make("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "Audi"))
+    print(search_by_make(
+        "Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "Audi"))
     # ['Audi A4 2021', 'Audi A4 2022 sept']
 
     print(search_by_make("Audi A4", "A4"))  # []
-    print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "Audi"))  # ['Audi A4', 'audi A5', 'AUDI a6 A7']
-    print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "AUDI"))  # ['Audi A4', 'audi A5', 'AUDI a6 A7']
-    print(search_by_make("Audi A4,Skoda Superb,Seat Leon,Audi A4,Seat Leon,Audi A4,Audi A6,Audi A4 2022", "Audi"))
+    # ['Audi A4', 'audi A5', 'AUDI a6 A7']
+    print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "Audi"))
+    # ['Audi A4', 'audi A5', 'AUDI a6 A7']
+    print(search_by_make("Audi A4,audi A5,AUDI a6 A7", "AUDI"))
+    print(search_by_make(
+        "Audi A4,Skoda Superb,Seat Leon,Audi A4,Seat Leon,Audi A4,Audi A6,Audi A4 2022", "Audi"))
     # ['Audi A4', 'Audi A4', 'Audi A4', 'Audi A6', 'Audi A4 2022']
-    print(search_by_make("Audi A4,Skoda Superb,Seat Leon,audi A4,SEAT Leon,AUDI A4,AudI A6,Audi A4 2022", "audi"))
+    print(search_by_make(
+        "Audi A4,Skoda Superb,Seat Leon,audi A4,SEAT Leon,AUDI A4,AudI A6,Audi A4 2022", "audi"))
     # ['Audi A4', 'audi A4', 'AUDI A4', 'AudI A6', 'Audi A4 2022']
 
     print("*****")
 
     print('Search by model:')
-    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A4"))  # ["Audi A4", "Audi a4 2021"]
-    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4"))  # ["Audi A4", "Audi a4 2021"]
-    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "sept"))
+    # ["Audi A4", "Audi a4 2021"]
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A4"))
+    # ["Audi A4", "Audi a4 2021"]
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4"))
+    print(search_by_model(
+        "Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "sept"))
     # ['Audi A4 2022 sept']
 
-    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "sep"))  # []
-    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "2021"))
+    print(search_by_model(
+        "Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "sep"))  # []
+    print(search_by_model(
+        "Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "2021"))
     # ['Audi A4 2021']
 
-    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A40"))  # ['Audi A40']
+    # ['Audi A40']
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "A40"))
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "202"))  # []
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a4 2021"))  # []
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "a"))  # []
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "Audi"))  # []
-    print(search_by_model("Audi A4,Audi a4 2021,Audi A40,Audi A4", "a4"))  # ['Audi A4', 'Audi a4 2021', 'Audi A4']
-    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "suPerB"))
+    # ['Audi A4', 'Audi a4 2021', 'Audi A4']
+    print(search_by_model("Audi A4,Audi a4 2021,Audi A40,Audi A4", "a4"))
+    print(search_by_model(
+        "Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "suPerB"))
     # ['Skoda Superb', 'Skoda Superb']
 
     print(search_by_model("Audi A4,Audi a4 2021,Audi A40", "x l a u 2"))  # []
-    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "SUPERB"))
+    print(search_by_model(
+        "Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "SUPERB"))
     # ['Skoda Superb', 'Skoda Superb']
 
-    print(search_by_model("Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "Skoda"))
+    print(search_by_model(
+        "Audi A4 2021,Skoda Superb,Seat Leon,Skoda Superb,Audi A4 2022 sept", "Skoda"))
     # []
 
     print("*****")
@@ -452,7 +475,8 @@ if __name__ == '__main__':
     print("*****")
 
     print("add cars:")
-    print(add_cars([['Audi', ['A4']], ['Skoda', ['Superb']]], "Audi A6,BMW A B C,Audi A4"))
+    print(add_cars([['Audi', ['A4']], ['Skoda', ['Superb']]],
+          "Audi A6,BMW A B C,Audi A4"))
     # [['Audi', ['A4', 'A6']], ['Skoda', ['Superb']], ['BMW', ['A B C']]]
     print(add_cars([], "Audi A6,BMW A B C,Audi A4"))
     # [['Audi', ['A6', 'A4]], ['BMW', ['A B C']]]
@@ -460,12 +484,14 @@ if __name__ == '__main__':
     print("*****")
 
     print("Number of cars:")
-    print(number_of_cars("Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon Lux,Skoda Superb,Skoda Superb,BMW x5"))
+    print(number_of_cars(
+        "Audi A4,Skoda Super,Skoda Octavia,BMW 530,Seat Leon Lux,Skoda Superb,Skoda Superb,BMW x5"))
 
     print("*****")
 
     print("Car list as a string:")
     print(car_list_as_string(
-        [['Audi', ['A4']], ['Skoda', ['Super', 'Octavia', 'Superb']], ['BMW', ['530', 'x5']], ['Seat', ['Leon Lux']]]
+        [['Audi', ['A4']], ['Skoda', ['Super', 'Octavia', 'Superb']],
+            ['BMW', ['530', 'x5']], ['Seat', ['Leon Lux']]]
     ))
     # "Audi A4,Skoda Super,Skoda Octavia,Skoda Superb,BMW 530,BMW x5,Seat Leon Lux"

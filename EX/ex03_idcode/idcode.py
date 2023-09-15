@@ -118,14 +118,21 @@ def the_first_control_number_algorithm(text: str) -> str:
 
 
 def is_valid_gender_number(gender_number: int) -> bool:
-    """Check if given value is correct for gender number in ID code."""
+    """
+    Check if given value is correct for gender number in ID code.
+
+    Check whether the gender number is in range 1-6.
+
+    :param gender_number: integer
+    :return: boolean
+    """
     valid_gender_numbers = [1, 2, 3, 4, 5, 6]
     # If the year number is in valid_year_numbers array, it's valid.
     return gender_number in valid_gender_numbers
 
 
 def get_gender(gender_number: int) -> str:
-    """Define persons ender by ID's gender number."""
+    """Define persons gender by ID's gender number."""
     # Define valid gender numbers for males and females.
     gender_numbers = {"male": [1, 3, 5], "female": [2, 4, 6]}
     if gender_number in gender_numbers["male"]:
