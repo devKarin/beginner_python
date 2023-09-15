@@ -1,0 +1,12 @@
+.pytest_cache
+token.json
+credentials.json
+api_key.json
+spreadsheet.txt
+.idea/*
+EX/ex14_robot/.idea/*
+EX/ex08_ex05_hobbies/__pycache__/*
+EX/ex08_ex05_hobbies/files_for_test/__pycache__/*
+EX/ex08_oop_tests/__pycache__/*
+EX/ex08_solution_and_tests/__pycache__/*
+EX/ex14_robot/env/*
